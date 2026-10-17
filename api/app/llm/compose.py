@@ -47,4 +47,5 @@ def compose(request: dict, short_ids: list[str]) -> BaseModel:
         system=SYSTEM,
         user=json.dumps(request, ensure_ascii=False),
         schema=output_model(short_ids),
+        attempts=1,  # one try: on failure the planner uses the greedy picks at once
     )
