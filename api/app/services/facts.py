@@ -24,6 +24,7 @@ SOURCE_LABEL = {
     "community_feedback": "traveler feedback",
     "photo_ai": "an AI check of an entrance photo",
     "inferred": "an estimate",
+    "demo_data": "demo data, not verified",
 }
 
 # Values that count as negative evidence for each attribute. Default: {"no"}.
