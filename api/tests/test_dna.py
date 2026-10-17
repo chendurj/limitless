@@ -1,24 +1,10 @@
-import json
-from pathlib import Path
-
 import pytest
 from openai.lib._pydantic import to_strict_json_schema
 from pydantic import ValidationError
 
 from app.models.dna import AccessibilityDNA
 
-FIXTURE = Path(__file__).parent / "fixtures" / "dna_maya.json"
-
-
-def load(**changes) -> dict:
-    data = json.loads(FIXTURE.read_text())
-    for path, value in changes.items():
-        *parents, leaf = path.split("__")
-        node = data
-        for key in parents:
-            node = node[key]
-        node[leaf] = value
-    return data
+from .conftest import load
 
 
 def test_example_profile_parses():
