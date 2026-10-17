@@ -98,6 +98,8 @@ def bonus_if_yes(weight: float) -> Check:
 WITH_ENTRANCE = frozenset({"attraction", "museum", "restaurant", "cafe", "dessert", "shopping"})
 VENUES = frozenset({"attraction", "museum"})
 OUTDOOR_EDGES = frozenset({"photo_spot", "park", "beach", "attraction"})
+BOOKABLE = frozenset({"attraction", "museum", "restaurant"})
+FOOD = frozenset({"restaurant", "cafe", "dessert"})
 
 # --- must-have and nice-to-have features -------------------------------------------
 
@@ -115,6 +117,8 @@ FEATURE_ATTRS: dict[str, tuple[str, ...]] = {
     "audio_description": ("audio_description",),
     "braille_tactile": ("braille_tactile",),
     "service_animal_ok": ("service_animal_ok",),
+    "online_booking": ("online_booking",),
+    "text_contact": ("text_contact",),
 }
 FEATURE_CATEGORIES: dict[str, frozenset[str] | None] = {
     "step_free_entrance": WITH_ENTRANCE,
@@ -125,6 +129,7 @@ FEATURE_CATEGORIES: dict[str, frozenset[str] | None] = {
     "captions_or_asl": VENUES,
     "audio_description": VENUES,
     "braille_tactile": VENUES,
+    "online_booking": BOOKABLE,
 }
 FEATURE_ASK = {
     "step_free_entrance": "a step-free entrance",
@@ -140,6 +145,8 @@ FEATURE_ASK = {
     "audio_description": "audio description",
     "braille_tactile": "braille or tactile information",
     "service_animal_ok": "that service animals are permitted",
+    "online_booking": "online booking",
+    "text_contact": "a text, chat or email contact",
 }
 # Values that do not satisfy a must-have. "no" excludes; "partial" or "some" penalizes.
 FEATURE_MISS = {
@@ -284,6 +291,12 @@ def sighted_guide_check(fact: Fact, ctx: Ctx) -> Effect | None:
     return None
 
 
+def phone_only_check(fact: Fact, ctx: Ctx) -> Effect | None:
+    if fact.value != "yes" or ctx.strong_yes("online_booking"):
+        return None
+    return Effect("SOFT", 0.2, f"{cite(fact)} Ask a companion or a relay service to book.")
+
+
 def status_check(fact: Fact, ctx: Ctx) -> Effect | None:
     if fact.value == "closed":
         return Effect("HARD", 0, cite(fact))
@@ -305,6 +318,10 @@ def _hearing(dna: AccessibilityDNA) -> bool:
 
 def _wants(dna: AccessibilityDNA, word: str) -> bool:
     return word in dna.preferences.avoid or word in dna.sensory.reduce
+
+
+def _no_calls(dna: AccessibilityDNA) -> bool:
+    return dna.no_phone_calls
 
 
 def _needs_car(dna: AccessibilityDNA) -> bool:
@@ -392,4 +409,18 @@ RULES: list[Rule] = [
         ask="that service animals are permitted",
     ),
     Rule("guide dog relief", "guide_dog_relief", lambda d: d.has_guide_dog, bonus_if_yes(0.05)),
+    # Deaf or non-speaking: no voice phone calls
+    Rule(
+        "phone-only booking", "booking_phone_only", _no_calls, phone_only_check, categories=BOOKABLE
+    ),
+    Rule("online booking", "online_booking", _no_calls, bonus_if_yes(0.05), categories=BOOKABLE),
+    Rule("text contact", "text_contact", _no_calls, bonus_if_yes(0.05)),
+    Rule(
+        "kiosk or app ordering",
+        "kiosk_or_app_ordering",
+        _no_calls,
+        bonus_if_yes(0.05),
+        categories=FOOD,
+    ),
+    Rule("written notes", "written_notes_ok", lambda d: d.is_non_speaking, bonus_if_yes(0.05)),
 ]

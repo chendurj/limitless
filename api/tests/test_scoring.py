@@ -291,3 +291,101 @@ def test_shortlist_splits_excluded(maya):
     kept, excluded = shortlist([ZOO, CAFE], facts, maya, today=TODAY)
     assert [e.place_id for e in kept] == ["zoo"]
     assert [e.place_id for e in excluded] == ["cafe"]
+
+
+# --- the two demo personas: ankle injury, and Deaf and non-speaking ------------------------
+
+
+@pytest.fixture
+def ankle(make_dna):
+    return make_dna(
+        needs=["temporary_injury", "limited_mobility"],
+        mobility__equipment=["crutches"],
+        mobility__walking="under_5_min",
+        mobility__standing="2_to_5_min",
+        mobility__slope_tolerance="gentle",
+        mobility__stairs_tolerance="none",
+        mobility__surfaces_to_avoid=["uneven_pavement", "sand"],
+        party__companion_assist="light_only",
+        requirements__must_have=["seating"],
+        requirements__nice_to_have=["mobility_rental"],
+        temporary__expected_duration="this_trip_only",
+    )
+
+
+@pytest.fixture
+def deaf_non_speaking(make_dna):
+    return make_dna(
+        needs=["deaf_hoh", "non_speaking"],
+        mobility__equipment=[],
+        mobility__walking="long_ok",
+        mobility__standing="over_15_min",
+        mobility__slope_tolerance="steep_ok",
+        mobility__stairs_tolerance="ok",
+        mobility__surfaces_to_avoid=[],
+        requirements__must_have=["captions_or_asl"],
+        requirements__nice_to_have=["text_contact"],
+        hearing__supports=["captions", "asl_interpretation"],
+        communication__methods=["sign_language", "writing_or_typing"],
+        communication__phone_calls="no",
+        communication__contact_preferences=["text_sms", "email"],
+        party__companion_assist="no",
+    )
+
+
+def test_ankle_injury_limits(ankle):
+    assert ankle.trip_only
+    assert ankle.max_walk_m == 200 and not ankle.uses_wheelchair
+    stairs = fact("stairs", "required", detail="The only entrance has 12 steps.")
+    assert run(MUSEUM, [stairs], ankle).excluded
+    assert run(ZOO, [fact("typical_walk_m", "1500"), fact("seating", "plenty")], ankle).excluded
+    rental = fact("wheelchair_rental", "yes", detail="Wheelchairs to rent at the gate.")
+    kept = run(ZOO, [fact("typical_walk_m", "1500"), rental, fact("seating", "plenty")], ankle)
+    assert not kept.excluded  # a rental chair makes the long walk possible
+    assert any("rent" in w for w in kept.warnings)
+    assert any("rent" in h for h in kept.highlights)  # nice-to-have
+
+
+def test_ankle_moderate_slope_without_push_excludes(ankle):
+    assert run(ZOO, [fact("max_slope", "moderate"), fact("seating", "plenty")], ankle).excluded
+
+
+def test_no_phone_calls(deaf_non_speaking, ankle):
+    assert deaf_non_speaking.no_phone_calls and deaf_non_speaking.is_non_speaking
+    assert not ankle.no_phone_calls
+    restaurant = Place("r", "Test Trattoria", "restaurant", 75, subcategories=("italian",))
+    phone_only = fact("booking_phone_only", "yes", detail="Reservations by phone only.")
+    result = run(restaurant, [phone_only], deaf_non_speaking)
+    assert not result.excluded
+    assert result.access_fit == pytest.approx(0.8)
+    assert any("relay service" in w for w in result.warnings)
+    assert not any("relay service" in w for w in run(restaurant, [phone_only], ankle).warnings)
+
+
+def test_text_friendly_places_rank_higher(deaf_non_speaking):
+    restaurant = Place("r", "Test Trattoria", "restaurant", 75, subcategories=("italian",))
+    plain = run(restaurant, [], deaf_non_speaking)
+    friendly = run(
+        restaurant,
+        [
+            fact("online_booking", "yes"),
+            fact("text_contact", "yes"),
+            fact("kiosk_or_app_ordering", "yes"),
+            fact("written_notes_ok", "yes", "VERIFIED", "phone_call"),
+        ],
+        deaf_non_speaking,
+    )
+    assert friendly.score > plain.score
+    assert len(friendly.highlights) == 4
+
+
+def test_two_personas_differ_on_the_same_places(ankle, deaf_non_speaking):
+    museum_facts = [
+        fact("stairs", "required"),
+        fact("captions_asl", "yes", detail="Captioned films and ASL tours on request."),
+    ]
+    assert run(MUSEUM, museum_facts, ankle).excluded
+    assert not run(MUSEUM, museum_facts, deaf_non_speaking).excluded
+    tour = [fact("captions_asl", "no", detail="Audio-only guided tour."), fact("seating", "plenty")]
+    assert run(MUSEUM, tour, deaf_non_speaking).excluded  # captions are a must-have
+    assert not run(MUSEUM, tour, ankle).excluded
