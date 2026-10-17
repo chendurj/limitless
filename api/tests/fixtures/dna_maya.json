@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "summary": "You use a manual wheelchair, can stand briefly, and need step-free entrances and accessible restrooms. A companion can push on gentle slopes. You love beaches, the zoo and Italian food.",
+  "needs": ["mobility_device", "limited_mobility"],
+  "mobility": {
+    "equipment": ["manual_wheelchair"],
+    "walking": "transfer_steps_only",
+    "standing": "2_to_5_min",
+    "slope_tolerance": "gentle",
+    "surfaces_to_avoid": ["uneven_pavement", "sand"],
+    "stairs_tolerance": "none",
+    "rest_interval": "60_min"
+  },
+  "vision": {"level": null, "nav_aids": [], "supports": [], "without_sighted_companion": null},
+  "hearing": {"supports": [], "advance_booking": null},
+  "sensory": {"reduce": [], "supports": []},
+  "temporary": {"expected_duration": null},
+  "requirements": {
+    "must_have": ["step_free_entrance", "accessible_restroom"],
+    "nice_to_have": ["accessible_parking", "seating", "mobility_rental", "beach_wheelchair_or_mat"],
+    "other": []
+  },
+  "party": {
+    "travel_with": "family",
+    "size": 4,
+    "children_ages": [9, 12],
+    "companion_assist": "push_and_transfer",
+    "notes": null
+  },
+  "trip": {
+    "destination": "San Diego",
+    "start_date": "2026-11-12",
+    "nights": 4,
+    "lodging_area": "Little Italy",
+    "transport": "accessible_vehicle",
+    "needs_accessible_vehicle": true,
+    "needs_rental_equipment": null
+  },
+  "preferences": {
+    "interests": ["beaches", "zoos_aquariums", "food"],
+    "cuisines": ["italian"],
+    "avoid": ["hills", "uneven_surfaces"],
+    "pace": "relaxed",
+    "budget_per_day_usd": 250,
+    "day_start": "09:00",
+    "day_end": "18:00"
+  },
+  "missing_fields": [],
+  "assumptions": ["Moderate slopes are okay only with your companion pushing."]
+}
