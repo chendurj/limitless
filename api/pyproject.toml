@@ -1,0 +1,22 @@
+[project]
+name = "limitless-api"
+version = "0.1.0"
+description = "Limitless backend: accessibility scoring, trip planning and re-planning"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.143.3",
+    "pydantic-settings>=2.16.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.17.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
