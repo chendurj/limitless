@@ -5,6 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.config import get_settings
+from app.db import get_place_store
 from app.main import app
 
 client = TestClient(app)
@@ -16,11 +17,15 @@ def token(monkeypatch):
     return {"Authorization": "Bearer test-token"}
 
 
+FEEDBACK = {"transcript": "hi", "input_mode": "text"}
+
+
 def test_private_routes_need_the_token(token):
-    assert client.post("/api/trips", json={"profile_id": "p"}).status_code == 401
+    url = "/api/trips/t/feedback"
+    assert client.post(url, json=FEEDBACK).status_code == 401
     wrong = {"Authorization": "Bearer nope"}
-    assert client.post("/api/trips", json={"profile_id": "p"}, headers=wrong).status_code == 401
-    assert client.post("/api/trips", json={"profile_id": "p"}, headers=token).status_code == 501
+    assert client.post(url, json=FEEDBACK, headers=wrong).status_code == 401
+    assert client.post(url, json=FEEDBACK, headers=token).status_code == 501  # not built yet
 
 
 def test_no_token_configured_means_no_access(monkeypatch):
@@ -29,8 +34,17 @@ def test_no_token_configured_means_no_access(monkeypatch):
     assert client.get("/api/trips/t", headers=headers).status_code == 401
 
 
+class NoPlaces:
+    def load(self):
+        return [], {}
+
+
 def test_places_are_public():
-    assert client.get("/api/places").status_code == 501
+    app.dependency_overrides[get_place_store] = NoPlaces
+    try:
+        assert client.get("/api/places").json() == []
+    finally:
+        app.dependency_overrides.clear()
 
 
 def test_bad_request_is_422(token):

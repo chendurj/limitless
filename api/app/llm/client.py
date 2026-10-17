@@ -38,11 +38,11 @@ def client() -> OpenAI:
 
 
 def parse[T: BaseModel](
-    model: str, system: str, user: str, schema: type[T], effort: str = "low"
+    model: str, system: str, user: str, schema: type[T], effort: str = "low", attempts: int = 2
 ) -> T:
-    """Call the model with structured output. Retry once, then raise LLMUnavailable."""
+    """Call the model with structured output. Try `attempts` times, then raise LLMUnavailable."""
     last_error: Exception | None = None
-    for attempt in (1, 2):
+    for attempt in range(1, attempts + 1):
         start = time.monotonic()
         try:
             response = client().responses.parse(
