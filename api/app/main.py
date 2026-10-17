@@ -2,8 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
+from app.models.api import HealthOut
+from app.routers import intake, places, trips
 
-app = FastAPI(title="Limitless API", version="0.1.0")
+VERSION = "0.1.0"
+
+app = FastAPI(title="Limitless API", version=VERSION)
 
 app.add_middleware(
     CORSMiddleware,
@@ -12,7 +16,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+for router in (intake.router, trips.router, places.router):
+    app.include_router(router, prefix="/api")
 
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+
+@app.get("/health", response_model=HealthOut)
+def health() -> HealthOut:
+    return HealthOut(status="ok", version=VERSION)
