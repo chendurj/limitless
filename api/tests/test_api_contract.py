@@ -21,11 +21,12 @@ FEEDBACK = {"transcript": "hi", "input_mode": "text"}
 
 
 def test_private_routes_need_the_token(token):
-    url = "/api/trips/t/feedback"
-    assert client.post(url, json=FEEDBACK).status_code == 401
+    url = "/api/trips/t/rental-links"
+    assert client.get(url).status_code == 401
     wrong = {"Authorization": "Bearer nope"}
-    assert client.post(url, json=FEEDBACK, headers=wrong).status_code == 401
-    assert client.post(url, json=FEEDBACK, headers=token).status_code == 501  # not built yet
+    assert client.get(url, headers=wrong).status_code == 401
+    assert client.get(url, headers=token).status_code == 501  # not built yet
+    assert client.post("/api/trips/t/feedback", json=FEEDBACK).status_code == 401
 
 
 def test_no_token_configured_means_no_access(monkeypatch):
