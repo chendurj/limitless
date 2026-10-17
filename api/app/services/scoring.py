@@ -18,6 +18,7 @@ from app.services.rules import (
     FEATURE_ASK,
     FEATURE_ATTRS,
     FEATURE_CATEGORIES,
+    FEATURE_MISS,
     RULES,
     Ctx,
     Effect,
@@ -107,7 +108,7 @@ def evaluate(
             continue
         attrs = FEATURE_ATTRS[feature]
         present = [effective[a] for a in attrs if a in effective]
-        satisfied = [f for f in present if f.value == "yes" and f.is_strong]
+        satisfied = [f for f in present if f.is_strong and f.value not in FEATURE_MISS]
         if satisfied:
             used.update(f.id for f in satisfied)
             continue
@@ -122,7 +123,7 @@ def evaluate(
             continue
         for attr in FEATURE_ATTRS[feature]:
             fact = effective.get(attr)
-            if fact is not None and fact.value == "yes" and fact.is_strong:
+            if fact is not None and fact.is_strong and fact.value not in FEATURE_MISS:
                 add(Effect("BONUS", NICE_TO_HAVE_BONUS, cite(fact)), fact)
                 break
 
