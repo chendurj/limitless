@@ -1,0 +1,2569 @@
+{
+  "id": "2206e1cd-3b28-4553-99cc-03aaf04718e4",
+  "status": "ready",
+  "version": 1,
+  "start_date": "2026-10-23",
+  "nights": 3,
+  "travelers": 2,
+  "profile_summary": "You’re traveling with crutches after a recent ankle sprain and need step-free entrances, seating, and routes without stairs, sand, or gravel. You’d like a relaxed San Diego trip with museums, beaches, tacos, and good coffee.",
+  "days": [
+    {
+      "day_index": 0,
+      "date": "2026-10-23",
+      "theme": "Art, History and Tacos",
+      "weather": {
+        "tmax_f": 71.1,
+        "precip_prob": 39,
+        "uv_max": 5.4,
+        "advisory": null
+      },
+      "energy_budget": 6,
+      "energy_used": 1,
+      "items": [
+        {
+          "id": "adfc0df6-ee24-45b5-a3db-549fbfdc79f9",
+          "seq": 0,
+          "kind": "meal",
+          "title": "Lucha Libre Taco Shop",
+          "start": "2026-10-23T11:45:00-07:00",
+          "end": "2026-10-23T12:45:00-07:00",
+          "travel": {
+            "minutes": 20,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "7fd15df0-76b5-46c0-b804-4a979c5089fc",
+            "name": "Lucha Libre Taco Shop",
+            "category": "restaurant",
+            "neighborhood": "downtown",
+            "lat": 32.719,
+            "lng": -117.1633,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Lucha+Libre+Taco+Shop+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 45,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1176,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1177,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1178,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1179,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Mostly smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1180,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1181,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1182,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1183,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1184,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can satisfy your taco interest with a step-free entrance and plenty of seating for your lunch break.",
+          "cited_fact_ids": [
+            1176,
+            1181
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "a61a35da-0791-42ed-aa8c-3d62c818eea1",
+          "seq": 1,
+          "kind": "visit",
+          "title": "San Diego Museum of Art",
+          "start": "2026-10-23T13:05:00-07:00",
+          "end": "2026-10-23T14:20:00-07:00",
+          "travel": {
+            "minutes": 20,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "24a6c9f0-bdcd-4d12-b2a5-ceb9cc8a2f4b",
+            "name": "San Diego Museum of Art",
+            "category": "museum",
+            "neighborhood": "downtown",
+            "lat": 32.719,
+            "lng": -117.1611,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=San+Diego+Museum+of+Art+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 75,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 628,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 629,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 630,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Mostly smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 631,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 632,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 633,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 634,
+                "attribute": "braille_tactile",
+                "value": "yes",
+                "detail": "Braille or tactile information.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 635,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 636,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 637,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can enjoy an art-focused afternoon with a step-free entrance, mostly smooth surfaces and plenty of seating.",
+          "cited_fact_ids": [
+            628,
+            630,
+            632
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "ae27e586-9f58-44a7-ae59-6ca1ea1407f6",
+          "seq": 2,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-10-23T14:20:00-07:00",
+          "end": "2026-10-23T14:40:00-07:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "cb31b72f-a640-48aa-82c0-8e1dc6dffbf8",
+          "seq": 3,
+          "kind": "meal",
+          "title": "Cocina de Barrio",
+          "start": "2026-10-23T17:30:00-07:00",
+          "end": "2026-10-23T18:30:00-07:00",
+          "travel": {
+            "minutes": 20,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "0cd49b04-cf5d-4dd2-8d68-332d068f1b17",
+            "name": "Cocina de Barrio",
+            "category": "restaurant",
+            "neighborhood": "downtown",
+            "lat": 32.7135,
+            "lng": -117.1611,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Cocina+de+Barrio+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 105,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1194,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1195,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1196,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1197,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Mostly smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1198,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1199,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1200,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1201,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1202,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can continue your Mexican-food theme at Cocina de Barrio, with a step-free entrance and plenty of seating.",
+          "cited_fact_ids": [
+            1194,
+            1199
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "06e82002-dea4-4640-acc0-0605f4804a1c",
+          "seq": 4,
+          "kind": "meal",
+          "title": "Salt and Straw Little Italy",
+          "start": "2026-10-23T18:50:00-07:00",
+          "end": "2026-10-23T19:15:00-07:00",
+          "travel": {
+            "minutes": 20,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "85466054-ccd4-4734-a9b6-92ccb43596fe",
+            "name": "Salt and Straw Little Italy",
+            "category": "dessert",
+            "neighborhood": "little_italy",
+            "lat": 32.7251,
+            "lng": -117.1682,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Salt+and+Straw+Little+Italy+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 25,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1574,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1575,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1576,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1577,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1578,
+                "attribute": "max_slope",
+                "value": "flat",
+                "detail": "Flat routes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1579,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1580,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1581,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1582,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can finish with a dessert stop that offers a step-free entrance, smooth surfaces, flat routes and plenty of seating.",
+          "cited_fact_ids": [
+            1574,
+            1577,
+            1578,
+            1579
+          ],
+          "warnings": [],
+          "insights": []
+        }
+      ]
+    },
+    {
+      "day_index": 1,
+      "date": "2026-10-24",
+      "theme": "Old Town Museum Day",
+      "weather": {
+        "tmax_f": 76.1,
+        "precip_prob": 3,
+        "uv_max": 5.6,
+        "advisory": null
+      },
+      "energy_budget": 6,
+      "energy_used": 2,
+      "items": [
+        {
+          "id": "b57a9211-3fee-4fb4-905a-ff8166ae9293",
+          "seq": 0,
+          "kind": "meal",
+          "title": "Phuong Trang",
+          "start": "2026-10-24T11:45:00-07:00",
+          "end": "2026-10-24T12:45:00-07:00",
+          "travel": {
+            "minutes": 34,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "814cdc56-3e8a-4f30-8599-92761cfd5cc2",
+            "name": "Phuong Trang",
+            "category": "restaurant",
+            "neighborhood": "mission_bay",
+            "lat": 32.7779,
+            "lng": -117.2253,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Phuong+Trang+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 60,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1290,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1291,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1292,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1293,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1294,
+                "attribute": "max_slope",
+                "value": "flat",
+                "detail": "Flat routes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1295,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1296,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1297,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1298,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can add variety to your food itinerary with a lunch stop offering a step-free entrance, smooth surfaces, flat routes and plenty of seating.",
+          "cited_fact_ids": [
+            1290,
+            1293,
+            1294,
+            1295
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "94b8f2e9-2b82-4d6e-a205-6a87f525c068",
+          "seq": 1,
+          "kind": "visit",
+          "title": "Junipero Serra Museum",
+          "start": "2026-10-24T13:08:00-07:00",
+          "end": "2026-10-24T15:38:00-07:00",
+          "travel": {
+            "minutes": 23,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "4c84aa14-8e44-49f9-9de2-e1de9f7e1472",
+            "name": "Junipero Serra Museum",
+            "category": "museum",
+            "neighborhood": "old_town",
+            "lat": 32.7521,
+            "lng": -117.197,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Junipero+Serra+Museum+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 150,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 574,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 575,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 576,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 577,
+                "attribute": "terrain",
+                "value": "mixed",
+                "detail": "Mixed surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 578,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 579,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 580,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 581,
+                "attribute": "audio_description",
+                "value": "yes",
+                "detail": "Audio description available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 582,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 583,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 584,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can continue your museum interests with a step-free entrance and plenty of seating, though the listed surfaces are mixed and the slopes are gentle.",
+          "cited_fact_ids": [
+            574,
+            577,
+            578,
+            579
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "5cd18a78-b242-40f9-921a-654e46521341",
+          "seq": 2,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-10-24T15:38:00-07:00",
+          "end": "2026-10-24T15:58:00-07:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "10157fbe-63be-4bda-a0bd-30e167cd41b2",
+          "seq": 3,
+          "kind": "meal",
+          "title": "Lotus Thai Downtown",
+          "start": "2026-10-24T17:30:00-07:00",
+          "end": "2026-10-24T18:30:00-07:00",
+          "travel": {
+            "minutes": 23,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "7375130d-cde1-4e1b-aebe-7801cdfdccee",
+            "name": "Lotus Thai Downtown",
+            "category": "restaurant",
+            "neighborhood": "mission_bay",
+            "lat": 32.7724,
+            "lng": -117.2286,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Lotus+Thai+Downtown+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 45,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1308,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1309,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1310,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1311,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1312,
+                "attribute": "max_slope",
+                "value": "flat",
+                "detail": "Flat routes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1313,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1314,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1315,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1316,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can round out your food-focused day with Thai cuisine, a step-free entrance, smooth surfaces and plenty of seating.",
+          "cited_fact_ids": [
+            1308,
+            1311,
+            1313
+          ],
+          "warnings": [],
+          "insights": []
+        }
+      ]
+    },
+    {
+      "day_index": 2,
+      "date": "2026-10-25",
+      "theme": "Art and Mexican Flavors",
+      "weather": {
+        "tmax_f": 75.9,
+        "precip_prob": 9,
+        "uv_max": 4.4,
+        "advisory": null
+      },
+      "energy_budget": 6,
+      "energy_used": 3,
+      "items": [
+        {
+          "id": "fb9ce1b0-a1fd-46b6-8c52-9576c89a22d1",
+          "seq": 0,
+          "kind": "visit",
+          "title": "Timken Museum of Art",
+          "start": "2026-10-25T10:20:00-07:00",
+          "end": "2026-10-25T13:20:00-07:00",
+          "travel": {
+            "minutes": 20,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "e9f43d92-7c90-42b4-bf3b-27a7dbd93abf",
+            "name": "Timken Museum of Art",
+            "category": "museum",
+            "neighborhood": "balboa_park",
+            "lat": 32.7319,
+            "lng": -117.1424,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Timken+Museum+of+Art+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 180,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 648,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 649,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 650,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 651,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Mostly smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 652,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 653,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 654,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 655,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 656,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 657,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can start with art at the Timken, where a step-free entrance, mostly smooth surfaces and plenty of seating suit your stated priorities.",
+          "cited_fact_ids": [
+            648,
+            651,
+            653
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "27561c05-1af9-4344-b729-b003e178f9ec",
+          "seq": 1,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-10-25T13:20:00-07:00",
+          "end": "2026-10-25T13:40:00-07:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "841d378d-3c0c-4eeb-bc92-978e9c0381bc",
+          "seq": 2,
+          "kind": "meal",
+          "title": "Las Cuatro Milpas",
+          "start": "2026-10-25T14:00:00-07:00",
+          "end": "2026-10-25T15:00:00-07:00",
+          "travel": {
+            "minutes": 20,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "3a8c2502-dde1-4bc0-af71-f99c30af0646",
+            "name": "Las Cuatro Milpas",
+            "category": "restaurant",
+            "neighborhood": "downtown",
+            "lat": 32.7168,
+            "lng": -117.16,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Las+Cuatro+Milpas+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 60,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1159,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1160,
+                "attribute": "restroom_accessible",
+                "value": "partial",
+                "detail": "Accessible restroom with limits.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1161,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1162,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Mostly smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1163,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1164,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1165,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1166,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1167,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can return to your Mexican-food preference with a step-free entrance and plenty of seating at Las Cuatro Milpas.",
+          "cited_fact_ids": [
+            1159,
+            1164
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "70ea285e-b43b-482d-b8ba-f45fad5e05d8",
+          "seq": 3,
+          "kind": "meal",
+          "title": "El Agave Restaurant",
+          "start": "2026-10-25T17:30:00-07:00",
+          "end": "2026-10-25T18:30:00-07:00",
+          "travel": {
+            "minutes": 20,
+            "mode": "drive",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "d179bdcf-962b-48c4-9ad6-92771885220e",
+            "name": "El Agave Restaurant",
+            "category": "restaurant",
+            "neighborhood": "downtown",
+            "lat": 32.7157,
+            "lng": -117.1589,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=El+Agave+Restaurant+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 90,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1212,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1213,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1214,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Mostly smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1215,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1216,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1217,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1218,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1219,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can close your trip with Mexican cuisine at El Agave, which lists a step-free entrance and plenty of seating.",
+          "cited_fact_ids": [
+            1212,
+            1216
+          ],
+          "warnings": [],
+          "insights": []
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "place_id": "b97421e2-217e-46db-a562-fa3256020275",
+      "name": "Ocean Beach Waterfront",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        124
+      ]
+    },
+    {
+      "place_id": "e18b8e95-0840-4674-8229-c0f046fe3562",
+      "name": "Silver Strand Beach",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        130,
+        131
+      ]
+    },
+    {
+      "place_id": "1dc9374e-a614-4717-92ce-4db29846d979",
+      "name": "Harbor Sand Access Point",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        138
+      ]
+    },
+    {
+      "place_id": "691c2023-9344-4f7f-ba22-9819456d3ed2",
+      "name": "Sunset Bay Beach",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        144,
+        145
+      ]
+    },
+    {
+      "place_id": "6203f6f9-118a-4c0c-86fe-66c1ddb8e28f",
+      "name": "Music Box",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1658,
+        1661,
+        1662,
+        1663
+      ]
+    },
+    {
+      "place_id": "4e522744-a9c3-4b15-919d-9359108b3b69",
+      "name": "Mission Cove Beach",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        153
+      ]
+    },
+    {
+      "place_id": "59cd6082-f608-48e8-bbe3-7386c322f843",
+      "name": "South Shores Beach",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        159,
+        160,
+        161
+      ]
+    },
+    {
+      "place_id": "e0ef83b8-ecf8-4aff-b066-466101c26ba0",
+      "name": "Cabrillo Bay Overlook",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        170,
+        171
+      ]
+    },
+    {
+      "place_id": "af8478d1-4979-448f-bac8-22595a078793",
+      "name": "Sunset Cliffs Viewpoint",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        178,
+        179
+      ]
+    },
+    {
+      "place_id": "8b988449-bbd2-4b31-abed-83ef67bb56af",
+      "name": "La Jolla Cove Overlook",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        187,
+        188
+      ]
+    },
+    {
+      "place_id": "a88cfb77-b356-45e0-93bf-fad9f3d85520",
+      "name": "Mount Soledad Vista",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        196,
+        197
+      ]
+    },
+    {
+      "place_id": "75d7b629-a7f8-45ad-aed7-a23fdf38e91a",
+      "name": "Torrey Pines Outlook",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        205,
+        206
+      ]
+    },
+    {
+      "place_id": "5d1d0328-a224-427a-a5f2-dd8d2b7e18b2",
+      "name": "Harbor Island View Deck",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        214,
+        215
+      ]
+    },
+    {
+      "place_id": "5d853299-fe58-47a7-ab92-e295f9272f7a",
+      "name": "Shelter Island Lookout",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        222,
+        223
+      ]
+    },
+    {
+      "place_id": "78ea760e-b1a5-41e0-825a-237a1f8123b9",
+      "name": "Coronado Skyline Point",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        231,
+        232
+      ]
+    },
+    {
+      "place_id": "8f8d1692-76bf-4c93-b555-f1b117111dd6",
+      "name": "Bird Rock Ocean View",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        240,
+        241
+      ]
+    },
+    {
+      "place_id": "9be34a62-4958-46f0-b735-bfb6376e225e",
+      "name": "Point Loma Sunset Terrace",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        249,
+        250
+      ]
+    },
+    {
+      "place_id": "7701277a-c3f0-403e-aeed-a4b4c7aed3df",
+      "name": "Bayfront Handcycle Rentals",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        423
+      ]
+    },
+    {
+      "place_id": "c2b6077e-62d7-44d9-b6d3-1b046d75d1c9",
+      "name": "San Diego Zoo",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        429
+      ]
+    },
+    {
+      "place_id": "de57ba6a-638d-4135-8f62-64a2b67c7108",
+      "name": "San Diego Zoo Safari Park",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        433,
+        435,
+        436
+      ]
+    },
+    {
+      "place_id": "3dc0c54e-56f6-4b29-a609-e6aacefd0301",
+      "name": "SeaWorld San Diego",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        440,
+        442,
+        443
+      ]
+    },
+    {
+      "place_id": "9fce504f-b04b-45b1-a86a-4e7c88866808",
+      "name": "Birch Aquarium at Scripps",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        447,
+        449,
+        450,
+        451
+      ]
+    },
+    {
+      "place_id": "70c73d61-54c2-431c-9ff5-cfc285f58237",
+      "name": "Living Coast Discovery Center",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        455,
+        459,
+        460
+      ]
+    },
+    {
+      "place_id": "d2260a72-fc6e-401e-9dca-4a72a7067b95",
+      "name": "Ocean Discovery Gallery",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        464,
+        467,
+        468,
+        469
+      ]
+    },
+    {
+      "place_id": "d5e8e942-a466-4463-b4af-f5e4d57293e9",
+      "name": "Mission Bay Marine Center",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        473,
+        477,
+        478
+      ]
+    },
+    {
+      "place_id": "9b89d425-4fb3-47c7-ac52-19e1d37475fd",
+      "name": "Coastal Wildlife Encounter",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        482,
+        484,
+        485,
+        486
+      ]
+    },
+    {
+      "place_id": "6d86e923-9021-4cde-80f2-a09b6f723da4",
+      "name": "San Diego Reptile House",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        490,
+        494,
+        495
+      ]
+    },
+    {
+      "place_id": "4726be19-3012-4255-922d-cb9b14d3fe61",
+      "name": "Harbor Touch Tank Center",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        499,
+        502,
+        503,
+        504
+      ]
+    },
+    {
+      "place_id": "6e1eb89d-fd9a-4bb3-85c9-50edd79f55dd",
+      "name": "USS Midway Museum",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        508,
+        512,
+        513
+      ]
+    },
+    {
+      "place_id": "5359e95c-921f-41e4-812d-19c9fc8f2a00",
+      "name": "Museum of Us",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        519,
+        523,
+        524
+      ]
+    },
+    {
+      "place_id": "efea08f1-5982-4ffb-92b3-428d6e865a82",
+      "name": "San Diego Air and Space Museum",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        530,
+        534,
+        535
+      ]
+    },
+    {
+      "place_id": "61a0a87b-908c-4c5f-bbfb-2a5d1b6869a9",
+      "name": "San Diego Natural History Museum",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        541,
+        545,
+        546
+      ]
+    },
+    {
+      "place_id": "784fd384-9a5c-48c3-83a0-66cdd1e377ee",
+      "name": "Botanical Building and Lily Pond",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        738
+      ]
+    },
+    {
+      "place_id": "69e2ee98-66db-47c6-b646-a8d62a2b1cb7",
+      "name": "Liberty Station NTC Park",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        743
+      ]
+    },
+    {
+      "place_id": "3a5eb1e8-d1fd-428f-ac99-8f462e3bb86c",
+      "name": "Waterfront Park",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        749
+      ]
+    },
+    {
+      "place_id": "65e883cb-9b0d-4d49-8799-daf949deb595",
+      "name": "Mission Bay Park",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        755
+      ]
+    },
+    {
+      "place_id": "37ecf528-309e-40fa-823d-ef664dbbe02f",
+      "name": "Ellen Browning Scripps Park",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        762
+      ]
+    },
+    {
+      "place_id": "c925e710-14ad-44a3-8eed-ff76e471b02d",
+      "name": "Kate Sessions Park",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        769,
+        770
+      ]
+    },
+    {
+      "place_id": "a6b16bb3-3971-425c-8675-8209dd1a4eba",
+      "name": "Chicano Park",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        776,
+        777
+      ]
+    },
+    {
+      "place_id": "60d1c578-88bf-40c1-bbb4-4f07fa5b1061",
+      "name": "Embarcadero Marina Park",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        785,
+        786
+      ]
+    },
+    {
+      "place_id": "446b8b42-5705-47b6-84a8-9fe6cc639eb6",
+      "name": "Belmont Park",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        790,
+        793,
+        794
+      ]
+    },
+    {
+      "place_id": "60cfb8c1-2869-4088-b3c8-76d738cf69ba",
+      "name": "LEGOLAND California",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        799,
+        802,
+        803,
+        804
+      ]
+    },
+    {
+      "place_id": "b51b25d0-58b5-4526-89ae-3eca2693b922",
+      "name": "Sesame Place San Diego",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        809,
+        813,
+        814
+      ]
+    },
+    {
+      "place_id": "5ed0a38d-8b29-48b6-87c0-17c3a69931a3",
+      "name": "Skyline Family Fun Center",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        819,
+        822,
+        823,
+        824
+      ]
+    },
+    {
+      "place_id": "c175a0de-c04d-44f8-b0d4-150f622e53d0",
+      "name": "Mission Bay Arcade Pavilion",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        829,
+        833,
+        834
+      ]
+    },
+    {
+      "place_id": "7cc85cdb-285a-40f8-9235-3ae8047afdbb",
+      "name": "Harbor Escape Adventure",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        839,
+        841,
+        842,
+        843
+      ]
+    },
+    {
+      "place_id": "59edb444-e2fa-4669-947a-c40b2dcde133",
+      "name": "Liberty Station Cinema",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        848,
+        852,
+        853
+      ]
+    },
+    {
+      "place_id": "c077f077-b5ed-4176-9694-ba173be5e4a7",
+      "name": "Balboa Carousel Plaza",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        858,
+        861,
+        862,
+        863
+      ]
+    },
+    {
+      "place_id": "1e25585c-401a-4065-9522-f891b723c5b7",
+      "name": "Coronado Playhouse",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        868,
+        872,
+        873
+      ]
+    },
+    {
+      "place_id": "ed1c82bc-d646-4477-b089-6efad7de6c52",
+      "name": "The Headquarters at Seaport",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1040
+      ]
+    },
+    {
+      "place_id": "35447957-e6b2-4489-b1a2-123204b991bd",
+      "name": "Coronado Ferry Landing",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1045,
+        1046
+      ]
+    },
+    {
+      "place_id": "5acef8e2-94d4-471a-9792-d31b51a8c25a",
+      "name": "Gaslamp Artisan Market",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1051
+      ]
+    },
+    {
+      "place_id": "4686c1c3-8b61-4556-95f7-a24a2b36739c",
+      "name": "Monello",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1055,
+        1058,
+        1059
+      ]
+    },
+    {
+      "place_id": "b59ff0c8-1b24-41d8-a905-68cc4ca493a0",
+      "name": "Civico 1845",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1063,
+        1065,
+        1066
+      ]
+    },
+    {
+      "place_id": "1a6e8f9d-d0af-4191-8e01-7b8c941428ac",
+      "name": "Filippi's Pizza Grotto",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1070,
+        1074,
+        1075
+      ]
+    },
+    {
+      "place_id": "e440e513-853c-4807-9d77-d9bf6e03f851",
+      "name": "Cucina Urbana",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1079,
+        1083,
+        1084
+      ]
+    },
+    {
+      "place_id": "b57f6d81-5dbb-421c-9606-71e112f33ba2",
+      "name": "Buona Forchetta South Park",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1088,
+        1092,
+        1093
+      ]
+    },
+    {
+      "place_id": "873cc55a-0028-4072-9cba-4d776cdce2c5",
+      "name": "Officine Buona Forchetta",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1097,
+        1101,
+        1102
+      ]
+    },
+    {
+      "place_id": "f4e09bb9-80eb-4735-a9fb-68ef29d9f43d",
+      "name": "Osteria Panevino",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1106,
+        1109,
+        1110
+      ]
+    },
+    {
+      "place_id": "68fa1eee-e69f-417d-8e8e-62660b699d07",
+      "name": "Il Fornaio Coronado",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1114,
+        1118,
+        1119
+      ]
+    },
+    {
+      "place_id": "18a927d7-b598-4063-927f-1bc688f1a216",
+      "name": "Piatti La Jolla",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1123,
+        1127,
+        1128
+      ]
+    },
+    {
+      "place_id": "eee59130-94db-4fe0-833a-b67530eff5ed",
+      "name": "Garage Buona Forchetta",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1132,
+        1136,
+        1137
+      ]
+    },
+    {
+      "place_id": "e8b51178-bfa2-4f94-ac41-3f67a36c2b40",
+      "name": "Puesto at the Headquarters",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1141,
+        1145,
+        1146
+      ]
+    },
+    {
+      "place_id": "c3c1dca4-e79d-49d1-82d0-62a649cc0924",
+      "name": "Old Town Mexican Cafe",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1150,
+        1153,
+        1154,
+        1155
+      ]
+    },
+    {
+      "place_id": "a9eeda71-fb2f-4750-88c1-5d4acd359a3a",
+      "name": "Tandoori House",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1318,
+        1319
+      ]
+    },
+    {
+      "place_id": "f3efe4db-1871-4bb7-bebf-fee5483e8d20",
+      "name": "Meze Greek Fusion",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1325
+      ]
+    },
+    {
+      "place_id": "65e617b6-5f1c-4825-9696-976286c2b850",
+      "name": "Curryosity",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1329,
+        1330
+      ]
+    },
+    {
+      "place_id": "e89edcb3-40db-43d3-b319-bebf1dd64609",
+      "name": "Bombay Coast",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1336
+      ]
+    },
+    {
+      "place_id": "5bad6f4c-c671-4acc-9eea-0f6bc4e6c35b",
+      "name": "Spice Garden Hillcrest",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1340,
+        1342,
+        1343
+      ]
+    },
+    {
+      "place_id": "ae2cecbe-f632-4ca5-bcf4-d89b59d1278d",
+      "name": "Kebab House Point Loma",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1347,
+        1350,
+        1351
+      ]
+    },
+    {
+      "place_id": "ecc138e2-4688-4c5e-a5a3-53788a054f2a",
+      "name": "Himalayan Palace",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1355,
+        1357,
+        1358,
+        1359
+      ]
+    },
+    {
+      "place_id": "2025a915-949b-47c3-9d3b-1c83805db919",
+      "name": "Falafel Corner",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1363,
+        1366,
+        1367
+      ]
+    },
+    {
+      "place_id": "cd811f31-d5e0-4432-bb2b-cd8e44e13a82",
+      "name": "Saffron Grill",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1371,
+        1374,
+        1375,
+        1376
+      ]
+    },
+    {
+      "place_id": "6cf3e54e-5293-4fb1-8bd8-cbb185086dd8",
+      "name": "Olive Grove Kitchen",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1380,
+        1384,
+        1385
+      ]
+    },
+    {
+      "place_id": "04a84a0c-c72e-435a-affe-994741a861e5",
+      "name": "Ironside Fish and Oyster",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1389,
+        1393,
+        1394
+      ]
+    },
+    {
+      "place_id": "a5e24ba3-1d78-44c9-8f91-e4e8b9be6696",
+      "name": "Point Loma Seafoods",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1398,
+        1402,
+        1403
+      ]
+    },
+    {
+      "place_id": "92bd9306-b9c6-4996-bc97-3329a5bb8fe9",
+      "name": "Mitch's Seafood",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1407,
+        1411,
+        1412
+      ]
+    },
+    {
+      "place_id": "aaa716a4-3aab-4715-945c-51d3da374bd8",
+      "name": "The Fish Market Harbor Drive",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1416,
+        1420,
+        1421
+      ]
+    },
+    {
+      "place_id": "4fcd5518-77a6-457f-9198-87b0c4c4dbe0",
+      "name": "Blue Water Seafood Market",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1425,
+        1428,
+        1429
+      ]
+    },
+    {
+      "place_id": "ab6c8359-bd32-4f49-98c7-604536e73366",
+      "name": "C Level Lounge",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1433,
+        1437,
+        1438
+      ]
+    },
+    {
+      "place_id": "2230d584-197e-4fdf-8b66-935279cb4871",
+      "name": "Pacific Catch Kitchen",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1442,
+        1446,
+        1447
+      ]
+    },
+    {
+      "place_id": "a3a4da19-a40e-481e-8094-da445b965aed",
+      "name": "Better Buzz Point Loma",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1611
+      ]
+    },
+    {
+      "place_id": "2b88b8f2-7ade-4bbd-9b8d-065a98b90025",
+      "name": "Holy Matcha",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1617
+      ]
+    },
+    {
+      "place_id": "fd11b062-07c3-4490-8ae0-231ae2ae8489",
+      "name": "Parfait Paris Gaslamp",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1623
+      ]
+    },
+    {
+      "place_id": "8879c240-da97-4f61-9606-d9c930cf4bd7",
+      "name": "An's Dry Cleaning Gelato",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1628
+      ]
+    },
+    {
+      "place_id": "1b2cbc4b-8ddc-4894-ad2a-27f4295ec41e",
+      "name": "Figaro Dessert Cafe",
+      "reasons": [
+        "Steep sections (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1632,
+        1635
+      ]
+    },
+    {
+      "place_id": "18ce96ea-9505-454d-9bd3-cbda55974cfb",
+      "name": "Rady Shell at Jacobs Park",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1639,
+        1641,
+        1642,
+        1643
+      ]
+    },
+    {
+      "place_id": "a3dbd7dc-583a-42f4-8114-355dd555da60",
+      "name": "House of Blues San Diego",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1648,
+        1652,
+        1653
+      ]
+    },
+    {
+      "place_id": "91d49ab6-2db8-4de0-b553-4e731ce88482",
+      "name": "The Observatory North Park",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1668,
+        1672,
+        1673
+      ]
+    },
+    {
+      "place_id": "6132bc14-47ea-49aa-84c8-795760805e3c",
+      "name": "Humphreys Concerts by the Bay",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1678,
+        1681,
+        1682,
+        1683
+      ]
+    },
+    {
+      "place_id": "befe6d2c-8187-4e93-ad14-2b7772011e7e",
+      "name": "Moonshine Beach",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1688,
+        1691,
+        1692
+      ]
+    },
+    {
+      "place_id": "d6a1e8d7-bac0-431f-803f-031c861e379e",
+      "name": "The Casbah",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1697,
+        1700,
+        1701,
+        1702
+      ]
+    },
+    {
+      "place_id": "f3cc25ae-0d4b-4e5a-a177-2674732ffe4e",
+      "name": "Nova San Diego",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1707,
+        1711,
+        1712
+      ]
+    },
+    {
+      "place_id": "b039ff7b-1b6b-4a83-a8f8-1855022ed108",
+      "name": "Dizzy's Jazz Hall",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1717,
+        1720,
+        1721,
+        1722
+      ]
+    },
+    {
+      "place_id": "749f5ce5-3c86-439f-b7ab-a5705be03bc0",
+      "name": "Liberty Station Music Courtyard",
+      "reasons": [
+        "Moderate slopes (demo data, not verified)."
+      ],
+      "fact_ids": [
+        1727,
+        1731,
+        1732
+      ]
+    }
+  ],
+  "rental_links": [],
+  "overall_notes": "Your itinerary emphasizes museums, Mexican food and a dessert stop at a relaxed pace. No beach candidates were provided, so a beach stop is not included. Leave room between activities to keep the days unhurried.",
+  "disclaimer": "Accessibility details come from the cited sources and can change. Call ahead to confirm anything marked \"Not verified\"."
+}

@@ -48,4 +48,5 @@ def compose(request: dict, short_ids: list[str]) -> BaseModel:
         user=json.dumps(request, ensure_ascii=False),
         schema=output_model(short_ids),
         attempts=1,  # one try: on failure the planner uses the greedy picks at once
+        timeout=45,  # a 3-night plan takes about 20-30 s
     )

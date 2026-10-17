@@ -1,0 +1,1915 @@
+{
+  "id": "8fe3d8b9-d4cf-4ab4-80de-2d97aa7dd84a",
+  "status": "ready",
+  "version": 1,
+  "start_date": "2026-11-20",
+  "nights": 3,
+  "travelers": 1,
+  "profile_summary": "You use ASL and typing to communicate, and you need captions or ASL access. You’d like a moderate-paced San Diego trip focused on art and history museums and zoos or aquariums.",
+  "days": [
+    {
+      "day_index": 0,
+      "date": "2026-11-20",
+      "theme": "Maritime and Local History",
+      "weather": null,
+      "energy_budget": 9,
+      "energy_used": 5,
+      "items": [
+        {
+          "id": "bb10680b-61d1-4139-aa16-fe7d0a2ed130",
+          "seq": 0,
+          "kind": "visit",
+          "title": "Maritime Museum of San Diego",
+          "start": "2026-11-20T09:35:00-08:00",
+          "end": "2026-11-20T12:35:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "c889048e-dc77-4810-b1ed-e572634aa786",
+            "name": "Maritime Museum of San Diego",
+            "category": "museum",
+            "neighborhood": "downtown",
+            "lat": 32.719,
+            "lng": -117.1633,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Maritime+Museum+of+San+Diego+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 180,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 552,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 553,
+                "attribute": "restroom_accessible",
+                "value": "partial",
+                "detail": "Accessible restroom with limits.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 554,
+                "attribute": "terrain",
+                "value": "mixed",
+                "detail": "Mixed surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 555,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 556,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 557,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 558,
+                "attribute": "audio_description",
+                "value": "yes",
+                "detail": "Audio description available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 559,
+                "attribute": "braille_tactile",
+                "value": "yes",
+                "detail": "Braille or tactile information.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 560,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 561,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 562,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can continue your history focus at the Maritime Museum of San Diego, with captions or ASL available. Tip: Focus on the exhibits that interest you most.",
+          "cited_fact_ids": [
+            560
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "d5a46c4b-435c-4d18-b7a3-230ef522d04a",
+          "seq": 1,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-11-20T12:35:00-08:00",
+          "end": "2026-11-20T12:55:00-08:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "8463c9ea-9684-4a74-81e6-a3cf42ddb3e4",
+          "seq": 2,
+          "kind": "meal",
+          "title": "Monello",
+          "start": "2026-11-20T13:00:00-08:00",
+          "end": "2026-11-20T14:00:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "4686c1c3-8b61-4556-95f7-a24a2b36739c",
+            "name": "Monello",
+            "category": "restaurant",
+            "neighborhood": "little_italy",
+            "lat": 32.7273,
+            "lng": -117.1693,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Monello+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 90,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1055,
+                "attribute": "entrance_step_free",
+                "value": "partial",
+                "detail": "Step-free entrance on some sides only.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1056,
+                "attribute": "parking_accessible",
+                "value": "partial",
+                "detail": "Limited accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1057,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1058,
+                "attribute": "max_slope",
+                "value": "steep",
+                "detail": "Steep sections.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1059,
+                "attribute": "seating",
+                "value": "some",
+                "detail": "Limited seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1060,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1061,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1062,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can pause for an Italian lunch at Monello between your museum visits.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "e4e3b3b6-b7e1-46de-961d-8a8573210889",
+          "seq": 3,
+          "kind": "visit",
+          "title": "San Diego History Center",
+          "start": "2026-11-20T14:05:00-08:00",
+          "end": "2026-11-20T16:20:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "748bd420-f79f-4e9a-9a56-57f5a517d28a",
+            "name": "San Diego History Center",
+            "category": "museum",
+            "neighborhood": "downtown",
+            "lat": 32.7146,
+            "lng": -117.16,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=San+Diego+History+Center+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 135,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 585,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 586,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 587,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 588,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 589,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 590,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 591,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 592,
+                "attribute": "audio_description",
+                "value": "yes",
+                "detail": "Audio description available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 593,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 594,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 595,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can round out your history-focused day at the San Diego History Center, where captions or ASL are available.",
+          "cited_fact_ids": [
+            593
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "64c62a47-0f9d-4ecc-b6ac-93cf5475d19a",
+          "seq": 4,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-11-20T16:20:00-08:00",
+          "end": "2026-11-20T16:40:00-08:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "945d5dc7-583a-47a7-95b9-ac87958ea7cb",
+          "seq": 5,
+          "kind": "meal",
+          "title": "Osteria Panevino",
+          "start": "2026-11-20T17:30:00-08:00",
+          "end": "2026-11-20T18:30:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "f4e09bb9-80eb-4735-a9fb-68ef29d9f43d",
+            "name": "Osteria Panevino",
+            "category": "restaurant",
+            "neighborhood": "gaslamp",
+            "lat": 32.7137,
+            "lng": -117.16,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Osteria+Panevino+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 120,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1106,
+                "attribute": "entrance_step_free",
+                "value": "partial",
+                "detail": "Step-free entrance on some sides only.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1107,
+                "attribute": "restroom_accessible",
+                "value": "partial",
+                "detail": "Accessible restroom with limits.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1108,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1109,
+                "attribute": "max_slope",
+                "value": "moderate",
+                "detail": "Moderate slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1110,
+                "attribute": "seating",
+                "value": "some",
+                "detail": "Limited seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1111,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1112,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1113,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can finish your museum day with an Italian dinner at Osteria Panevino in the Gaslamp neighborhood.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        }
+      ]
+    },
+    {
+      "day_index": 1,
+      "date": "2026-11-21",
+      "theme": "Old Town History",
+      "weather": null,
+      "energy_budget": 9,
+      "energy_used": 5,
+      "items": [
+        {
+          "id": "9330fa4b-e190-4214-aaa4-844d2e744a96",
+          "seq": 0,
+          "kind": "visit",
+          "title": "Whaley House Museum",
+          "start": "2026-11-21T09:41:00-08:00",
+          "end": "2026-11-21T12:26:00-08:00",
+          "travel": {
+            "minutes": 11,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "37c49277-91a3-4357-9ab0-65619e9b1299",
+            "name": "Whaley House Museum",
+            "category": "museum",
+            "neighborhood": "old_town",
+            "lat": 32.751,
+            "lng": -117.1981,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Whaley+House+Museum+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 165,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 563,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 564,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 565,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 566,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 567,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 568,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 569,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 570,
+                "attribute": "audio_description",
+                "value": "yes",
+                "detail": "Audio description available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 571,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 572,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 573,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can explore a historic house museum that matches your interest in local history, with captions or ASL available.",
+          "cited_fact_ids": [
+            571
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "ba0255ca-3482-415d-8df9-d3f10b3e6baf",
+          "seq": 1,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-11-21T12:26:00-08:00",
+          "end": "2026-11-21T12:46:00-08:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "3bb842a1-f473-4e17-884c-c2dff9ed9b8f",
+          "seq": 2,
+          "kind": "meal",
+          "title": "Old Town Mexican Cafe",
+          "start": "2026-11-21T12:51:00-08:00",
+          "end": "2026-11-21T13:51:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "c3c1dca4-e79d-49d1-82d0-62a649cc0924",
+            "name": "Old Town Mexican Cafe",
+            "category": "restaurant",
+            "neighborhood": "old_town",
+            "lat": 32.7543,
+            "lng": -117.197,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Old+Town+Mexican+Cafe+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 105,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1150,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1151,
+                "attribute": "restroom_accessible",
+                "value": "partial",
+                "detail": "Accessible restroom with limits.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1152,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1153,
+                "attribute": "terrain",
+                "value": "uneven",
+                "detail": "Uneven surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1154,
+                "attribute": "max_slope",
+                "value": "moderate",
+                "detail": "Moderate slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1155,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1156,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1157,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1158,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can break up your Old Town museum visits with a Mexican lunch at Old Town Mexican Cafe.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "8fe8196f-7726-4eaa-ba1c-8c6a54f6a8e2",
+          "seq": 3,
+          "kind": "visit",
+          "title": "Junipero Serra Museum",
+          "start": "2026-11-21T13:56:00-08:00",
+          "end": "2026-11-21T16:26:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "4c84aa14-8e44-49f9-9de2-e1de9f7e1472",
+            "name": "Junipero Serra Museum",
+            "category": "museum",
+            "neighborhood": "old_town",
+            "lat": 32.7521,
+            "lng": -117.197,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Junipero+Serra+Museum+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 150,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 574,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 575,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 576,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 577,
+                "attribute": "terrain",
+                "value": "mixed",
+                "detail": "Mixed surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 578,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 579,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 580,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 581,
+                "attribute": "audio_description",
+                "value": "yes",
+                "detail": "Audio description available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 582,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 583,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 584,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can deepen your history focus with another Old Town museum visit, where captions or ASL are available. Tip: Let your curiosity guide your exhibit choices.",
+          "cited_fact_ids": [
+            582
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "88998828-38ee-4289-92ed-2dead7189527",
+          "seq": 4,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-11-21T16:26:00-08:00",
+          "end": "2026-11-21T16:46:00-08:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "f2ee21a4-f7da-4ecb-b3e8-9f2385c37a25",
+          "seq": 5,
+          "kind": "meal",
+          "title": "Filippi's Pizza Grotto",
+          "start": "2026-11-21T17:30:00-08:00",
+          "end": "2026-11-21T18:30:00-08:00",
+          "travel": {
+            "minutes": 9,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "1a6e8f9d-d0af-4191-8e01-7b8c941428ac",
+            "name": "Filippi's Pizza Grotto",
+            "category": "restaurant",
+            "neighborhood": "little_italy",
+            "lat": 32.7218,
+            "lng": -117.1671,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Filippi%27s+Pizza+Grotto+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 75,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1070,
+                "attribute": "entrance_step_free",
+                "value": "partial",
+                "detail": "Step-free entrance on some sides only.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1071,
+                "attribute": "restroom_accessible",
+                "value": "partial",
+                "detail": "Accessible restroom with limits.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1072,
+                "attribute": "parking_accessible",
+                "value": "partial",
+                "detail": "Limited accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1073,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1074,
+                "attribute": "max_slope",
+                "value": "moderate",
+                "detail": "Moderate slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1075,
+                "attribute": "seating",
+                "value": "some",
+                "detail": "Limited seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1076,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1077,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1078,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can end your history-focused day with a pizza dinner in Little Italy.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        }
+      ]
+    },
+    {
+      "day_index": 2,
+      "date": "2026-11-22",
+      "theme": "Art and Natural History",
+      "weather": null,
+      "energy_budget": 9,
+      "energy_used": 5,
+      "items": [
+        {
+          "id": "a7267bde-35c6-4850-9a94-1c061f9807a4",
+          "seq": 0,
+          "kind": "visit",
+          "title": "Timken Museum of Art",
+          "start": "2026-11-22T09:35:00-08:00",
+          "end": "2026-11-22T12:35:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "e9f43d92-7c90-42b4-bf3b-27a7dbd93abf",
+            "name": "Timken Museum of Art",
+            "category": "museum",
+            "neighborhood": "balboa_park",
+            "lat": 32.7319,
+            "lng": -117.1424,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Timken+Museum+of+Art+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 180,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 648,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 649,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 650,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 651,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Mostly smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 652,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 653,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 654,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 655,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 656,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 657,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can make art the focus of your morning at the Timken Museum of Art, where captions or ASL are available. Tip: Choose favorite works rather than covering every gallery.",
+          "cited_fact_ids": [
+            655
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "53418e2b-1c71-47a1-aafa-e86458cc8c46",
+          "seq": 1,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-11-22T12:35:00-08:00",
+          "end": "2026-11-22T12:55:00-08:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "9ff0f0b9-7f1b-40b3-bd64-91778b459374",
+          "seq": 2,
+          "kind": "meal",
+          "title": "Civico 1845",
+          "start": "2026-11-22T13:01:00-08:00",
+          "end": "2026-11-22T14:01:00-08:00",
+          "travel": {
+            "minutes": 6,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "b59ff0c8-1b24-41d8-a905-68cc4ca493a0",
+            "name": "Civico 1845",
+            "category": "restaurant",
+            "neighborhood": "little_italy",
+            "lat": 32.7207,
+            "lng": -117.1682,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Civico+1845+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 120,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1063,
+                "attribute": "entrance_step_free",
+                "value": "partial",
+                "detail": "Step-free entrance on some sides only.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1064,
+                "attribute": "terrain",
+                "value": "mixed",
+                "detail": "Mixed surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1065,
+                "attribute": "max_slope",
+                "value": "steep",
+                "detail": "Steep sections.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1066,
+                "attribute": "seating",
+                "value": "some",
+                "detail": "Limited seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1067,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1068,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1069,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "Civico 1845 is close to your other stops. Step-free entrance on some sides only. Mixed surfaces.",
+          "cited_fact_ids": [
+            1063,
+            1064
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "6b59c945-7b30-4996-bd52-032f26888ae9",
+          "seq": 3,
+          "kind": "visit",
+          "title": "Mingei International Museum",
+          "start": "2026-11-22T14:06:00-08:00",
+          "end": "2026-11-22T15:06:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "b32e8354-b7b6-451f-a13c-88e8491b7b05",
+            "name": "Mingei International Museum",
+            "category": "museum",
+            "neighborhood": "balboa_park",
+            "lat": 32.7308,
+            "lng": -117.1435,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Mingei+International+Museum+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 60,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 638,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 639,
+                "attribute": "restroom_accessible",
+                "value": "yes",
+                "detail": "Accessible restroom.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 640,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 641,
+                "attribute": "terrain",
+                "value": "uneven",
+                "detail": "Uneven surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 642,
+                "attribute": "max_slope",
+                "value": "gentle",
+                "detail": "Gentle slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 643,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 644,
+                "attribute": "quiet_space",
+                "value": "no",
+                "detail": "No quiet space.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 645,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 646,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 647,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can continue your art-focused exploration at Mingei International Museum, with captions or ASL available.",
+          "cited_fact_ids": [
+            645
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "9aa3602b-ad42-4b93-9694-86361b11485b",
+          "seq": 4,
+          "kind": "visit",
+          "title": "San Diego Natural History Museum",
+          "start": "2026-11-22T15:11:00-08:00",
+          "end": "2026-11-22T16:11:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "61a0a87b-908c-4c5f-bbfb-2a5d1b6869a9",
+            "name": "San Diego Natural History Museum",
+            "category": "museum",
+            "neighborhood": "balboa_park",
+            "lat": 32.7363,
+            "lng": -117.1424,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=San+Diego+Natural+History+Museum+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 60,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 541,
+                "attribute": "entrance_step_free",
+                "value": "yes",
+                "detail": "Step-free entrance.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 542,
+                "attribute": "restroom_accessible",
+                "value": "partial",
+                "detail": "Accessible restroom with limits.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 543,
+                "attribute": "parking_accessible",
+                "value": "yes",
+                "detail": "Accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 544,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 545,
+                "attribute": "max_slope",
+                "value": "moderate",
+                "detail": "Moderate slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 546,
+                "attribute": "seating",
+                "value": "plenty",
+                "detail": "Plenty of seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 547,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 548,
+                "attribute": "audio_description",
+                "value": "yes",
+                "detail": "Audio description available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 549,
+                "attribute": "captions_asl",
+                "value": "yes",
+                "detail": "Captions or ASL available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 550,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 551,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can broaden your museum experience with natural history, complementing your interest in animals; captions or ASL are available.",
+          "cited_fact_ids": [
+            549
+          ],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "4603f960-ca3d-420b-ab81-358361dfa533",
+          "seq": 5,
+          "kind": "rest",
+          "title": "Rest break",
+          "start": "2026-11-22T16:11:00-08:00",
+          "end": "2026-11-22T16:31:00-08:00",
+          "travel": null,
+          "status": "planned",
+          "locked": false,
+          "place": null,
+          "rationale": "Rest here. Plenty of seating.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        },
+        {
+          "id": "b8bfdd75-1cb2-4dad-bf5a-c4a2fb1a53fd",
+          "seq": 6,
+          "kind": "meal",
+          "title": "Buona Forchetta South Park",
+          "start": "2026-11-22T17:30:00-08:00",
+          "end": "2026-11-22T18:30:00-08:00",
+          "travel": {
+            "minutes": 5,
+            "mode": "transit",
+            "polyline": null,
+            "estimated": true
+          },
+          "status": "planned",
+          "locked": false,
+          "place": {
+            "id": "b57f6d81-5dbb-421c-9606-71e112f33ba2",
+            "name": "Buona Forchetta South Park",
+            "category": "restaurant",
+            "neighborhood": "south_park",
+            "lat": 32.721,
+            "lng": -117.1312,
+            "address": null,
+            "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Buona+Forchetta+South+Park+San+Diego",
+            "website": null,
+            "accessibility_url": null,
+            "data_tier": "C",
+            "est_visit_min": 60,
+            "indoor": true,
+            "facts": [
+              {
+                "fact_id": 1088,
+                "attribute": "entrance_step_free",
+                "value": "partial",
+                "detail": "Step-free entrance on some sides only.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1089,
+                "attribute": "restroom_accessible",
+                "value": "partial",
+                "detail": "Accessible restroom with limits.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1090,
+                "attribute": "parking_accessible",
+                "value": "partial",
+                "detail": "Limited accessible parking.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1091,
+                "attribute": "terrain",
+                "value": "smooth",
+                "detail": "Smooth surfaces.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1092,
+                "attribute": "max_slope",
+                "value": "moderate",
+                "detail": "Moderate slopes.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1093,
+                "attribute": "seating",
+                "value": "some",
+                "detail": "Limited seating.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1094,
+                "attribute": "quiet_space",
+                "value": "yes",
+                "detail": "Quiet space available.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1095,
+                "attribute": "service_animal_ok",
+                "value": "yes",
+                "detail": "Service animals permitted.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              },
+              {
+                "fact_id": 1096,
+                "attribute": "crowd_level",
+                "value": "medium",
+                "detail": "Medium crowds.",
+                "confidence": "COMMUNITY",
+                "source": "demo_data",
+                "source_url": null,
+                "verified_at": null
+              }
+            ],
+            "photos": [],
+            "rating": null
+          },
+          "rationale": "You can close your trip with an Italian dinner at Buona Forchetta South Park after your art and natural history visits.",
+          "cited_fact_ids": [],
+          "warnings": [],
+          "insights": []
+        }
+      ]
+    }
+  ],
+  "excluded": [],
+  "rental_links": [],
+  "overall_notes": "The itinerary balances history-focused days with an art and natural history finale. No zoo or aquarium appears in the supplied candidates, so none is included. Keep your exhibit choices selective to preserve your preferred moderate pace.",
+  "disclaimer": "Accessibility details come from the cited sources and can change. Call ahead to confirm anything marked \"Not verified\"."
+}
