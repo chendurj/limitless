@@ -28,6 +28,7 @@ NeedType = Literal[
     "deaf_hoh",
     "sensory_cognitive",
     "temporary_injury",
+    "non_speaking",  # no speech or limited speech
     "service_animal",
     "other",
 ]
@@ -98,6 +99,19 @@ SensorySupport = Literal[
     "easy_exits",
 ]
 
+# --- Communication branch (non-speaking or limited speech) -----------------------
+CommMethod = Literal[
+    "sign_language",
+    "writing_or_typing",
+    "aac_device",  # a speech-generating app or device
+    "gestures_pointing",
+    "companion_speaks",
+    "limited_speech",
+    "other",
+]
+PhoneCalls = Literal["yes", "with_relay", "no"]  # with_relay = a relay or captioned-call service
+ContactPreference = Literal["text_sms", "email", "online_chat", "in_person_written"]
+
 # --- Temporary-injury branch -------------------------------------------------------
 NeedsDuration = Literal["this_trip_only", "save_for_future", "unsure"]
 
@@ -116,6 +130,8 @@ Feature = Literal[
     "audio_description",
     "braille_tactile",
     "service_animal_ok",
+    "online_booking",
+    "text_contact",
 ]
 
 # --- Trip and preference questions -----------------------------------------------------
@@ -219,6 +235,12 @@ class SensoryCognitive(Strict):
     supports: list[SensorySupport]
 
 
+class Communication(Strict):
+    methods: list[CommMethod]
+    phone_calls: PhoneCalls | None
+    contact_preferences: list[ContactPreference]
+
+
 class TemporaryInjury(Strict):
     expected_duration: NeedsDuration | None  # app treats None as this_trip_only
 
@@ -265,6 +287,7 @@ class AccessibilityDNA(Strict):
     vision: Vision
     hearing: Hearing
     sensory: SensoryCognitive
+    communication: Communication
     temporary: TemporaryInjury
     requirements: Requirements
     party: Party
@@ -367,6 +390,17 @@ class AccessibilityDNA(Strict):
     @property
     def has_guide_dog(self) -> bool:
         return "guide_dog" in self.vision.nav_aids or "service_animal" in self.needs
+
+    @property
+    def is_non_speaking(self) -> bool:
+        return "non_speaking" in self.needs
+
+    @property
+    def no_phone_calls(self) -> bool:
+        """The traveler cannot use a voice phone call: give text, email or online options."""
+        if self.communication.phone_calls is not None:
+            return self.communication.phone_calls == "no"
+        return self.is_non_speaking or "deaf_hoh" in self.needs
 
     @property
     def trip_only(self) -> bool:

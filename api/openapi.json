@@ -703,6 +703,7 @@
                 "deaf_hoh",
                 "sensory_cognitive",
                 "temporary_injury",
+                "non_speaking",
                 "service_animal",
                 "other"
               ]
@@ -721,6 +722,9 @@
           },
           "sensory": {
             "$ref": "#/components/schemas/SensoryCognitive"
+          },
+          "communication": {
+            "$ref": "#/components/schemas/Communication"
           },
           "temporary": {
             "$ref": "#/components/schemas/TemporaryInjury"
@@ -762,6 +766,7 @@
           "vision",
           "hearing",
           "sensory",
+          "communication",
           "temporary",
           "requirements",
           "party",
@@ -832,6 +837,63 @@
           "cited_fact_ids"
         ],
         "title": "ChangeOut"
+      },
+      "Communication": {
+        "properties": {
+          "methods": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "sign_language",
+                "writing_or_typing",
+                "aac_device",
+                "gestures_pointing",
+                "companion_speaks",
+                "limited_speech",
+                "other"
+              ]
+            },
+            "type": "array",
+            "title": "Methods"
+          },
+          "phone_calls": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "with_relay",
+                  "no"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Calls"
+          },
+          "contact_preferences": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "text_sms",
+                "email",
+                "online_chat",
+                "in_person_written"
+              ]
+            },
+            "type": "array",
+            "title": "Contact Preferences"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "methods",
+          "phone_calls",
+          "contact_preferences"
+        ],
+        "title": "Communication"
       },
       "CreateTripRequest": {
         "properties": {
@@ -2455,7 +2517,9 @@
                 "captions_or_asl",
                 "audio_description",
                 "braille_tactile",
-                "service_animal_ok"
+                "service_animal_ok",
+                "online_booking",
+                "text_contact"
               ]
             },
             "type": "array",
@@ -2477,7 +2541,9 @@
                 "captions_or_asl",
                 "audio_description",
                 "braille_tactile",
-                "service_animal_ok"
+                "service_animal_ok",
+                "online_booking",
+                "text_contact"
               ]
             },
             "type": "array",
