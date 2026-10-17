@@ -38,21 +38,31 @@ def client() -> OpenAI:
 
 
 def parse[T: BaseModel](
-    model: str, system: str, user: str, schema: type[T], effort: str = "low", attempts: int = 2
+    model: str,
+    system: str,
+    user: str,
+    schema: type[T],
+    effort: str = "low",
+    attempts: int = 2,
+    timeout: float = 25,
 ) -> T:
     """Call the model with structured output. Try `attempts` times, then raise LLMUnavailable."""
     last_error: Exception | None = None
     for attempt in range(1, attempts + 1):
         start = time.monotonic()
         try:
-            response = client().responses.parse(
-                model=model,
-                input=[
-                    {"role": "system", "content": f"{system}\n\n{INJECTION_GUARD}"},
-                    {"role": "user", "content": user},
-                ],
-                text_format=schema,
-                reasoning={"effort": effort},
+            response = (
+                client()
+                .with_options(timeout=timeout)
+                .responses.parse(
+                    model=model,
+                    input=[
+                        {"role": "system", "content": f"{system}\n\n{INJECTION_GUARD}"},
+                        {"role": "user", "content": user},
+                    ],
+                    text_format=schema,
+                    reasoning={"effort": effort},
+                )
             )
             result = response.output_parsed
             if result is None:
