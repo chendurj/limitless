@@ -389,3 +389,15 @@ def test_two_personas_differ_on_the_same_places(ankle, deaf_non_speaking):
     tour = [fact("captions_asl", "no", detail="Audio-only guided tour."), fact("seating", "plenty")]
     assert run(MUSEUM, tour, deaf_non_speaking).excluded  # captions are a must-have
     assert not run(MUSEUM, tour, ankle).excluded
+
+
+def test_seating_levels_satisfy_a_seating_must_have(make_dna):
+    dna = make_dna(
+        requirements__must_have=["seating"],
+        mobility__equipment=["cane"],
+        needs=["limited_mobility"],
+    )
+    plenty = run(CAFE, [fact("seating", "plenty")], dna)
+    assert plenty.unknown_critical == [] and plenty.access_fit == 1
+    assert run(CAFE, [fact("seating", "none")], dna).excluded
+    assert not run(CAFE, [fact("seating", "some")], dna).excluded

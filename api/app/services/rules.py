@@ -15,7 +15,7 @@ Severity:
 """
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app.models.dna import AccessibilityDNA
 from app.services.facts import Fact
@@ -31,6 +31,13 @@ class Place:
     interest_tags: tuple[str, ...] = ()
     indoor: bool | None = None
     rating: float | None = None  # Google rating, 1-5
+    neighborhood: str = ""
+    lat: float = 0.0
+    lng: float = 0.0
+    exertion_level: int = 2  # 1-5
+    meal_slot: str | None = None  # breakfast | lunch | dinner | snack
+    # Display fields (address, website, accessibility_url, data_tier, google_place_id).
+    meta: dict = field(default_factory=dict, compare=False, hash=False)
 
 
 @dataclass(frozen=True)
@@ -210,7 +217,7 @@ def terrain_check(fact: Fact, ctx: Ctx) -> Effect | None:
         for item in equipment:
             if item.value == "yes" and item.is_strong:
                 return Effect("BONUS", 0.05, f"Sand, but {cite(item)[0].lower()}{cite(item)[1:]}")
-        if dna.uses_wheelchair:
+        if dna.uses_wheelchair or {"crutches", "walker"} & set(dna.mobility.equipment):
             return Effect("HARD", 0, reason)
         if "sand" in dna.mobility.surfaces_to_avoid or "sand" in dna.preferences.avoid:
             return Effect("SOFT", 0.3, reason)
