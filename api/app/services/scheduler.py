@@ -46,7 +46,18 @@ ADJACENT = {
     "la_jolla": {"mission_bay"},
     "point_loma": {"little_italy", "old_town", "mission_bay"},
     "coronado": {"downtown"},
+    "east_village": {"downtown", "gaslamp", "balboa_park"},
+    "south_park": {"balboa_park"},
+    "mission_beach": {"mission_bay", "pacific_beach"},
+    "pacific_beach": {"mission_bay", "mission_beach", "la_jolla"},
+    "convoy": {"clairemont", "university_city"},
+    "clairemont": {"convoy", "university_city", "mission_bay"},
+    "university_city": {"la_jolla", "convoy", "clairemont"},
 }
+
+for _hood, _near in list(ADJACENT.items()):  # make the map symmetric
+    for _other in _near:
+        ADJACENT.setdefault(_other, set()).add(_hood)
 
 LUNCH = (time(11, 45), time(13, 30))
 DINNER = (time(17, 30), time(19, 30))
