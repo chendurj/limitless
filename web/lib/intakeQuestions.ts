@@ -2,23 +2,19 @@
  * intakeQuestions.ts — the single source of truth for the intake wizard.
  *
  * Built from prehack/demo-location-catalog-and-intake-tree.md.
+ * Keys and option values match api/app/models/dna.py (confirmed in Chendur's
+ * PR #10 review). The communication.* fields land with the backend
+ * communication PR; regenerate web/types/api.d.ts after it merges.
  *
  * MVP scope: orthopedic / mobility and Deaf + non-speaking travelers.
- * The blind / low-vision and sensory / cognitive branches are written but
- * parked in `deferredScreens` at the bottom — re-add them to `intakeScreens`
- * (and their need options to NEEDS) when we scale.
+ * The blind / low-vision and sensory / cognitive branches live in
+ * deferredScreens at the bottom — add them back to intakeScreens (and their
+ * need options to NEEDS) when we scale.
  *
  * Shape: a short spine every traveler answers, plus branch questions that only
- * appear when an earlier answer makes them relevant (see `showIf`). A wheelchair
- * user never sees the communication questions, and vice versa.
+ * appear when an earlier answer makes them relevant (see showIf).
  *
- * Two review contracts before this ships:
- *  - TODO(wording @Sashwath): all `prompt` / `label` / `help` text is a first
- *    draft. Keep it warm, plain, and never medical — ask about function, not
- *    diagnosis.
- *  - TODO(mapping @Chendur): each option `value` is the canonical token we store
- *    / send. The buckets (walk/stand/slope/rest) map to the numeric DNA fields
- *    in api/app/models/dna.py. A few new fields are flagged inline below.
+ * TODO(wording @Sashwath): the prompt / label / help text is a first draft.
  */
 
 // ----------------------------------------------------------------------------
@@ -41,8 +37,8 @@ export type IntakeOption = {
 
 /**
  * A question is shown only if every condition passes (logical AND).
- * `includesAny` is for multi-select answers: it passes when the chosen values
- * overlap the listed ones. `equals` is for single-select answers.
+ * includesAny is for multi-select answers: it passes when the chosen values
+ * overlap the listed ones. equals is for single-select answers.
  */
 export type ShowCondition = {
   questionId: string;
@@ -78,22 +74,20 @@ export type IntakeScreen = {
 // Shared option sets
 // ----------------------------------------------------------------------------
 
-// Core need set for the MVP. Maps to mobility.needs, except service_animal and
-// none, which the backend handles specially.
-// Deferred need options (re-add when scaling): blind_low_vision, neurodivergent.
+// Core need set for the MVP. Maps to the DNA `needs` list, except service_animal.
+// Deferred need options (re-add when scaling): blind_low_vision, sensory_cognitive.
+// non_speaking arrives with the backend communication PR.
 const NEEDS: IntakeOption[] = [
-  { value: "wheelchair", label: "Wheelchair or mobility device" },
+  { value: "mobility_device", label: "Wheelchair or mobility device" },
   { value: "limited_mobility", label: "Limited walking or standing" },
   { value: "temporary_injury", label: "Temporary injury" },
   { value: "deaf_hoh", label: "Deaf or hard of hearing" },
   { value: "non_speaking", label: "Non-speaking" },
   { value: "service_animal", label: "I travel with a service animal" },
   { value: "other", label: "Something else" },
-  { value: "none", label: "No specific accessibility need" },
 ];
 
-// Accessibility feature list, reused for must-haves. Matches the Feature enum.
-// audio_description and braille_tactile are deferred with the blind branch.
+// Accessibility feature list, reused for must-haves. Matches the Requirements enum.
 const FEATURES: IntakeOption[] = [
   { value: "step_free_entrance", label: "Completely step-free entrance" },
   { value: "accessible_restroom", label: "Accessible restroom" },
@@ -101,15 +95,20 @@ const FEATURES: IntakeOption[] = [
   { value: "dropoff_zone", label: "Drop-off zone" },
   { value: "elevator", label: "Elevator" },
   { value: "seating", label: "Frequent seating" },
-  { value: "wheelchair_rental", label: "Wheelchair or scooter rental" },
-  { value: "beach_wheelchair", label: "Beach wheelchair or beach mat" },
-  { value: "captions_asl", label: "Captions or ASL" },
+  { value: "mobility_rental", label: "Wheelchair or scooter rental" },
+  { value: "beach_wheelchair_or_mat", label: "Beach wheelchair or beach mat" },
+  { value: "captions_or_asl", label: "Captions or ASL" },
   { value: "service_animal_ok", label: "Service animals permitted" },
 ];
 
 // Shows the mobility branch for anyone who moves with a device or limited walking.
 const MOBILITY: ShowCondition[] = [
-  { questionId: "needs", includesAny: ["wheelchair", "limited_mobility", "temporary_injury"] },
+  { questionId: "needs", includesAny: ["mobility_device", "limited_mobility", "temporary_injury"] },
+];
+
+// Shows the hearing / communication branch.
+const DEAF_OR_NONSPEAKING: ShowCondition[] = [
+  { questionId: "needs", includesAny: ["deaf_hoh", "non_speaking"] },
 ];
 
 // ----------------------------------------------------------------------------
@@ -128,7 +127,7 @@ export const intakeScreens: IntakeScreen[] = [
         prompt: "What should we plan around?",
         inputType: "multi",
         options: NEEDS,
-        targetField: "mobility.needs",
+        targetField: "needs",
         allowVoice: true,
       },
     ],
@@ -158,19 +157,19 @@ export const intakeScreens: IntakeScreen[] = [
       },
       {
         id: "walking",
-        // Framed in real-world terms; the bucket maps to max_continuous_walk_m.
+        // Framed in real-world terms; the bucket maps to mobility.walking.
         prompt: "Which best describes getting between stops?",
         inputType: "single",
         options: [
-          { value: "transfer_only", label: "I stay in my device and don't walk" },
-          { value: "steps_1_5", label: "I can take 1–5 steps for transfers" },
-          { value: "walk_lt_5min", label: "I can walk under 5 minutes" },
-          { value: "walk_5_15min", label: "I can walk 5–15 minutes" },
-          { value: "walk_15_30min", label: "I can walk 15–30 minutes" },
-          { value: "walk_30min_plus", label: "Longer distances are comfortable" },
+          { value: "cannot_walk", label: "I stay in my device and don't walk" },
+          { value: "transfer_steps_only", label: "I can take 1–5 steps for transfers" },
+          { value: "under_5_min", label: "I can walk under 5 minutes" },
+          { value: "5_to_15_min", label: "I can walk 5–15 minutes" },
+          { value: "15_to_30_min", label: "I can walk 15–30 minutes" },
+          { value: "long_ok", label: "Longer distances are comfortable" },
           { value: "varies", label: "It varies day to day" },
         ],
-        targetField: "mobility.max_continuous_walk_m",
+        targetField: "mobility.walking",
         showIf: MOBILITY,
       },
     ],
@@ -187,13 +186,13 @@ export const intakeScreens: IntakeScreen[] = [
         inputType: "single",
         options: [
           { value: "cannot_stand", label: "I can't stand" },
-          { value: "under_2min", label: "Under 2 minutes" },
-          { value: "2_5min", label: "2–5 minutes" },
-          { value: "5_15min", label: "5–15 minutes" },
-          { value: "over_15min", label: "More than 15 minutes" },
+          { value: "under_2_min", label: "Under 2 minutes" },
+          { value: "2_to_5_min", label: "2–5 minutes" },
+          { value: "5_to_15_min", label: "5–15 minutes" },
+          { value: "over_15_min", label: "More than 15 minutes" },
           { value: "varies", label: "It varies" },
         ],
-        targetField: "mobility.max_standing_min",
+        targetField: "mobility.standing",
         showIf: MOBILITY,
       },
       {
@@ -201,13 +200,13 @@ export const intakeScreens: IntakeScreen[] = [
         prompt: "How often should we plan a seated rest?",
         inputType: "single",
         options: [
-          { value: "30", label: "Every 30 minutes" },
-          { value: "45", label: "Every 45 minutes" },
-          { value: "60", label: "Every hour" },
-          { value: "90", label: "Every 90 minutes" },
+          { value: "30_min", label: "Every 30 minutes" },
+          { value: "45_min", label: "Every 45 minutes" },
+          { value: "60_min", label: "Every hour" },
+          { value: "90_min", label: "Every 90 minutes" },
           { value: "on_request", label: "Only when I ask" },
         ],
-        targetField: "mobility.rest_every_min",
+        targetField: "mobility.rest_interval",
         showIf: MOBILITY,
       },
     ],
@@ -226,7 +225,7 @@ export const intakeScreens: IntakeScreen[] = [
           { value: "flat_only", label: "Flat routes only" },
           { value: "gentle", label: "Gentle slopes are fine" },
           { value: "moderate_with_help", label: "Moderate slopes if someone helps" },
-          { value: "moderate_independent", label: "Moderate slopes on my own" },
+          { value: "moderate", label: "Moderate slopes on my own" },
           { value: "steep_ok", label: "Steep slopes are okay" },
           { value: "unsure", label: "I'm not sure" },
         ],
@@ -250,14 +249,14 @@ export const intakeScreens: IntakeScreen[] = [
         prompt: "Any surfaces we should avoid?",
         inputType: "multi",
         options: [
-          { value: "uneven", label: "Uneven pavement" },
+          { value: "uneven_pavement", label: "Uneven pavement" },
           { value: "cobblestone", label: "Cobblestone" },
           { value: "gravel_dirt", label: "Gravel or dirt" },
           { value: "grass", label: "Grass" },
           { value: "sand", label: "Sand" },
-          { value: "none", label: "None of these" },
         ],
-        targetField: "mobility.uneven_surface_tolerance",
+        targetField: "mobility.surfaces_to_avoid",
+        optional: true,
         allowOther: true,
         showIf: MOBILITY,
       },
@@ -275,13 +274,13 @@ export const intakeScreens: IntakeScreen[] = [
         help: "For example, pushing on a slope or helping with a transfer.",
         inputType: "single",
         options: [
-          { value: "yes", label: "Yes, including pushing or transfers" },
+          { value: "push_and_transfer", label: "Yes, including pushing or transfers" },
           { value: "light_only", label: "Yes, but only light help" },
           { value: "no", label: "No" },
           { value: "sometimes", label: "Sometimes" },
           { value: "unsure", label: "I'm not sure" },
         ],
-        targetField: "party.companion_can_push",
+        targetField: "party.companion_assist",
         showIf: MOBILITY,
       },
       {
@@ -295,7 +294,7 @@ export const intakeScreens: IntakeScreen[] = [
           { value: "caregiver", label: "With a caregiver" },
           { value: "group", label: "A group" },
         ],
-        targetField: "party",
+        targetField: "party.travel_with",
       },
       {
         id: "party_size",
@@ -337,12 +336,12 @@ export const intakeScreens: IntakeScreen[] = [
         inputType: "multi",
         options: [
           { value: "captions", label: "Captions" },
-          { value: "asl", label: "ASL interpretation" },
+          { value: "asl_interpretation", label: "ASL interpretation" },
           { value: "assistive_listening", label: "Assistive listening device" },
-          { value: "transcript", label: "Written tour transcript" },
-          { value: "visual_alerts", label: "Visual emergency information" },
+          { value: "written_transcript", label: "Written tour transcript" },
+          { value: "visual_emergency_info", label: "Visual emergency information" },
         ],
-        targetField: "sensory",
+        targetField: "hearing.supports",
         allowOther: true,
         showIf: [{ questionId: "needs", includesAny: ["deaf_hoh"] }],
       },
@@ -352,42 +351,54 @@ export const intakeScreens: IntakeScreen[] = [
         help: "Some accessible services need a call or email in advance.",
         inputType: "single",
         options: [
-          { value: "comfortable", label: "I'm comfortable booking ahead" },
-          { value: "need_script", label: "Only if you give me the contact and a script" },
-          { value: "prefer_walkup", label: "No — prefer places I can just show up to" },
+          { value: "yes", label: "I'm comfortable booking ahead" },
+          { value: "with_contact_and_script", label: "Only if you give me the contact and a script" },
+          { value: "no", label: "No — prefer places I can just show up to" },
         ],
-        // TODO(mapping @Chendur): new preference field for the planner / verify-kit.
-        targetField: "preferences.advance_booking_ok",
-        showIf: [{ questionId: "needs", includesAny: ["deaf_hoh", "non_speaking"] }],
+        targetField: "hearing.advance_booking",
+        showIf: DEAF_OR_NONSPEAKING,
       },
       // Non-speaking
       {
         id: "communication_mode",
         prompt: "How do you prefer to communicate at a venue?",
-        inputType: "single",
+        inputType: "multi",
         options: [
-          { value: "written_notes", label: "I write notes or type" },
-          { value: "text_to_speech", label: "I use a text-to-speech app" },
-          { value: "someone_speaks", label: "Someone with me speaks for me" },
-          { value: "no_preference", label: "No preference" },
+          { value: "writing_or_typing", label: "I write or type" },
+          { value: "aac_device", label: "I use a speech app (AAC)" },
+          { value: "companion_speaks", label: "Someone with me speaks for me" },
+          { value: "sign_language", label: "Sign language" },
+          { value: "gestures_pointing", label: "Gestures or pointing" },
+          { value: "limited_speech", label: "I can speak a little" },
         ],
-        // TODO(mapping @Chendur): new field sensory.communication_mode.
-        targetField: "sensory.communication_mode",
+        targetField: "communication.methods",
         allowOther: true,
         showIf: [{ questionId: "needs", includesAny: ["non_speaking"] }],
       },
       {
-        id: "contact_channel",
-        prompt: "For booking and questions, what should we prefer?",
+        id: "phone_calls",
+        prompt: "Can you make voice phone calls?",
         inputType: "single",
         options: [
-          { value: "prefer_text_email", label: "Places that take text or email" },
-          { value: "phone_ok", label: "Phone calls are fine" },
-          { value: "no_preference", label: "No preference" },
+          { value: "yes", label: "Yes" },
+          { value: "with_relay", label: "Yes, with a relay service" },
+          { value: "no", label: "No" },
         ],
-        // TODO(mapping @Chendur): new field sensory.contact_channel (avoid phone-only).
-        targetField: "sensory.contact_channel",
-        showIf: [{ questionId: "needs", includesAny: ["non_speaking"] }],
+        targetField: "communication.phone_calls",
+        showIf: DEAF_OR_NONSPEAKING,
+      },
+      {
+        id: "contact_preferences",
+        prompt: "How should venues contact you?",
+        inputType: "multi",
+        options: [
+          { value: "text_sms", label: "Text / SMS" },
+          { value: "email", label: "Email" },
+          { value: "online_chat", label: "Online chat" },
+          { value: "in_person_written", label: "In person, in writing" },
+        ],
+        targetField: "communication.contact_preferences",
+        showIf: DEAF_OR_NONSPEAKING,
       },
     ],
   },
@@ -404,7 +415,7 @@ export const intakeScreens: IntakeScreen[] = [
         options: [
           { value: "beaches", label: "Beaches" },
           { value: "zoos_aquariums", label: "Zoos and aquariums" },
-          { value: "museums", label: "Museums and art" },
+          { value: "museums_art", label: "Museums and art" },
           { value: "history", label: "History" },
           { value: "nature", label: "Nature" },
           { value: "photography", label: "Photography" },
@@ -429,7 +440,7 @@ export const intakeScreens: IntakeScreen[] = [
           { value: "seafood", label: "Seafood" },
           { value: "vegetarian", label: "Vegetarian" },
           { value: "vegan", label: "Vegan" },
-          { value: "desserts", label: "Desserts and cafés" },
+          { value: "desserts_cafes", label: "Desserts and cafés" },
         ],
         targetField: "preferences.cuisines",
         optional: true,
@@ -451,17 +462,16 @@ export const intakeScreens: IntakeScreen[] = [
         options: [
           { value: "crowds", label: "Crowds" },
           { value: "hills", label: "Hills" },
-          { value: "long_walks", label: "Long distances" },
-          { value: "heat", label: "Heat or direct sun" },
+          { value: "long_distances", label: "Long distances" },
+          { value: "heat_sun", label: "Heat or direct sun" },
           { value: "standing", label: "Standing" },
           { value: "noise", label: "Noise" },
           { value: "sand", label: "Sand" },
           { value: "uneven_surfaces", label: "Uneven surfaces" },
           { value: "bright_lights", label: "Bright lights" },
-          // TODO(mapping @Chendur): "tight schedules" has no avoid enum — maps to a relaxed pace.
           { value: "tight_schedules", label: "Tight schedules" },
         ],
-        targetField: "avoid",
+        targetField: "preferences.avoid",
         optional: true,
       },
     ],
@@ -499,13 +509,13 @@ export const intakeScreens: IntakeScreen[] = [
         prompt: "How will you get around town?",
         inputType: "single",
         options: [
-          { value: "car", label: "Personal car" },
+          { value: "personal_car", label: "Personal car" },
           { value: "accessible_vehicle", label: "Accessible vehicle" },
           { value: "rideshare", label: "Rideshare" },
           { value: "transit", label: "Public transit" },
           { value: "walk_roll", label: "Walking or rolling" },
         ],
-        targetField: "trip.needs_car",
+        targetField: "trip.transport",
       },
       {
         id: "pace",
@@ -526,8 +536,8 @@ export const intakeScreens: IntakeScreen[] = [
 // Deferred branches — NOT shown in the MVP.
 //
 // To enable later: add their need options back to NEEDS
-// (blind_low_vision, neurodivergent), re-add audio_description and
-// braille_tactile to FEATURES, and splice these screens into `intakeScreens`.
+// (blind_low_vision, sensory_cognitive), re-add audio_description and
+// braille_tactile to FEATURES, and splice these screens into intakeScreens.
 // ----------------------------------------------------------------------------
 
 export const deferredScreens: IntakeScreen[] = [
@@ -540,12 +550,12 @@ export const deferredScreens: IntakeScreen[] = [
         prompt: "How would you describe your vision for planning?",
         inputType: "single",
         options: [
-          { value: "none", label: "Blind" },
+          { value: "blind", label: "Blind" },
           { value: "light_perception", label: "Light perception" },
           { value: "low_vision", label: "Low vision" },
-          { value: "prefer_not_say", label: "Prefer not to say — plan using my supports" },
+          { value: "prefer_not_to_say", label: "Prefer not to say — plan using my supports" },
         ],
-        targetField: "sensory.vision_level",
+        targetField: "vision.level",
         showIf: [{ questionId: "needs", includesAny: ["blind_low_vision"] }],
       },
       {
@@ -553,13 +563,13 @@ export const deferredScreens: IntakeScreen[] = [
         prompt: "What navigation support do you use?",
         inputType: "multi",
         options: [
-          { value: "cane", label: "White cane" },
+          { value: "white_cane", label: "White cane" },
           { value: "guide_dog", label: "Guide dog" },
           { value: "sighted_guide", label: "Sighted guide or companion" },
-          { value: "phone_nav", label: "Phone navigation" },
+          { value: "phone_navigation", label: "Phone navigation" },
           { value: "none", label: "None" },
         ],
-        targetField: "sensory.nav_aid",
+        targetField: "vision.nav_aids",
         allowOther: true,
         showIf: [{ questionId: "needs", includesAny: ["blind_low_vision"] }],
       },
@@ -573,7 +583,7 @@ export const deferredScreens: IntakeScreen[] = [
           { value: "no", label: "No" },
           { value: "sometimes", label: "Sometimes" },
         ],
-        targetField: "party.travels_solo",
+        targetField: "vision.without_sighted_companion",
         showIf: [{ questionId: "needs", includesAny: ["blind_low_vision"] }],
       },
     ],
@@ -592,11 +602,11 @@ export const deferredScreens: IntakeScreen[] = [
           { value: "bright_lights", label: "Bright lights" },
           { value: "strong_smells", label: "Strong smells" },
           { value: "long_waits", label: "Long or unpredictable waits" },
-          { value: "complex_nav", label: "Complex navigation" },
+          { value: "complex_navigation", label: "Complex navigation" },
         ],
-        targetField: "sensory.sensitivities",
+        targetField: "sensory.reduce",
         allowOther: true,
-        showIf: [{ questionId: "needs", includesAny: ["neurodivergent"] }],
+        showIf: [{ questionId: "needs", includesAny: ["sensory_cognitive"] }],
       },
     ],
   },
