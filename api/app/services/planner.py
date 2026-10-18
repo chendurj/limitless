@@ -184,6 +184,7 @@ def _draft_days(
         day = DayDraft(i, start + timedelta(days=i), hoods, forecasts[i] if i < len(forecasts) else None,
                        day_visits, best("meal", SHORTLIST_MEALS), best("snack", SHORTLIST_SNACKS, local_only=True))  # fmt: skip
         used.update(c.place.id for c in day_visits[: limits.max_visits])
+        used.update(c.place.id for c in day.meals[:2])  # lunch and dinner: keep them for this day
         days.append(day)
     return days
 
