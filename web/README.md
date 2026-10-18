@@ -25,6 +25,17 @@ The assistant helps with travel preparation and app questions. It has no databas
 or live venue access and directs personalized place selection to `/intake`.
 It cannot book travel or modify itineraries.
 
+The homepage microphone supports speech-to-text input in browsers that provide
+the Web Speech recognition API. Choose the microphone, allow microphone access,
+speak, then choose Stop microphone. Review or edit the draft and choose Send.
+Dictation appends to any existing draft; it never sends automatically. The assistant
+replies in the text chat and retains the same conversation context. No audio reply
+is generated. Dictation uses the browser's recognition service, which may require
+an internet connection; it does not call an OpenAI transcription endpoint. If
+recognition is unavailable or permission is denied, typed chat remains available.
+Microphone access ends when dictation is cancelled, the chat is minimized or reset,
+or the homepage is left.
+
 Run `npm run test:chat`, `npm run lint`, and `npm run build` to verify changes.
 For around-the-clock access, deploy the web app on an always-available Next.js
 host and configure the same server environment variables there. Availability

@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-// Voice input and read-aloud with the browser's Web Speech API. No keys, no server.
-// Speech recognition is in Chrome, Edge and Safari. Where it is missing, `supported` is false
-// and the page hides the microphone button. The traveler can always type instead.
+// Voice input and read-aloud with the browser's Web Speech API. No app API keys
+// or app-server audio uploads. The browser may use a remote recognition service.
+// Browser support varies. Where recognition is missing, `supported` is false.
+// The traveler can always type instead.
 
 type Recognition = {
   lang: string;
@@ -15,6 +16,7 @@ type Recognition = {
   onend: (() => void) | null;
   start: () => void;
   stop: () => void;
+  abort: () => void;
 };
 type RecognitionCtor = new () => Recognition;
 
@@ -35,10 +37,11 @@ function useIsSupported(check: () => boolean): boolean {
 }
 
 /**
- * Speech to text. start() listens until the traveler stops talking or calls stop().
+ * Speech to text. With continuous=true, pauses do not intentionally end dictation;
+ * the traveler calls stop() to finish (the browser may still end the session).
  * onText gets the full transcript so far, so the text box always shows what was heard.
  */
-export function useSpeechInput(onText: (text: string) => void) {
+export function useSpeechInput(onText: (text: string) => void, continuous = false) {
   const supported = useIsSupported(() => recognitionCtor() !== null);
   const [listening, setListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,37 +52,74 @@ export function useSpeechInput(onText: (text: string) => void) {
     latest.current = onText;
   }, [onText]);
 
-  useEffect(() => () => recognition.current?.stop(), []);
+  useEffect(() => () => {
+    const r = recognition.current;
+    if (!r) return;
+    r.onresult = r.onerror = r.onend = null;
+    r.abort();
+  }, []);
+
+  // Cancel without accepting late results, e.g. when clearing or sending a draft.
+  const cancel = useCallback(() => {
+    const r = recognition.current;
+    recognition.current = null;
+    if (r) {
+      r.onresult = r.onerror = r.onend = null;
+      r.abort();
+    }
+    setListening(false);
+    setError(null);
+  }, []);
 
   const start = useCallback(() => {
     const Ctor = recognitionCtor();
-    if (!Ctor) return;
+    if (!Ctor || recognition.current) return;
     const r = new Ctor();
     r.lang = "en-US";
     r.interimResults = true;
-    r.continuous = false;
+    r.continuous = continuous;
     r.onresult = (event) => {
+      if (recognition.current !== r) return;
       const text = Array.from(event.results)
         .map((result) => result[0]?.transcript ?? "")
-        .join("");
+        .join(" ");
       latest.current(text);
     };
-    r.onerror = (event) =>
-      setError(
-        event.error === "not-allowed"
-          ? "Microphone access is off. You can type instead."
-          : "We could not hear that. You can try again or type instead.",
-      );
-    r.onend = () => setListening(false);
+    r.onerror = (event) => {
+      if (recognition.current !== r) return;
+      const errors: Record<string, string> = {
+        "not-allowed": "Microphone access is off. Allow it in your browser, or type instead.",
+        "service-not-allowed": "Voice input is not allowed in this browser. You can type instead.",
+        "audio-capture": "We couldn't access a microphone. Check that one is connected, or type instead.",
+        "no-speech": "We didn't hear any speech. Try again when you're ready, or type instead.",
+        network: "Voice input couldn't connect. Check your connection, or type instead.",
+      };
+      setError(errors[event.error] ?? "We could not hear that. You can try again or type instead.");
+      setListening(false);
+      recognition.current = null;
+      r.onresult = r.onerror = r.onend = null;
+      r.abort();
+    };
+    r.onend = () => {
+      if (recognition.current !== r) return;
+      recognition.current = null;
+      setListening(false);
+    };
     recognition.current = r;
     setError(null);
     setListening(true);
-    r.start();
-  }, []);
+    try { r.start(); }
+    catch {
+      r.onresult = r.onerror = r.onend = null;
+      recognition.current = null;
+      setListening(false);
+      setError("Voice input couldn't start. Please try again, or type instead.");
+    }
+  }, [continuous]);
 
   const stop = useCallback(() => recognition.current?.stop(), []);
 
-  return { supported, listening, error, start, stop };
+  return { supported, listening, error, start, stop, cancel };
 }
 
 export function canSpeak(): boolean {
