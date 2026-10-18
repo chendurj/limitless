@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { validateTripDates } from "@/lib/trip-dates";
 import {
   intakeScreens,
   previousTripNotes,
@@ -46,7 +47,7 @@ function readDraft(storageKey: string): Draft {
     for (const question of intakeScreens.flatMap(screen => screen.questions)) {
       const value = saved.answers?.[question.id];
       const allowed = new Set(question.options?.map(option => option.value));
-      if (["text", "date", "number"].includes(question.inputType) && typeof value === "string") draft.answers[question.id] = value;
+      if (["text", "date", "number"].includes(question.inputType) && typeof value === "string") draft.answers[question.id] = question.inputType === "date" ? value.trim() : value;
       else if (question.inputType === "single" && typeof value === "string" && allowed.has(value)) draft.answers[question.id] = value;
       else if (question.inputType === "multi" && Array.isArray(value)) draft.answers[question.id] = [...new Set(value.filter((entry: unknown): entry is string => typeof entry === "string" && allowed.has(entry)))];
       else if (question.inputType === "must-nice" && value && Array.isArray(value.must) && Array.isArray(value.nice)) {
@@ -56,6 +57,7 @@ function readDraft(storageKey: string): Draft {
       }
       if (question.allowOther && typeof saved.others?.[question.id] === "string") draft.others[question.id] = saved.others[question.id];
     }
+    if (typeof saved.answers?.end_date === "string") draft.answers.end_date = saved.answers.end_date.trim();
     if (saved.version !== DRAFT_VERSION) {
       const notes = previousTripNotes(saved.answers ?? {});
       if (notes) draft.others.requirements = [draft.others.requirements, notes].filter(Boolean).join(" ");
@@ -83,6 +85,7 @@ function IntakeWizardForm({ storageKey }: { storageKey: string }) {
   const [index, setIndex] = useState(draft.index);
   const [done, setDone] = useState(false);
   const [invalidIds, setInvalidIds] = useState<string[]>([]);
+  const [dateError, setDateError] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     try {
@@ -111,7 +114,8 @@ function IntakeWizardForm({ storageKey }: { storageKey: string }) {
 
   const setAnswer = (id: string, value: FieldValue) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
-    setInvalidIds((prev) => prev.filter((x) => x !== id));
+    setInvalidIds((prev) => prev.filter((x) => x !== id && !(id === "end_date" && x === "start_date")));
+    if (id === "start_date" || id === "end_date") setDateError("");
   };
   const setOther = (id: string, text: string) =>
     setOthers((prev) => ({ ...prev, [id]: text }));
@@ -123,7 +127,11 @@ function IntakeWizardForm({ storageKey }: { storageKey: string }) {
     );
     const missing = questionsOn(current).filter(q => {
       const value = answers[q.id];
-      if (q.inputType === "date" && typeof value === "string" && value.trim()) {
+      if (q.dateRange) {
+        const dates = validateTripDates(typeof value === "string" ? value : "", typeof answers.end_date === "string" ? answers.end_date : "", new Date().toLocaleDateString("en-CA"));
+        if (dates.error) { setDateError(dates.error); return true; }
+      }
+      if (!q.dateRange && q.inputType === "date" && typeof value === "string" && value.trim()) {
         const date = new Date(value);
         const today = new Date().toLocaleDateString("en-CA");
         if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value || value < today) return true;
@@ -202,6 +210,9 @@ function IntakeWizardForm({ storageKey }: { storageKey: string }) {
             value={answers[q.id]}
             otherValue={others[q.id] ?? ""}
             invalid={invalidIds.includes(q.id)}
+            endDateValue={typeof answers.end_date === "string" ? answers.end_date : ""}
+            onEndDateChange={value => setAnswer("end_date", value)}
+            dateError={q.dateRange ? dateError : undefined}
             onChange={(v) => setAnswer(q.id, v)}
             onOtherChange={(t) => setOther(q.id, t)}
           />

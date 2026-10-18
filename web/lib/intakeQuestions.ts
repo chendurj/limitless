@@ -57,6 +57,8 @@ export type IntakeQuestion = {
   optional?: boolean;
   /** Keep the first view short; selected extras remain visible. */
   initialOptions?: number;
+  /** Start and return dates share one step. */
+  dateRange?: boolean;
   /** Show a free-text "Something else" field alongside the options. */
   allowOther?: boolean;
   /** Offer voice entry (we always let the user review the text before saving). */
@@ -566,7 +568,7 @@ const shortQuestions: IntakeQuestion[] = [
   { ...question("requirements"), prompt: "What do you need for a comfortable day?", initialOptions: 6, options: firstOptions("requirements", ["step_free_entrance", "accessible_restroom", "seating", "captions_or_asl", "accessible_parking", "elevator"]), help: "Mark what is essential. Below, add anything else you need or want to avoid." },
   { ...question("interests"), prompt: "What would make this trip special?", initialOptions: 6, options: firstOptions("interests", ["beaches", "zoos_aquariums", "museums_art", "nature", "food", "theme_parks"]), allowOther: true, help: "Pick your interests, or tell us about your ideal day below." },
   question("pace"),
-  { ...question("start_date"), prompt: "When would you like to go?", help: "Choose a start date, or leave it blank if you are still deciding." },
+  { ...question("start_date"), prompt: "When is your trip?", dateRange: true, help: "Choose your start and return dates. Demo trips support 1–7 nights. You can leave both blank if you are still deciding." },
 ];
 export function previousTripNotes(answers: AnswerMap): string {
   const avoid = question("avoid").options!.filter(option => Array.isArray(answers.avoid) && answers.avoid.includes(option.value)).map(option => option.label);

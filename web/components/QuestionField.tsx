@@ -13,6 +13,9 @@ type Props = {
   otherValue: string;
   invalid: boolean;
   hidePrompt?: boolean;
+  endDateValue?: string;
+  onEndDateChange?: (value: string) => void;
+  dateError?: string;
   onChange: (value: FieldValue) => void;
   onOtherChange: (text: string) => void;
 };
@@ -29,6 +32,9 @@ export function QuestionField({
   otherValue,
   invalid,
   hidePrompt = false,
+  endDateValue = "",
+  onEndDateChange,
+  dateError,
   onChange,
   onOtherChange,
 }: Props) {
@@ -52,14 +58,28 @@ export function QuestionField({
 
   const error = invalid ? (
     <p id={errorId} role="alert" className="mt-3 text-sm font-medium text-danger">
-      {question.inputType === "date" ? "Choose today or a future date, or leave it blank." : question.inputType === "number" ? `Enter a whole number of ${question.id === "party_size" ? 1 : 0} or more.` : "Please answer this to continue."}
+      {dateError || (question.inputType === "date" ? "Choose today or a future date, or leave it blank." : question.inputType === "number" ? `Enter a whole number of ${question.id === "party_size" ? 1 : 0} or more.` : "Please answer this to continue.")}
     </p>
   ) : null;
 
   let control: ReactNode;
 
-  // Free-text, number, and date all use a single labelled input.
-  if (
+  // A complete trip range stays on one step, with a label for each calendar.
+  if (question.dateRange) {
+    control = <fieldset aria-describedby={describedBy}>
+      <legend className={hidePrompt ? "sr-only" : "text-lg font-semibold"}>{question.prompt}</legend>
+      {help}
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div><label htmlFor={question.id} className="block font-semibold">Start date</label>
+          <input id={question.id} type="date" value={typeof value === "string" ? value : ""} aria-invalid={invalid || undefined} aria-describedby={describedBy} onChange={event => onChange(event.target.value)} className="mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-surface px-3 py-2 text-base" />
+        </div>
+        <div><label htmlFor="end_date" className="block font-semibold">End date (return)</label>
+          <input id="end_date" type="date" value={endDateValue} aria-invalid={invalid || undefined} aria-describedby={describedBy} onChange={event => onEndDateChange?.(event.target.value)} className="mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-surface px-3 py-2 text-base" />
+        </div>
+      </div>
+    </fieldset>;
+  }
+  else if (
     question.inputType === "text" ||
     question.inputType === "number" ||
     question.inputType === "date"
@@ -216,13 +236,14 @@ export function QuestionField({
           </div>
         )}
       {error}
-      {/* One microphone per question. Words that match no option can go to "Something else". */}
+      {/* Each date has its own voice input. Other answers use one microphone. */}
       <QuestionVoiceInput
-        question={question}
+        question={question.dateRange ? { ...question, prompt: "Start date" } : question}
         value={value}
         onChange={onChange}
         onOther={question.allowOther ? onOtherChange : undefined}
       />
+      {question.dateRange && <QuestionVoiceInput question={{ ...question, id: "end_date", prompt: "End date", dateRange: false }} value={endDateValue} onChange={value => { if (typeof value === "string") onEndDateChange?.(value); }} />}
     </div>
   );
 }

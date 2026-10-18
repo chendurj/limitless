@@ -7,6 +7,7 @@ import type { components } from "@/types/api";
 import { visibleQuestions, type AnswerMap, type IntakeQuestion } from "@/lib/intakeQuestions";
 import { useAnnounce } from "@/components/LiveRegion";
 import type { FieldValue } from "@/components/QuestionField";
+import { validateTripDates } from "@/lib/trip-dates";
 import { Spinner } from "@/components/Spinner";
 
 type IntakeResponse = components["schemas"]["IntakeResponse"];
@@ -49,6 +50,11 @@ function buildAnswers(
     const value = answers[id] ?? (question.inputType === "multi" ? [] : question.inputType === "must-nice" ? { must: [], nice: [] } : "");
     if (isEmptyValue(value) && !others[id]?.trim()) continue;
     out[id] = toQAnswer(question, value, others[id] ?? "");
+  }
+  const dates = validateTripDates(typeof answers.start_date === "string" ? answers.start_date : "", typeof answers.end_date === "string" ? answers.end_date : "", new Date().toLocaleDateString("en-CA"));
+  if (dates.end_date) {
+    out.end_date = { selected: [], other: null, freeform: dates.end_date };
+    out.nights = { selected: [], other: null, freeform: String(dates.nights) };
   }
   return out;
 }
@@ -135,8 +141,9 @@ export function IntakeSubmit({
     announce("Building your trip. This can take up to a minute.", "assertive");
     try {
       await api.updateProfile(profileId, { consent_aggregate: consent });
-      const startDate = typeof answers.start_date === "string" && answers.start_date.trim() ? answers.start_date : undefined;
-      const trip = await api.createTrip({ profile_id: profileId, ...(startDate ? { start_date: startDate } : {}) });
+      const dates = validateTripDates(typeof answers.start_date === "string" ? answers.start_date : "", typeof answers.end_date === "string" ? answers.end_date : "", new Date().toLocaleDateString("en-CA"));
+      if (dates.error) throw new ApiError(422, "TRIP_DATES", dates.error);
+      const trip = await api.createTrip({ profile_id: profileId, ...(dates.start_date ? { start_date: dates.start_date, nights: dates.nights } : {}) });
       router.push(`/trips/${trip.id}`);
     } catch (err) {
       fail(err);
