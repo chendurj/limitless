@@ -2149,6 +2149,25 @@
               }
             ],
             "title": "Rating"
+          },
+          "research_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Research Summary"
+          },
+          "research_sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceLink"
+            },
+            "type": "array",
+            "title": "Research Sources",
+            "default": []
           }
         },
         "additionalProperties": false,
@@ -2673,6 +2692,25 @@
           "supports"
         ],
         "title": "SensoryCognitive"
+      },
+      "SourceLink": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title",
+          "url"
+        ],
+        "title": "SourceLink"
       },
       "TemporaryInjury": {
         "properties": {

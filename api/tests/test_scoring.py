@@ -146,6 +146,21 @@ def test_closed_place_is_excluded_for_everyone(maya, hearing):
     assert run(MUSEUM, [closed], hearing).excluded
 
 
+def test_not_ada_accessible_excludes_mobility_travelers_only(maya, hearing, make_dna):
+    not_ada = fact("ada_accessible", "no", detail="The operator says it is not ADA-accessible.")
+    result = run(MUSEUM, [STEP_FREE, not_ada], maya)
+    assert result.excluded
+    assert "not ADA-accessible" in result.reasons[0]
+    ankle = make_dna(
+        needs=["temporary_injury"],
+        mobility__equipment=["crutches"],
+        mobility__slope_tolerance="gentle",
+        mobility__stairs_tolerance="few_with_rail",
+    )
+    assert run(MUSEUM, [STEP_FREE, not_ada], ankle).excluded
+    assert not run(MUSEUM, [not_ada], hearing).excluded
+
+
 def test_missing_restroom_excludes_long_visits_only(maya):
     no_restroom = fact("restroom_accessible", "no")
     assert run(ZOO, [STEP_FREE, no_restroom], maya).excluded  # 180 min

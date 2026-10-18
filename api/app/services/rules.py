@@ -36,7 +36,8 @@ class Place:
     lng: float = 0.0
     exertion_level: int = 2  # 1-5
     meal_slot: str | None = None  # breakfast | lunch | dinner | snack
-    # Display fields (address, website, accessibility_url, data_tier, google_place_id).
+    # Display fields (address, website, accessibility_url, data_tier, google_place_id,
+    # research_summary, research_sources).
     meta: dict = field(default_factory=dict, compare=False, hash=False)
 
 
@@ -319,6 +320,11 @@ def _always(dna: AccessibilityDNA) -> bool:
     return True
 
 
+def _mobility(dna: AccessibilityDNA) -> bool:
+    mobility = {"mobility_device", "limited_mobility", "temporary_injury"} & set(dna.needs)
+    return bool(mobility) or dna.no_stairs
+
+
 def _hearing(dna: AccessibilityDNA) -> bool:
     return "deaf_hoh" in dna.needs
 
@@ -352,6 +358,7 @@ RULES: list[Rule] = [
         lambda d: d.no_stairs,
         by_value({"required": ("HARD", 0), "avoidable": ("SOFT", 0.05)}),
     ),
+    Rule("not ADA-accessible", "ada_accessible", _mobility, by_value({"no": ("HARD", 0)})),
     Rule("slope", "max_slope", lambda d: slope_limit(d) is not None, slope_check),
     Rule(
         "avoid hills",

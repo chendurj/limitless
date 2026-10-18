@@ -594,6 +594,13 @@ export interface components {
             photos: components["schemas"]["PlacePhoto"][];
             /** Rating */
             rating?: number | null;
+            /** Research Summary */
+            research_summary?: string | null;
+            /**
+             * Research Sources
+             * @default []
+             */
+            research_sources: components["schemas"]["SourceLink"][];
         };
         /** PlacePhoto */
         PlacePhoto: {
@@ -711,6 +718,13 @@ export interface components {
             reduce: ("crowds" | "noise" | "bright_lights" | "strong_smells" | "long_waits" | "complex_navigation" | "other")[];
             /** Supports */
             supports: ("quiet_spaces" | "sensory_kits" | "predictable_schedule" | "extra_transition_time" | "shorter_visits" | "easy_exits")[];
+        };
+        /** SourceLink */
+        SourceLink: {
+            /** Title */
+            title: string;
+            /** Url */
+            url: string;
         };
         /** TemporaryInjury */
         TemporaryInjury: {
