@@ -66,7 +66,7 @@ export default function Home() {
           playsInline
           poster="/logo-bg-poster.jpg"
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover motion-reduce:hidden"
+          className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-md motion-reduce:hidden"
         >
           <source src="/logo-bg.mp4" type="video/mp4" />
         </video>
@@ -76,13 +76,13 @@ export default function Home() {
           className="absolute inset-0 bg-gradient-to-r from-[#070b10]/90 via-[#070b10]/70 to-[#070b10]/40"
         />
 
-        <div className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 py-24 sm:py-28 lg:grid-cols-2 lg:items-center">
+        <div className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-teal-300">
+            <p className="text-4xl font-bold tracking-tight text-teal-300 sm:text-5xl">
               Limitless
             </p>
-            <h1 className="mt-3 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
-              San Diego trips built around how you move.
+            <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
+              Trips built around how you move.
             </h1>
             <p className="mt-5 max-w-xl text-lg text-zinc-200">
               Tell us your access needs once. We plan a day you can actually do
