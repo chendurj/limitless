@@ -51,7 +51,7 @@ export function TellLimitless({
   const [replan, setReplan] = useState<ReplanResult | null>(null);
 
   const onHeard = useCallback((heard: string) => {
-    setText(heard);
+    setText(current => [current.trim(), heard.trim()].filter(Boolean).join(" ").slice(0, 2000));
     setUsedVoice(true);
   }, []);
   const mic = useSpeechInput(onHeard);
@@ -87,7 +87,7 @@ export function TellLimitless({
   const send = async () => {
     if (operation.current || micBusy) return;
     if (!text.trim()) {
-      setError("Tell us how it is going first.");
+      setError("Describe what you would like to change first.");
       textBox.current?.focus();
       return;
     }
@@ -106,7 +106,7 @@ export function TellLimitless({
       setReplan(response.replan);
       setPhase("proposal");
       announce(response.replan.message);
-      if (usedVoice) speak(response.replan.message);
+
     } catch (err) {
       if (run !== requestRun.current) return;
       setPhase("compose");
@@ -140,7 +140,7 @@ export function TellLimitless({
   return (
     <>
       <button type="button" onClick={open} className={primary}>
-        {triggerLabel ?? <>Tell Limitless how it&rsquo;s going</>}
+        {triggerLabel ?? <>Edit with AI</>}
       </button>
 
       <dialog
@@ -152,7 +152,7 @@ export function TellLimitless({
       >
         <div className="p-6">
           <h2 id="tell-heading" className="text-xl font-bold">
-            Tell Limitless how it&rsquo;s going
+            Edit with AI
           </h2>
 
           {(phase === "compose" || phase === "sending") && (
@@ -164,8 +164,7 @@ export function TellLimitless({
               }}
             >
               <label htmlFor="tell-text" className="block text-sm font-medium">
-                What happened? For example: &ldquo;The hills were too much and I need to sit
-                down.&rdquo;
+                What would you like to change?
               </label>
               <textarea
                 id="tell-text"
@@ -175,6 +174,7 @@ export function TellLimitless({
                   setText(e.target.value);
                   setError(null);
                 }}
+                placeholder="For example: Less walking and more breaks, more museums, or try different stops."
                 rows={4}
                 maxLength={2000}
                 readOnly={phase === "sending" || micBusy}
@@ -182,6 +182,7 @@ export function TellLimitless({
                 aria-describedby={error ? "tell-error" : undefined}
                 className="mt-2 w-full rounded-lg border border-border bg-surface p-3 text-base"
               />
+              <p className="mt-2 text-xs text-muted">Type or speak, then review the changes before saving. Completed and locked stops stay in place.</p>
               {mic.supported && (
                 <button
                   type="button"
@@ -191,16 +192,16 @@ export function TellLimitless({
                   className={`${secondary} mt-3`}
                 >
                   <span aria-hidden="true">{mic.listening ? "■" : "🎤"}</span>
-                  <span className="ml-2">{mic.starting ? "Cancel microphone" : mic.processing ? "Turning speech into text…" : mic.listening ? "Stop listening" : "Speak instead"}</span>
+                  <span className="ml-2">{mic.starting ? "Cancel microphone" : mic.processing ? "Turning speech into text…" : mic.listening ? "Stop recording" : "Speak"}</span>
                 </button>
               )}
               {micBusy && (
                 <p className="mt-2 text-sm text-muted" role="status">
-                  {mic.starting ? "Allow microphone access in your browser." : mic.processing ? "Turning your speech into text…" : "Listening… Choose Stop listening when you are done."}
+                  {mic.starting ? "Allow microphone access in your browser." : mic.processing ? "Turning your speech into text…" : "Recording… Choose Stop recording to turn your speech into text."}
                 </p>
               )}
               {(error || mic.error) && (
-                <p id="tell-error" className="mt-3 text-sm font-medium text-danger">
+                <p id="tell-error" role="alert" className="mt-3 text-sm font-medium text-danger">
                   {error ?? mic.error}
                 </p>
               )}
@@ -212,7 +213,7 @@ export function TellLimitless({
                       Checking your plan…
                     </span>
                   ) : (
-                    "Send"
+                    "Update my plan"
                   )}
                 </button>
                 <button type="button" onClick={close} className={secondary}>
@@ -249,8 +250,9 @@ export function TellLimitless({
                   </ul>
                 </>
               )}
-              {error && <p className="mt-3 text-sm font-medium text-danger">{error}</p>}
+              {error && <p role="alert" className="mt-3 text-sm font-medium text-danger">{error}</p>}
               <div className="mt-6 flex flex-wrap gap-3">
+                <button type="button" disabled={phase === "applying"} onClick={() => { if (canSpeak) window.speechSynthesis.cancel(); setPhase("compose"); setError(null); textBox.current?.focus(); }} className={secondary}>Change request</button>
                 {replan.changed ? (
                   <>
                     <button
@@ -265,7 +267,7 @@ export function TellLimitless({
                           Updating…
                         </span>
                       ) : (
-                        "Apply"
+                        "Save changes"
                       )}
                     </button>
                     <button type="button" onClick={close} disabled={phase === "applying"} className={secondary}>

@@ -421,6 +421,55 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "trips"
+        ],
+        "summary": "Delete Trip",
+        "operationId": "delete_trip_api_trips__trip_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "trip_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Trip Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Delete Trip Api Trips  Trip Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/trips/{trip_id}/items/{item_id}": {
@@ -1188,6 +1237,73 @@
       },
       "FeedbackParsed": {
         "properties": {
+          "requested_interests": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "beaches",
+                "zoos_aquariums",
+                "museums_art",
+                "history",
+                "nature",
+                "photography",
+                "shopping",
+                "sports",
+                "nightlife",
+                "theme_parks",
+                "food"
+              ]
+            },
+            "type": "array",
+            "title": "Requested Interests"
+          },
+          "requested_avoid": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "crowds",
+                "hills",
+                "long_distances",
+                "heat_sun",
+                "standing",
+                "noise",
+                "sand",
+                "uneven_surfaces",
+                "bright_lights",
+                "tight_schedules"
+              ]
+            },
+            "type": "array",
+            "title": "Requested Avoid"
+          },
+          "requested_pace": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "relaxed",
+                  "moderate",
+                  "busy"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requested Pace"
+          },
+          "regenerate": {
+            "type": "boolean",
+            "title": "Regenerate",
+            "default": false
+          },
+          "replace_place_refs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Replace Place Refs"
+          },
           "place_ref": {
             "type": "string",
             "title": "Place Ref"
@@ -1840,6 +1956,17 @@
               }
             ],
             "title": "Verification Score"
+          },
+          "verification_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verification Note"
           }
         },
         "additionalProperties": false,

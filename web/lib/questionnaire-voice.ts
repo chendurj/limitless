@@ -92,8 +92,10 @@ function looseChoices(question: IntakeQuestion, text: string): string[] | null {
   for (const word of raw.trim().split(/\s+/).filter(Boolean)) {
     if (FILLER.has(word)) continue;
     const owner = owners.get(stem(word));
-    if (owner?.size !== 1) return null; // an unknown or shared word: do not guess
-    matched.add([...owner][0]);
+    if (owner?.size === 1) { matched.add([...owner][0]); continue; }
+    // Multi-choice: an unknown or shared word may mean another option, so do not guess.
+    // Single-choice: one clearly named option is enough; other words are natural speech.
+    if (question.inputType !== "single") return null;
   }
   return matched.size ? options.filter(option => matched.has(option.value)).map(option => option.value) : null;
 }

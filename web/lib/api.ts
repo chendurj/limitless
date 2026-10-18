@@ -63,6 +63,7 @@ const id = encodeURIComponent;
 export const api = {
   listProfiles: () => request<ProfileOut[]>("GET", "/api/profiles"),
   listTrips: () => request<TripOut[]>("GET", "/api/trips"),
+  deleteTrip: (tripId: string) => request<{ deleted: boolean }>("DELETE", `/api/trips/${id(tripId)}`),
   getSampleTrip: (persona: "ankle" | "deaf") =>
     request<TripOut>("GET", `/api/trips/samples/${persona}`, undefined, true),
   /** Intake answers -> Accessibility DNA, a profile id and up to 3 follow-up questions. */

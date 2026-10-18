@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from datetime import date
 
 from app.models.dna import AccessibilityDNA
-from app.services.facts import Fact, is_negative, resolve, trust
+from app.services.facts import Fact, agreed_trust, decayed, is_negative, resolve, trust
 from app.services.rules import (
     FEATURE_ASK,
     FEATURE_ATTRS,
@@ -72,6 +72,7 @@ class Evaluation:
     unknown_critical: list[str] = field(default_factory=list)  # attributes to confirm by phone
     verification: float | None = None  # 0-1 trust in the facts this decision depends on
     display_fit: float | None = None  # 0-1 for the page; access_fit is for ranking
+    verification_note: str | None = None  # why the Verification Score is what it is
 
     @property
     def accessibility_score(self) -> int:
@@ -128,6 +129,7 @@ def evaluate(
 
     # Display score inputs: attribute -> weight, and must-have attribute -> (quality, strength).
     relevant: dict[str, float] = {}
+    optional: set[str] = set()  # nice-to-haves and comfort facts: an unknown here says nothing
     must_q: dict[str, tuple[float, float]] = {}
 
     for rule in RULES:
@@ -178,12 +180,16 @@ def evaluate(
 
     if {"mobility_device", "limited_mobility", "temporary_injury"} & set(dna.needs):
         for attr in COMFORT:
-            relevant.setdefault(attr, WEIGHT_COMFORT)
+            if attr not in relevant:
+                relevant[attr] = WEIGHT_COMFORT
+                optional.add(attr)
 
     for feature in dna.requirements.nice_to_have:
         if not _applies(FEATURE_CATEGORIES.get(feature), place):
             continue
-        relevant.setdefault(FEATURE_ATTRS[feature][0], WEIGHT_NICE)
+        if FEATURE_ATTRS[feature][0] not in relevant:
+            relevant[FEATURE_ATTRS[feature][0]] = WEIGHT_NICE
+            optional.add(FEATURE_ATTRS[feature][0])
         for attr in FEATURE_ATTRS[feature]:
             fact = effective.get(attr)
             if fact is not None and fact.is_strong and fact.value not in FEATURE_MISS:
@@ -211,14 +217,12 @@ def evaluate(
         problems = [e.reason for e, _ in soft] + list(unknown.values())
         reasons.append("Too many problems together: " + " ".join(problems))
 
-    # Verification: the mean trust of the facts that matter for this traveler. An unknown
-    # value counts as 0. With no critical checks, use all the place's facts.
-    basis = list(checked.values()) or list(effective.values())
-    verification = (
-        round(sum(trust(f) if f else 0.0 for f in basis) / len(basis), 3) if basis else None
-    )
-
     display_fit = _display_fit(relevant, must_q, effects, effective, dna)
+
+    decayed_facts = [decayed(f, today or date.today()) for f in facts]
+    verification, verification_note = _verification(
+        relevant, optional, checked, effective, decayed_facts
+    )
 
     interest = _interest(place, dna)
     quality = (place.rating - 1) / 4 if place.rating else 0.5
@@ -244,8 +248,61 @@ def evaluate(
         fact_ids=sorted(used),
         unknown_critical=list(unknown),
         verification=verification,
+        verification_note=verification_note,
         display_fit=None if hard else display_fit,
     )
+
+
+def _verification(
+    relevant: dict[str, float],
+    optional: set[str],
+    checked: dict[str, Fact | None],
+    effective: dict[str, Fact],
+    facts: list[Fact],
+) -> tuple[float | None, str | None]:
+    """0-1 trust in the facts behind this traveler's checks, and a short reason for it.
+
+    Weighted like the Accessibility Score: a must-have counts most. A must-have or critical
+    check with no fact counts as 0 (nothing confirms it). Other unknown facts are left out:
+    the traveler does not depend on them. Sources that state the same value raise the trust together.
+    """
+    total = weighted = 0.0
+    official = demo = other = missing = 0
+    for attr, weight in relevant.items():
+        fact = checked[attr] if attr in checked else effective.get(attr)
+        if fact is None:
+            # Only a must-have or a critical check is something the traveler depends on.
+            if attr in optional or attr in EXTRAS or weight < WEIGHT_CRITICAL:
+                continue
+            total += weight
+            missing += 1
+            continue
+        total += weight
+        weighted += weight * agreed_trust(fact, facts)
+        if fact.source in ("official", "phone_call", "team_verified"):
+            official += 1
+        elif fact.source == "demo_data":
+            demo += 1
+        else:
+            other += 1
+    if total == 0:
+        # Nothing this traveler depends on applies here: fall back to all the place's facts.
+        if not effective:
+            return None, None
+        mean = sum(agreed_trust(f, facts) for f in effective.values()) / len(effective)
+        return round(mean, 3), "General facts only"
+    checks = official + demo + other + missing
+    if official == checks:
+        note = "All checks from official pages"
+    elif official:
+        note = f"{official} of {checks} checks from official pages"
+    elif demo and not other:
+        note = "Demo data, not checked yet"
+    else:
+        note = "Not confirmed by an official page"
+    if missing and official != checks:
+        note += f" · {missing} unknown"
+    return round(weighted / total, 3), note
 
 
 def _quality(effect: Effect | None) -> float:

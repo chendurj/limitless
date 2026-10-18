@@ -119,7 +119,8 @@ export interface paths {
         get: operations["get_trip_api_trips__trip_id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Delete Trip */
+        delete: operations["delete_trip_api_trips__trip_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -357,6 +358,19 @@ export interface components {
         };
         /** FeedbackParsed */
         FeedbackParsed: {
+            /** Requested Interests */
+            requested_interests?: ("beaches" | "zoos_aquariums" | "museums_art" | "history" | "nature" | "photography" | "shopping" | "sports" | "nightlife" | "theme_parks" | "food")[];
+            /** Requested Avoid */
+            requested_avoid?: ("crowds" | "hills" | "long_distances" | "heat_sun" | "standing" | "noise" | "sand" | "uneven_surfaces" | "bright_lights" | "tight_schedules")[];
+            /** Requested Pace */
+            requested_pace?: ("relaxed" | "moderate" | "busy") | null;
+            /**
+             * Regenerate
+             * @default false
+             */
+            regenerate: boolean;
+            /** Replace Place Refs */
+            replace_place_refs?: string[];
             /** Place Ref */
             place_ref: string;
             /** Wheelchair Difficulty */
@@ -547,6 +561,8 @@ export interface components {
             accessibility_score?: number | null;
             /** Verification Score */
             verification_score?: number | null;
+            /** Verification Note */
+            verification_note?: string | null;
         };
         /** ItemPatch */
         ItemPatch: {
@@ -1136,6 +1152,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TripOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_trip_api_trips__trip_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                trip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: boolean;
+                    };
                 };
             };
             /** @description Validation Error */

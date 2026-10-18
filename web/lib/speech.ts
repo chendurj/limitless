@@ -61,6 +61,8 @@ export function speak(text: string) {
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
+  // Chrome can leave synthesis paused after an interrupted utterance. Resume on this user gesture.
+  window.speechSynthesis.resume();
   window.speechSynthesis.speak(utterance);
 }
 

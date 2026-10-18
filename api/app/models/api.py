@@ -9,7 +9,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models.dna import AccessibilityDNA
+from app.models.dna import AccessibilityDNA, Avoid, Interest, Pace
 
 Confidence = Literal["VERIFIED", "COMMUNITY", "INFERRED"]
 Level = Literal["low", "medium", "high"]
@@ -182,6 +182,7 @@ class ItemOut(Model):
     insights: list[Insight]
     accessibility_score: int | None = None  # 0-100: how well the place fits this traveler
     verification_score: int | None = None  # 0-100: trust in the facts behind that fit
+    verification_note: str | None = None  # e.g. "2 of 3 checks from official pages"
 
 
 class Weather(Model):
@@ -256,6 +257,11 @@ class PlaceReport(Model):
 
 
 class FeedbackParsed(Model):
+    requested_interests: list[Interest] = Field(default_factory=list)
+    requested_avoid: list[Avoid] = Field(default_factory=list)
+    requested_pace: Pace | None = None
+    regenerate: bool = False
+    replace_place_refs: list[str] = Field(default_factory=list)
     place_ref: str  # a trip place id, or "none"
     wheelchair_difficulty: Level | None
     terrain_difficulty: Level | None
