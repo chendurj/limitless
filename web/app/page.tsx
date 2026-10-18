@@ -1,326 +1,95 @@
 import Link from "next/link";
-import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 import { DEMO_TRIPS } from "@/lib/api";
-
-// What Limitless does: the core feature set.
-const features = [
-  {
-    title: "Personalized itineraries",
-    body: "Built around your access needs, interests, stamina, sensory preferences, and pace.",
-  },
-  {
-    title: "Accessibility Score",
-    body: "How well each place actually fits you, not just a simple “accessible” flag.",
-  },
-  {
-    title: "Verification Score",
-    body: "How confident we are in each fact, with its source and the date it was checked.",
-  },
-  {
-    title: "Live adjustments",
-    body: "Tell us you're tired or something changed, and the rest of your day re-plans. Stops you've finished stay put.",
-  },
-  {
-    title: "24/7 support",
-    body: "An AI travel agent available any time, that hands off to a real person when the data isn't enough.",
-  },
-  {
-    title: "Credible by design",
-    body: "Official sources and human review. Anything we can't back up stays marked unknown.",
-  },
-];
-
-// Impact stats from the sources cited in our write-up.
-const stats = [
-  { value: "1 in 6", label: "people live with a significant disability, 1.3 billion worldwide (WHO)." },
-  { value: "28.7%", label: "of U.S. adults reported a disability in 2022 (CDC)." },
-  { value: "$50B", label: "spent on U.S. disability travel over two years (Open Doors)." },
-];
-
-// Example excluded places. Clearly demo data, never presented as real facts.
-const skipped = [
-  {
-    name: "Sunset Cliffs Natural Park",
-    reason: "Uneven dirt paths along unfenced cliff edges.",
-  },
-  {
-    name: "Torrey Pines State Reserve",
-    reason: "Closed to all visitors until it reopens in spring.",
-  },
-];
-
-const promises = [
-  {
-    title: "Keyboard friendly",
-    body: "Every step works without a mouse, with a clear focus outline.",
-  },
-  {
-    title: "Screen-reader ready",
-    body: "Labels, landmarks, and spoken status updates throughout.",
-  },
-  {
-    title: "Sourced facts",
-    body: "Each claim shows its source, confidence level, and date.",
-  },
-  {
-    title: "Your consent",
-    body: "You choose what's shared, and you can delete your data any time.",
-  },
-];
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col">
-      {/* Hero */}
-      <section
-        className="relative overflow-hidden bg-[#070b10] bg-cover bg-center"
-        style={{ backgroundImage: "url('/logo-bg-poster.jpg')" }}
+    <section
+      className="relative flex min-h-screen flex-col overflow-hidden bg-[#070b10] bg-cover bg-center"
+      style={{ backgroundImage: "url('/logo-bg-poster.jpg')" }}
+    >
+      {/* Looping infinity logo. Hidden when the viewer prefers reduced motion;
+          the poster image on the section stays as a still fallback. */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster="/logo-bg-poster.jpg"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full scale-125 object-cover blur-2xl motion-reduce:hidden"
       >
-        {/* Looping infinity logo. Hidden when the viewer prefers reduced motion;
-            the poster image on the section stays as a still fallback. */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/logo-bg-poster.jpg"
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full scale-125 object-cover blur-2xl motion-reduce:hidden"
-        >
-          <source src="/logo-bg.mp4" type="video/mp4" />
-        </video>
-        {/* Dark overlay keeps the text at AA+ contrast over the video. */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[#070b10]/70"
-        />
+        <source src="/logo-bg.mp4" type="video/mp4" />
+      </video>
+      <div aria-hidden="true" className="absolute inset-0 bg-[#070b10]/70" />
 
-        <nav
-          aria-label="Main"
-          className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-center gap-8 px-6 pt-6 text-sm font-medium"
-        >
-          <a href="#what-it-does" className="text-zinc-200 hover:text-white">
-            How it works
-          </a>
-          <Link href="/reviews" className="text-zinc-200 hover:text-white">
-            Reviews
-          </Link>
-          <a href="#what-it-does" className="text-zinc-200 hover:text-white">
-            Features
-          </a>
-        </nav>
+      <nav
+        aria-label="Main"
+        className="relative z-10 flex w-full items-center justify-center gap-8 px-6 pt-6 text-sm font-medium"
+      >
+        <Link href="/how-it-works" className="text-zinc-200 hover:text-white">
+          How it works
+        </Link>
+        <Link href="/reviews" className="text-zinc-200 hover:text-white">
+          Reviews
+        </Link>
+        <Link href="/features" className="text-zinc-200 hover:text-white">
+          Features
+        </Link>
+      </nav>
 
-        <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center px-6 pb-24 pt-14 text-center sm:pb-28 sm:pt-16">
-          <h1
-            className="font-extrabold leading-none tracking-tight"
-            style={{ fontSize: "clamp(3.5rem, 12vw, 11rem)" }}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-16 text-center">
+        <h1
+          className="font-extrabold leading-none tracking-tight"
+          style={{ fontSize: "clamp(3.5rem, 12vw, 11rem)" }}
+        >
+          <span className="bg-gradient-to-r from-teal-200 via-teal-300 to-sky-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(45,212,191,0.4)]">
+            limitless.
+          </span>
+        </h1>
+        <p className="mt-5 text-lg text-zinc-200 sm:text-xl">
+          Your world to discover. Your right to explore.
+        </p>
+
+        <Link
+          href="/intake"
+          className="mt-10 inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary-hover"
+        >
+          Plan your trip
+        </Link>
+
+        {/* The ask box starts the planner. */}
+        <form
+          action="/intake"
+          method="get"
+          className="mt-4 flex w-full max-w-md items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2"
+        >
+          <input
+            name="ask"
+            type="text"
+            placeholder="Ask anything…"
+            aria-label="Ask anything, or start planning"
+            className="h-9 flex-1 bg-transparent text-white placeholder:text-zinc-400"
+          />
+          <button
+            type="submit"
+            aria-label="Start planning"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-zinc-200 transition-colors hover:bg-white/10"
           >
-            <span className="bg-gradient-to-r from-teal-200 via-teal-300 to-sky-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(45,212,191,0.4)]">
-              limitless.
-            </span>
-          </h1>
-          <p className="mt-5 text-lg text-zinc-200 sm:text-xl">
-            Your world to discover. Your right to explore.
-          </p>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M3.4 20.4 21 12 3.4 3.6 3 10l12 2-12 2 .4 6.4Z" />
+            </svg>
+          </button>
+        </form>
 
+        <p className="mt-6 text-sm">
           <Link
-            href="/intake"
-            className="mt-10 inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary-hover"
+            href={`/trips/${DEMO_TRIPS.deaf}`}
+            className="text-teal-300 underline underline-offset-4"
           >
-            Plan your trip
+            See a sample itinerary
           </Link>
-
-          {/* The ask box starts the planner. */}
-          <form
-            action="/intake"
-            method="get"
-            className="mt-4 flex w-full max-w-md items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2"
-          >
-            <input
-              name="ask"
-              type="text"
-              placeholder="Ask anything…"
-              aria-label="Ask anything, or start planning"
-              className="h-9 flex-1 bg-transparent text-white placeholder:text-zinc-400"
-            />
-            <button
-              type="submit"
-              aria-label="Start planning"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-zinc-200 transition-colors hover:bg-white/10"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M3.4 20.4 21 12 3.4 3.6 3 10l12 2-12 2 .4 6.4Z" />
-              </svg>
-            </button>
-          </form>
-
-          <p className="mt-6 text-sm">
-            <Link
-              href={`/trips/${DEMO_TRIPS.deaf}`}
-              className="text-teal-300 underline underline-offset-4"
-            >
-              See a sample itinerary
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* What a stop looks like */}
-      <section aria-labelledby="example-heading" className="border-t border-border">
-        <div className="mx-auto w-full max-w-5xl px-6 py-12">
-          <h2 id="example-heading" className="sr-only">
-            What a stop looks like
-          </h2>
-          <div
-            aria-label="Example of an itinerary stop"
-            className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-5 shadow-sm"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-                Example stop
-              </span>
-              <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-muted">
-                Demo data
-              </span>
-            </div>
-            <p className="mt-3 text-lg font-semibold">
-              Balboa Park, El Prado Promenade
-            </p>
-            <p className="text-sm text-muted">Wide, flat, paved walkway</p>
-            <ul className="mt-4 space-y-3">
-              <li className="flex items-start gap-3">
-                <ConfidenceBadge level="VERIFIED" />
-                <span className="text-sm">
-                  Step-free paved route the full length.{" "}
-                  <span className="text-muted">Source: Balboa Park</span>
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <ConfidenceBadge level="COMMUNITY" />
-                <span className="text-sm">
-                  Accessible restrooms near the fountain.{" "}
-                  <span className="text-muted">Source: traveler reports</span>
-                </span>
-              </li>
-            </ul>
-            <p className="mt-4 rounded-lg bg-accent-soft px-3 py-2 text-sm">
-              <span className="font-semibold text-primary">Why it fits you:</span>{" "}
-              no stairs or steep slopes, with places to rest.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Impact stats */}
-      <section aria-labelledby="stats-heading" className="border-t border-border bg-surface">
-        <h2 id="stats-heading" className="sr-only">
-          Why this matters
-        </h2>
-        <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-10 sm:grid-cols-3">
-          {stats.map((stat) => (
-            <div key={stat.value}>
-              <p className="text-3xl font-extrabold tracking-tight text-primary">
-                {stat.value}
-              </p>
-              <p className="mt-1 text-sm text-muted">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* What Limitless does */}
-      <section
-        id="what-it-does"
-        aria-labelledby="what-heading"
-        className="scroll-mt-6 border-t border-border"
-      >
-        <div className="mx-auto w-full max-w-5xl px-6 py-16">
-          <h2 id="what-heading" className="text-2xl font-bold">
-            What Limitless does
-          </h2>
-          <p className="mt-3 max-w-2xl text-muted">
-            An accessible entrance says little about slopes, restrooms,
-            transfers, or assistance. We combine curated data, personal fit, and
-            adaptation during the trip.
-          </p>
-          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <li
-                key={feature.title}
-                className="rounded-xl border border-border bg-surface p-5"
-              >
-                <h3 className="text-base font-semibold">{feature.title}</h3>
-                <p className="mt-2 text-sm text-muted">{feature.body}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Credible data: we only show what we can back up */}
-      <section
-        aria-labelledby="skip-heading"
-        className="border-t border-border bg-surface"
-      >
-        <div className="mx-auto w-full max-w-5xl px-6 py-16">
-          <h2 id="skip-heading" className="text-2xl font-bold">
-            We only show what we can back up
-          </h2>
-          <p className="mt-3 max-w-2xl text-muted">
-            Missing information stays unknown. We never guess. When a place
-            doesn&rsquo;t fit, we leave it out and tell you why, so the choice is
-            yours.
-          </p>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-            {skipped.map((place) => (
-              <li
-                key={place.name}
-                className="rounded-xl border border-border bg-background p-5"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-900 dark:bg-red-950 dark:text-red-200">
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm3.5 12.1L14.1 15.5 12 13.4l-2.1 2.1-1.4-1.4L10.6 12 8.5 9.9l1.4-1.4L12 10.6l2.1-2.1 1.4 1.4L13.4 12Z" />
-                    </svg>
-                    Skipped
-                  </span>
-                  <p className="font-semibold">{place.name}</p>
-                </div>
-                <p className="mt-2 text-sm text-muted">{place.reason}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 text-xs text-muted">Examples shown with demo data.</p>
-        </div>
-      </section>
-
-      {/* Built for everyone */}
-      <section aria-labelledby="a11y-heading" className="border-t border-border">
-        <div className="mx-auto w-full max-w-5xl px-6 py-16">
-          <h2 id="a11y-heading" className="text-2xl font-bold">
-            Built for everyone
-          </h2>
-          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {promises.map((item) => (
-              <li key={item.title}>
-                <h3 className="text-base font-semibold text-primary">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm text-muted">{item.body}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-10 text-lg font-semibold text-primary">
-            Your world to discover. Your right to explore.
-          </p>
-        </div>
-      </section>
-    </div>
+        </p>
+      </div>
+    </section>
   );
 }
