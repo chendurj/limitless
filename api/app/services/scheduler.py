@@ -285,8 +285,6 @@ def _try(
             items or not from_hotel
         ) and leg - buffer > limits.max_leg_min:  # the first leg from the hotel is exempt
             continue  # too far from the last stop: leave this pick out
-        if items or not from_hotel:
-            travel_total += leg - buffer  # road time between stops; not the hotel leg or the buffer
         start = t + timedelta(minutes=leg)
         kind = "meal" if pick.cand.kind in ("meal", "snack") else "visit"
         if _is_lunch(pick):
@@ -299,6 +297,10 @@ def _try(
                 ok = False
         minutes = MEAL_MIN if pick.cand.kind == "meal" else place.est_visit_min
         end = start + timedelta(minutes=minutes)
+        if kind == "visit" and end > end_of_day:
+            continue  # it does not fit in the traveler's day: leave this pick out
+        if items or not from_hotel:
+            travel_total += leg - buffer  # road time between stops; not the hotel leg or the buffer
         items.append(Timed(kind, place.name, start, end, pick, travel_min=leg))
         energy += pick.cand.energy
         active = (

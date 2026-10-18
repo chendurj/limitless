@@ -402,3 +402,25 @@ def test_long_visit_drops_a_late_lunch(ankle):  # noqa: F811
             if i.kind == "meal":
                 start = datetime.fromisoformat(i.start)
                 assert (start.hour, start.minute) <= (13, 30) or start.hour >= 17, i.title
+
+
+def test_long_visits_keep_their_length_and_fit_the_day(ankle):  # noqa: F811
+    park = place("park", "Test Theme Park", "attraction", "balboa_park", 32.732, -117.150, 300, 3)
+    places = [park] + [p for p in PLACES if p.category == "restaurant"]
+    facts = {p.id: facts_for(p.id) for p in places}
+    t = build_trip(open_day(ankle), places, facts, start_date=START, nights=1, today=TODAY)
+    visit = next(i for d in t.days for i in d.items if i.kind == "visit")
+    start, end = datetime.fromisoformat(visit.start), datetime.fromisoformat(visit.end)
+    assert (end - start).total_seconds() == 300 * 60  # the real length, not cut
+    assert end <= start.replace(hour=18, minute=30)  # inside the relaxed day
+    assert any(w.startswith("Long visit: about 5 hours") for w in visit.warnings)
+    meal = next(i for d in t.days for i in d.items if i.kind == "meal")
+    assert not any(w.startswith("Long visit") for w in meal.warnings)
+
+
+def test_a_visit_past_the_end_of_the_day_is_left_out(ankle):  # noqa: F811
+    show = place("show", "Test Late Show", "attraction", "balboa_park", 32.733, -117.151, 600, 1)
+    places = [show] + [p for p in PLACES if p.category == "restaurant"]
+    facts = {p.id: facts_for(p.id) for p in places}
+    t = build_trip(open_day(ankle), places, facts, start_date=START, nights=1, today=TODAY)
+    assert not any(i.place and i.place.id == "show" for d in t.days for i in d.items)
