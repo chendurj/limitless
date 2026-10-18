@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import type { components } from "@/types/api";
-import { intakeScreens, type IntakeQuestion } from "@/lib/intakeQuestions";
+import { visibleQuestions, type AnswerMap, type IntakeQuestion } from "@/lib/intakeQuestions";
 import { useAnnounce } from "@/components/LiveRegion";
 import type { FieldValue } from "@/components/QuestionField";
 import { Spinner } from "@/components/Spinner";
@@ -12,12 +12,6 @@ import { Spinner } from "@/components/Spinner";
 type IntakeResponse = components["schemas"]["IntakeResponse"];
 type Followup = components["schemas"]["Followup"];
 type QAnswer = components["schemas"]["QAnswer"];
-
-// Look up a question's config by id (to know how to shape its answer).
-const QUESTIONS: Record<string, IntakeQuestion> = {};
-for (const screen of intakeScreens) {
-  for (const question of screen.questions) QUESTIONS[question.id] = question;
-}
 
 function isEmptyValue(value: FieldValue | undefined): boolean {
   if (value == null) return true;
@@ -48,9 +42,13 @@ function buildAnswers(
   others: Record<string, string>,
 ): Record<string, QAnswer> {
   const out: Record<string, QAnswer> = {};
-  for (const [id, value] of Object.entries(answers)) {
+  const map: AnswerMap = {};
+  for (const [id, value] of Object.entries(answers)) if (typeof value === "string" || Array.isArray(value)) map[id] = value;
+  for (const question of visibleQuestions(map)) {
+    const id = question.id;
+    const value = answers[id] ?? (question.inputType === "multi" ? [] : question.inputType === "must-nice" ? { must: [], nice: [] } : "");
     if (isEmptyValue(value) && !others[id]?.trim()) continue;
-    out[id] = toQAnswer(QUESTIONS[id], value, others[id] ?? "");
+    out[id] = toQAnswer(question, value, others[id] ?? "");
   }
   return out;
 }
@@ -77,6 +75,7 @@ export function IntakeSubmit({
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState("");
   const started = useRef(false);
+  const actionBusy = useRef(false);
 
   const applyResult = (res: IntakeResponse) => {
     setProfileId(res.profile_id);
@@ -114,7 +113,8 @@ export function IntakeSubmit({
   }, [phase]);
 
   const submitFollowups = () => {
-    if (!result) return;
+    if (!result || actionBusy.current) return;
+    actionBusy.current = true;
     setPhase("submitting");
     announce("Sending your answers.");
     api
@@ -124,10 +124,13 @@ export function IntakeSubmit({
           .map((f) => ({ followup_id: f.id, answer: followupAnswers[f.id].trim() })),
       })
       .then(applyResult)
-      .catch(fail);
+      .catch(fail)
+      .finally(() => { actionBusy.current = false; });
   };
 
   const planTrip = async () => {
+    if (actionBusy.current) return;
+    actionBusy.current = true;
     setPhase("creating");
     announce("Building your trip. This can take up to a minute.", "assertive");
     try {
@@ -136,6 +139,8 @@ export function IntakeSubmit({
       router.push(`/trips/${trip.id}`);
     } catch (err) {
       fail(err);
+    } finally {
+      actionBusy.current = false;
     }
   };
 
@@ -279,8 +284,8 @@ function FollowupField({
   value: string;
   onChange: (value: string) => void;
 }) {
-  const options =
-    followup.answer_type === "yes_no" ? ["yes", "no"] : (followup.options ?? []);
+  const rawOptions = followup.answer_type === "yes_no" ? ["yes", "no"] : (followup.options ?? []);
+  const options = [...new Map(rawOptions.map(option => [option.trim().toLowerCase(), option.trim()])).values()].filter(Boolean);
 
   return (
     <fieldset>
@@ -289,6 +294,7 @@ function FollowupField({
       {followup.answer_type === "free_text" ? (
         <input
           type="text"
+          aria-label={followup.question}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="mt-3 w-full max-w-sm rounded-lg border border-border bg-surface px-4 py-3 text-base"
