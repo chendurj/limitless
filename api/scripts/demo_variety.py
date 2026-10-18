@@ -27,10 +27,13 @@ from app.config import get_settings
 VENUES = {"museum", "attraction"}
 FOOD = {"restaurant", "cafe", "dessert"}
 WALKS = {"museum", "attraction", "park", "shopping", "photo_spot"}
+# Most indoor places in a city are flat. The CSV gives many of them moderate or steep slopes
+# and uneven floors, which skipped most places for wheelchair users.
+INDOOR = {"restaurant", "cafe", "dessert", "museum", "shopping"}
 # Percent of places that get each value. High on purpose: the planner picks the best places,
 # so a problem must be common before it shows on a chosen stop.
 SHARE = {"captions_partial": 90, "captions_no": 50, "phone_only": 92, "online": 100,
-         "kiosk": 30, "text": 25, "uneven": 75, "walk": 90}  # fmt: skip
+         "kiosk": 30, "text": 25, "uneven": 30, "walk": 90}  # fmt: skip
 
 
 def pick(slug: str, attribute: str) -> int:
@@ -59,8 +62,13 @@ def values(slug: str, category: str, captions: str | None, terrain: str | None) 
         out["kiosk_or_app_ordering"] = ("yes", "Order at a kiosk or by QR code.")
     if pick(slug, "text_contact") < SHARE["text"]:
         out["text_contact"] = ("yes", "Answers text messages and email.")
-    # Ankle injury: uneven ground and longer walks.
-    if terrain in ("smooth", "mixed") and pick(slug, "terrain") < SHARE["uneven"]:
+    # Slopes and floors: realistic for indoor places, varied for outdoor places.
+    if category in INDOOR:
+        flat = pick(slug, "max_slope") < 50
+        out["max_slope"] = ("flat", "Flat routes.") if flat else ("gentle", "Gentle slopes.")
+        smooth = pick(slug, "terrain") < 60
+        out["terrain"] = ("smooth", "Smooth floors.") if smooth else ("mixed", "Mixed surfaces.")
+    elif terrain in ("smooth", "mixed") and pick(slug, "terrain") < SHARE["uneven"]:
         out["terrain"] = ("uneven", "Uneven surfaces.")
     if category in WALKS and pick(slug, "typical_walk_m") < SHARE["walk"]:
         meters = 250 + pick(slug, "meters") * 3 // 2  # 250-398 m

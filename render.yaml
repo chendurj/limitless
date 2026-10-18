@@ -1,0 +1,28 @@
+# Render blueprint for the Limitless API. The web app is on Vercel.
+# Secrets are set in the Render dashboard (sync: false), never in this file.
+services:
+  - type: web
+    name: limitless-api
+    runtime: docker
+    rootDir: api
+    dockerfilePath: ./Dockerfile
+    plan: starter # the free plan sleeps after 15 minutes, and the first request then takes ~1 minute
+    region: oregon # the same region as the Supabase project
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: ALLOW_DEMO_AUTH
+        value: "false"
+      - key: OPENAI_MODEL_EXTRACT
+        value: gpt-6-luna
+      - key: OPENAI_MODEL_COMPOSE
+        value: gpt-6.1-sol
+      - key: CORS_ORIGINS
+        sync: false # JSON list, e.g. ["https://limitless.vercel.app"]

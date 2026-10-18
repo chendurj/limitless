@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Browser regression tests
+
+Use `npm run test:e2e` for the Playwright suite. Install Chromium with
+`npx playwright install chromium`, or use `PLAYWRIGHT_CHANNEL=chrome` with an
+installed Chrome browser. The runner reuses or starts the local development server.
+Planning API responses are intercepted demo fixtures. Set `LIVE_CHAT_TEST=1` with
+a configured server key to include the real assistant request; otherwise that one
+case is skipped. See [the quality review](../docs/quality-review.md) for coverage,
+measured timings, known limits, and the commands for all 61 tests.
+
 ## Getting Started
 
 Use Node.js 24 and run `npm ci` before starting development.
@@ -69,16 +79,20 @@ The assistant helps with travel preparation and app questions. It has no databas
 or live venue access and directs personalized place selection to `/intake`.
 It cannot book travel or modify itineraries.
 
-The homepage microphone supports speech-to-text input in browsers that provide
-the Web Speech recognition API. Choose the microphone, allow microphone access,
-speak, then choose Stop microphone. Review or edit the draft and choose Send.
-Dictation appends to any existing draft; it never sends automatically. The assistant
-replies in the text chat and retains the same conversation context. No audio reply
-is generated. Dictation uses the browser's recognition service, which may require
-an internet connection; it does not call an OpenAI transcription endpoint. If
-recognition is unavailable or permission is denied, typed chat remains available.
-Microphone access ends when dictation is cancelled, the chat is minimized or reset,
-or the homepage is left.
+The microphone records audio using the browser's MediaRecorder API. Choose the
+microphone, allow access, speak, then choose Stop microphone. The web server sends
+that recording to OpenAI's transcription API and returns the recognized text. The
+browser's SpeechRecognition service is not used, so its network failures no longer
+block dictation. It uses the existing server `OPENAI_API_KEY`; optionally set
+`OPENAI_MODEL_TRANSCRIBE` (default `gpt-4o-mini-transcribe`).
+
+Text appears after you stop, rather than while you are speaking. Review or edit it
+before sending or applying it. Recordings stop after one minute and are limited to
+8 MiB. Cancel, navigation, and unmount discard unsent recordings and abort pending
+transcription. The app does not persist audio files. Microphone recording requires
+HTTPS or localhost, browser permission, and a browser supporting getUserMedia and
+MediaRecorder. Permission denial, busy devices, and transcription errors leave the
+normal text and choice controls available. AI replies remain in text chat.
 
 ### Questionnaire voice answers
 
@@ -97,8 +111,8 @@ step or changes an answer without that confirmation.
   as “October 22, 2026”; unclear or incomplete dates are not guessed.
 - Text and existing Something else fields accept dictated text. Unsupported or
   unclear answers can be edited or entered using the original controls.
-- Only one microphone listens at a time. Changing questions, cancelling, or
-  leaving a screen releases its recognition session.
+- Only one microphone records at a time. Changing questions, cancelling, or
+  leaving a screen releases the microphone and discards pending transcription.
 
 Run `npm run test:questionnaire-voice` for parsing and questionnaire coverage tests.
 
@@ -140,3 +154,18 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Microphone regression checks
+
+`npm run test:transcribe` checks the server endpoint, including unsupported files,
+size limits, missing configuration, upstream failures, and empty transcripts.
+Browser tests normally mock audio and API results. To test actual MediaRecorder
+capture and the real transcription endpoint with generated speech, provide an
+absolute WAV path containing “Option one” followed by a few seconds of silence:
+
+```sh
+PLAYWRIGHT_CHANNEL=chrome LIVE_CHAT_TEST=1 VOICE_TEST_AUDIO=/absolute/path/option-one.wav npm run test:e2e
+```
+
+Chrome uses that file as its test microphone; this does not record the user's
+microphone. Without VOICE_TEST_AUDIO, the live recording case is skipped.

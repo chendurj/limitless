@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { api, DEMO_TRIPS, type ItemOut, type TripOut } from "@/lib/api";
@@ -32,6 +32,8 @@ function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?:
   const [error, setError] = useState<string | null>(null);
   const [busyItemId, setBusyItemId] = useState<string | null>(null);
   const [undoVersion, setUndoVersion] = useState<number | null>(null);
+  const actionBusy = useRef(false);
+  const [undoBusy, setUndoBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [manual, setManual] = useState(initialEdit === "manual");
 
@@ -66,7 +68,8 @@ function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?:
     );
 
   const onStatus = async (item: ItemOut, status: StatusChange) => {
-    if (!trip) return;
+    if (!trip || actionBusy.current) return;
+    actionBusy.current = true;
     setBusyItemId(item.id);
     try {
       replaceItem(await api.updateItem(trip.id, item.id, { status }));
@@ -74,6 +77,7 @@ function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?:
     } catch (err) {
       announce(errorText(err, "We could not save that."), "assertive");
     } finally {
+      actionBusy.current = false;
       setBusyItemId(null);
     }
   };
@@ -86,7 +90,9 @@ function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?:
   };
 
   const undo = async () => {
-    if (!trip || undoVersion === null) return;
+    if (!trip || undoVersion === null || actionBusy.current) return;
+    actionBusy.current = true;
+    setUndoBusy(true);
     try {
       const result = await api.applyVersion(trip.id, undoVersion);
       setTrip(result.trip);
@@ -95,6 +101,9 @@ function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?:
       announce(result.message);
     } catch (err) {
       announce(errorText(err, "We could not undo that."), "assertive");
+    } finally {
+      actionBusy.current = false;
+      setUndoBusy(false);
     }
   };
 
@@ -137,6 +146,7 @@ function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?:
                 <button
                   type="button"
                   onClick={() => void undo()}
+                  disabled={undoBusy || busyItemId !== null}
                   className="font-semibold text-primary underline underline-offset-4"
                 >
                   Undo

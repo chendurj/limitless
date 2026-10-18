@@ -40,6 +40,9 @@ export function TellLimitless({
   const dialog = useRef<HTMLDialogElement>(null);
   const textBox = useRef<HTMLTextAreaElement>(null);
   const announce = useAnnounce();
+  const operation = useRef<"send" | "apply" | null>(null);
+  const requestRun = useRef(0);
+  useEffect(() => () => { requestRun.current++; operation.current = null; }, []);
   const canSpeak = useCanSpeak();
   const [phase, setPhase] = useState<Phase>("compose");
   const [text, setText] = useState("");
@@ -52,6 +55,7 @@ export function TellLimitless({
     setUsedVoice(true);
   }, []);
   const mic = useSpeechInput(onHeard);
+  const micBusy = mic.starting || mic.listening || mic.processing;
 
   useEffect(() => {
     if (initiallyOpen && !dialog.current?.open) {
@@ -61,6 +65,8 @@ export function TellLimitless({
   }, [initiallyOpen]);
 
   const open = () => {
+    requestRun.current++;
+    operation.current = null;
     setPhase("compose");
     setText("");
     setUsedVoice(false);
@@ -71,18 +77,23 @@ export function TellLimitless({
   };
 
   const close = () => {
-    mic.stop();
+    requestRun.current++;
+    operation.current = null;
+    mic.cancel();
     if (canSpeak) window.speechSynthesis.cancel();
     dialog.current?.close();
   };
 
   const send = async () => {
+    if (operation.current || micBusy) return;
     if (!text.trim()) {
       setError("Tell us how it is going first.");
       textBox.current?.focus();
       return;
     }
-    mic.stop();
+    operation.current = "send";
+    const run = ++requestRun.current;
+    mic.cancel();
     setError(null);
     setPhase("sending");
     announce("Checking your plan.");
@@ -91,28 +102,38 @@ export function TellLimitless({
         transcript: text.trim(),
         input_mode: usedVoice ? "voice" : "text",
       });
+      if (run !== requestRun.current) return;
       setReplan(response.replan);
       setPhase("proposal");
       announce(response.replan.message);
       if (usedVoice) speak(response.replan.message);
     } catch (err) {
+      if (run !== requestRun.current) return;
       setPhase("compose");
       setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
       announce("We could not check your plan.", "assertive");
+    } finally {
+      if (run === requestRun.current) operation.current = null;
     }
   };
 
   const apply = async () => {
-    if (!replan) return;
+    if (!replan || operation.current) return;
+    operation.current = "apply";
+    const run = ++requestRun.current;
     setPhase("applying");
     try {
       const result = await api.applyVersion(trip.id, replan.version);
+      if (run !== requestRun.current) return;
       onApplied(result.trip, trip.version);
       close();
     } catch (err) {
+      if (run !== requestRun.current) return;
       setPhase("proposal");
       setError(err instanceof ApiError ? err.message : "We could not update your plan.");
       announce("We could not update your plan.", "assertive");
+    } finally {
+      if (run === requestRun.current) operation.current = null;
     }
   };
 
@@ -126,7 +147,8 @@ export function TellLimitless({
         ref={dialog}
         aria-labelledby="tell-heading"
         className="m-auto w-[min(36rem,calc(100%-2rem))] rounded-2xl border border-border bg-background p-0 text-foreground backdrop:bg-black/60"
-        onClose={() => mic.stop()}
+        onCancel={event => { if (operation.current === "apply") event.preventDefault(); else { requestRun.current++; operation.current = null; mic.cancel(); } }}
+        onClose={() => { if (!dialog.current?.open) { requestRun.current++; operation.current = null; mic.cancel(); } }}
       >
         <div className="p-6">
           <h2 id="tell-heading" className="text-xl font-bold">
@@ -155,6 +177,7 @@ export function TellLimitless({
                 }}
                 rows={4}
                 maxLength={2000}
+                readOnly={phase === "sending" || micBusy}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={error ? "tell-error" : undefined}
                 className="mt-2 w-full rounded-lg border border-border bg-surface p-3 text-base"
@@ -162,17 +185,18 @@ export function TellLimitless({
               {mic.supported && (
                 <button
                   type="button"
-                  onClick={mic.listening ? mic.stop : mic.start}
+                  onClick={mic.starting ? mic.cancel : mic.listening ? mic.stop : mic.start}
+                  disabled={phase === "sending" || mic.processing}
                   aria-pressed={mic.listening}
                   className={`${secondary} mt-3`}
                 >
                   <span aria-hidden="true">{mic.listening ? "■" : "🎤"}</span>
-                  <span className="ml-2">{mic.listening ? "Stop listening" : "Speak instead"}</span>
+                  <span className="ml-2">{mic.starting ? "Cancel microphone" : mic.processing ? "Turning speech into text…" : mic.listening ? "Stop listening" : "Speak instead"}</span>
                 </button>
               )}
-              {mic.listening && (
+              {micBusy && (
                 <p className="mt-2 text-sm text-muted" role="status">
-                  Listening… You can edit the text before you send it.
+                  {mic.starting ? "Allow microphone access in your browser." : mic.processing ? "Turning your speech into text…" : "Listening… Choose Stop listening when you are done."}
                 </p>
               )}
               {(error || mic.error) && (
@@ -181,7 +205,7 @@ export function TellLimitless({
                 </p>
               )}
               <div className="mt-6 flex flex-wrap gap-3">
-                <button type="submit" disabled={phase === "sending"} className={primary}>
+                <button type="submit" disabled={phase === "sending" || micBusy} className={primary}>
                   {phase === "sending" ? (
                     <span className="inline-flex items-center gap-2">
                       <Spinner size={16} />
@@ -244,7 +268,7 @@ export function TellLimitless({
                         "Apply"
                       )}
                     </button>
-                    <button type="button" onClick={close} className={secondary}>
+                    <button type="button" onClick={close} disabled={phase === "applying"} className={secondary}>
                       Keep my plan
                     </button>
                   </>

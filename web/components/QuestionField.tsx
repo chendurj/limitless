@@ -12,6 +12,7 @@ type Props = {
   value: FieldValue | undefined;
   otherValue: string;
   invalid: boolean;
+  hidePrompt?: boolean;
   onChange: (value: FieldValue) => void;
   onOtherChange: (text: string) => void;
 };
@@ -27,6 +28,7 @@ export function QuestionField({
   value,
   otherValue,
   invalid,
+  hidePrompt = false,
   onChange,
   onOtherChange,
 }: Props) {
@@ -42,7 +44,7 @@ export function QuestionField({
 
   const error = invalid ? (
     <p id={errorId} role="alert" className="mt-3 text-sm font-medium text-danger">
-      Please answer this to continue.
+      {question.inputType === "number" ? `Enter a whole number of ${question.id === "party_size" ? 1 : 0} or more.` : "Please answer this to continue."}
     </p>
   ) : null;
 
@@ -65,7 +67,8 @@ export function QuestionField({
           id={question.id}
           type={question.inputType}
           value={current}
-          min={question.inputType === "number" ? 0 : undefined}
+          min={question.inputType === "number" ? question.id === "party_size" ? 1 : 0 : undefined}
+          step={question.inputType === "number" ? 1 : undefined}
           aria-describedby={describedBy}
           aria-invalid={invalid || undefined}
           onChange={(e) => onChange(e.target.value)}
@@ -92,7 +95,7 @@ export function QuestionField({
 
     control = (
       <fieldset aria-describedby={describedBy}>
-        <legend className="text-lg font-semibold">{question.prompt}</legend>
+        <legend className={hidePrompt ? "sr-only" : "text-lg font-semibold"}>{question.prompt}</legend>
         {help}
         <ul className="mt-4 space-y-2">
           {question.options?.map((opt, index) => {
@@ -161,7 +164,7 @@ export function QuestionField({
 
     control = (
       <fieldset aria-describedby={describedBy}>
-        <legend className="text-lg font-semibold">{question.prompt}</legend>
+        <legend className={hidePrompt ? "sr-only" : "text-lg font-semibold"}>{question.prompt}</legend>
         {help}
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           {question.options?.map((opt, index) => (
@@ -178,6 +181,14 @@ export function QuestionField({
             </label>
           ))}
         </div>
+
+      </fieldset>
+    );
+  }
+
+  return (
+    <div data-question-id={question.id}>
+      {control}
         {question.allowOther && (
           <div className="mt-3">
             <label
@@ -195,13 +206,6 @@ export function QuestionField({
             />
           </div>
         )}
-      </fieldset>
-    );
-  }
-
-  return (
-    <div data-question-id={question.id}>
-      {control}
       {error}
       {/* One microphone per question. Words that match no option can go to "Something else". */}
       <QuestionVoiceInput
