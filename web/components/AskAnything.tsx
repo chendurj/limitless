@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useSpeechInput } from "@/lib/speech";
+import { Spinner } from "@/components/Spinner";
 
 type Message = { role: "user" | "assistant"; content: string };
 const allowedPaths = new Set([
@@ -108,7 +109,7 @@ export function AskAnything() {
             ))}
             {pending && <div className="ml-4 rounded-xl bg-white/10 p-3"><p className="mb-1 text-xs font-semibold text-teal-200">You</p><p className="whitespace-pre-wrap break-words">{pendingQuestion}</p></div>}
           </div>
-          <p role="status" className="text-zinc-400">{pending ? "Limitless is thinking…" : ""}</p>
+          <p role="status" className="flex items-center gap-2 text-zinc-400">{pending && <><Spinner size={16} className="text-teal-300" />Limitless is thinking…</>}</p>
           {error && <p role="alert" className="mt-2 text-rose-200">{error} Send your question again to retry.</p>}
           <p className="mt-3 text-xs text-zinc-400">Chat stays on this page until you leave. Avoid sensitive details. AI can make mistakes; venue access needs sourced verification.</p>
         </div>
