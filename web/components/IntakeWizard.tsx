@@ -166,7 +166,11 @@ function IntakeWizardForm({ storageKey }: { storageKey: string }) {
 
   // After the last step, hand the answers to the API submit + review flow.
   if (done) {
-    return <IntakeSubmit answers={answers} others={others} onBack={() => setDone(false)} />;
+    // The trip exists now, so the next "Plan a trip" starts a new form at step one.
+    const clearDraft = () => {
+      try { localStorage.removeItem(storageKey); } catch { /* Storage may be blocked. */ }
+    };
+    return <IntakeSubmit answers={answers} others={others} onBack={() => setDone(false)} onCreated={clearDraft} />;
   }
 
   if (!current) return null;
