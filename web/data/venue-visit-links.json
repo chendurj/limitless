@@ -1,0 +1,451 @@
+{
+  "description": "Official ticket, event, reservation and information links. Link review is not accessibility verification or availability checking. No generated booking URLs, prices or live inventory.",
+  "venues": [
+    {
+      "catalog_id": "sd-001",
+      "name": "Coronado Central Beach",
+      "kind": "visit",
+      "url": "https://www.coronado.ca.us/246/Beach-Wheelchair-Program",
+      "source_url": "https://www.coronado.ca.us/246/Beach-Wheelchair-Program",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.coronado.ca.us/246/Beach-Wheelchair-Program",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-002",
+      "name": "Mission Beach Boardwalk",
+      "kind": "visit",
+      "url": "https://www.sandiego.gov/park-and-recreation/activities/trs/beachwheelchair",
+      "source_url": "https://www.sandiego.gov/park-and-recreation/activities/trs/beachwheelchair",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.sandiego.gov/park-and-recreation/activities/trs/beachwheelchair",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-003",
+      "name": "Pacific Beach Boardwalk",
+      "kind": "visit",
+      "url": "https://www.sandiego.gov/lifeguards/safety/bchreg",
+      "source_url": "https://www.sandiego.gov/lifeguards/safety/bchreg",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.sandiego.gov/lifeguards/safety/bchreg",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-004",
+      "name": "La Jolla Shores",
+      "kind": "visit",
+      "url": "https://www.sandiego.gov/lifeguards/beaches/shores",
+      "source_url": "https://www.sandiego.gov/lifeguards/beaches/shores",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.sandiego.gov/lifeguards/beaches/shores",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-005",
+      "name": "Ocean Beach Waterfront",
+      "kind": "visit",
+      "url": "https://www.sandiego.gov/lifeguards/beaches/ob",
+      "source_url": "https://www.sandiego.gov/lifeguards/beaches/ob",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.sandiego.gov/lifeguards/beaches/ob",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-006",
+      "name": "Silver Strand Beach",
+      "kind": "visit",
+      "url": "https://parks.ca.gov/AccessibleFeatures/Details/654",
+      "source_url": "https://parks.ca.gov/AccessibleFeatures/Details/654",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://parks.ca.gov/AccessibleFeatures/Details/654",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-011",
+      "name": "Cabrillo Bay Overlook",
+      "kind": "visit",
+      "url": "https://www.nps.gov/cabr/planyourvisit/mobilityservices.htm",
+      "source_url": "https://www.nps.gov/cabr/planyourvisit/mobilityservices.htm",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.nps.gov/cabr/planyourvisit/mobilityservices.htm",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-012",
+      "name": "Sunset Cliffs Viewpoint",
+      "kind": "visit",
+      "url": "https://www.sandiego.gov/park-and-recreation/parks/regional/shoreline/sunset",
+      "source_url": "https://www.sandiego.gov/park-and-recreation/parks/regional/shoreline/sunset",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.sandiego.gov/park-and-recreation/parks/regional/shoreline/sunset",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-015",
+      "name": "Torrey Pines Outlook",
+      "kind": "visit",
+      "url": "https://parks.ca.gov/NewsRelease/1578",
+      "source_url": "https://parks.ca.gov/NewsRelease/1578",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://parks.ca.gov/NewsRelease/1578",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-021",
+      "name": "Torrey Pines Nature Trail",
+      "kind": "visit",
+      "url": "https://parks.ca.gov/NewsRelease/1578",
+      "source_url": "https://parks.ca.gov/NewsRelease/1578",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://parks.ca.gov/NewsRelease/1578",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-022",
+      "name": "Mission Trails Visitor Loop",
+      "kind": "visit",
+      "url": "https://mtrp.org/wp-content/uploads/2020/05/MTRP_Trail_Map_Apr_2020.pdf",
+      "source_url": "https://mtrp.org/wp-content/uploads/2020/05/MTRP_Trail_Map_Apr_2020.pdf",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://mtrp.org/wp-content/uploads/2020/05/MTRP_Trail_Map_Apr_2020.pdf",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-030",
+      "name": "San Elijo Lagoon Walk",
+      "kind": "visit",
+      "url": "https://www.encinitasca.gov/government/departments/parks-recreation-cultural-arts/parks-beaches-trails/trails-open-space/recommended-walks-hikes",
+      "source_url": "https://www.encinitasca.gov/government/departments/parks-recreation-cultural-arts/parks-beaches-trails/trails-open-space/recommended-walks-hikes",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.encinitasca.gov/government/departments/parks-recreation-cultural-arts/parks-beaches-trails/trails-open-space/recommended-walks-hikes",
+      "scope_note": "Confirm the exact entrance or route. This link does not establish access for the whole area."
+    },
+    {
+      "catalog_id": "sd-041",
+      "name": "San Diego Zoo",
+      "kind": "tickets",
+      "url": "https://zoo.sandiegozoo.org/tickets",
+      "source_url": "https://zoo.sandiegozoo.org/tickets",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://zoo.sandiegozoo.org/visit/guests-with-disabilities"
+    },
+    {
+      "catalog_id": "sd-042",
+      "name": "San Diego Zoo Safari Park",
+      "kind": "tickets",
+      "url": "https://sdzsafaripark.org/tickets",
+      "source_url": "https://sdzsafaripark.org/tickets",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://sdzsafaripark.org/guests-disabilities"
+    },
+    {
+      "catalog_id": "sd-043",
+      "name": "SeaWorld San Diego",
+      "kind": "tickets",
+      "url": "https://seaworld.com/san-diego/tickets/",
+      "source_url": "https://seaworld.com/san-diego/tickets/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://seaworld.com/san-diego/park-info/accessibility-guide/"
+    },
+    {
+      "catalog_id": "sd-044",
+      "name": "Birch Aquarium at Scripps",
+      "kind": "tickets",
+      "url": "https://tickets.aquarium.ucsd.edu/mainstore?vid=0",
+      "source_url": "https://tickets.aquarium.ucsd.edu/mainstore?vid=0",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://aquarium.ucsd.edu/plan-your-visit/faqs-and-rules"
+    },
+    {
+      "catalog_id": "sd-045",
+      "name": "Living Coast Discovery Center",
+      "kind": "tickets",
+      "url": "https://www.thelivingcoast.org/visit/admissions-tickets/",
+      "source_url": "https://www.thelivingcoast.org/visit/admissions-tickets/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.thelivingcoast.org/visit/accessibility-zoo-aquarium/"
+    },
+    {
+      "catalog_id": "sd-051",
+      "name": "USS Midway Museum",
+      "kind": "tickets",
+      "url": "https://www.midway.org/visit/buy-tickets",
+      "source_url": "https://www.midway.org/visit/buy-tickets",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.midway.org/visit/accessibility"
+    },
+    {
+      "catalog_id": "sd-052",
+      "name": "Museum of Us",
+      "kind": "tickets",
+      "url": "https://museumofus.org/your-visit",
+      "source_url": "https://museumofus.org/your-visit",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://museumofus.org/your-visit",
+      "notice": "The California Tower requires stairs. Museum admission does not establish access to the tower."
+    },
+    {
+      "catalog_id": "sd-053",
+      "name": "San Diego Air and Space Museum",
+      "kind": "visit",
+      "url": "https://sandiegoairandspace.org/visit",
+      "source_url": "https://sandiegoairandspace.org/visit",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://sandiegoairandspace.org/visit/frequently-asked-questions",
+      "aliases": [
+        "San Diego Air & Space Museum"
+      ]
+    },
+    {
+      "catalog_id": "sd-054",
+      "name": "San Diego Natural History Museum",
+      "kind": "visit",
+      "url": "https://www.sdnhm.org/visit/",
+      "source_url": "https://www.sdnhm.org/visit/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.sdnhm.org/visit/accessibility/"
+    },
+    {
+      "catalog_id": "sd-055",
+      "name": "Maritime Museum of San Diego",
+      "kind": "visit",
+      "url": "https://sdmaritime.org/visit/",
+      "source_url": "https://sdmaritime.org/visit/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://sdmaritime.org/about-the-maritime-museum/ada-policies-donations-jobs/ada-visitors-information/"
+    },
+    {
+      "catalog_id": "sd-057",
+      "name": "Junipero Serra Museum",
+      "kind": "visit",
+      "url": "https://sandiegohistory.org/accessibility/",
+      "source_url": "https://sandiegohistory.org/accessibility/",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://sandiegohistory.org/accessibility/",
+      "notice": "The operator states that the Serra Museum and presidio site are not currently ADA-accessible."
+    },
+    {
+      "catalog_id": "sd-058",
+      "name": "San Diego History Center",
+      "kind": "visit",
+      "url": "https://sandiegohistory.org/accessibility/",
+      "source_url": "https://sandiegohistory.org/accessibility/",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://sandiegohistory.org/accessibility/"
+    },
+    {
+      "catalog_id": "sd-061",
+      "name": "Fleet Science Center",
+      "kind": "visit",
+      "url": "https://www.fleetscience.org/visit-fleet-science-center",
+      "source_url": "https://www.fleetscience.org/visit-fleet-science-center",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.fleetscience.org/accessibility"
+    },
+    {
+      "catalog_id": "sd-062",
+      "name": "San Diego Museum of Art",
+      "kind": "tickets",
+      "url": "https://www.sdmart.org/visit-sdma/",
+      "source_url": "https://www.sdmart.org/visit-sdma/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.sdmart.org/accessibility"
+    },
+    {
+      "catalog_id": "sd-063",
+      "name": "Mingei International Museum",
+      "kind": "tickets",
+      "url": "https://mingei.org/visit",
+      "source_url": "https://mingei.org/visit",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://mingei.org/visit/"
+    },
+    {
+      "catalog_id": "sd-064",
+      "name": "Timken Museum of Art",
+      "kind": "visit",
+      "url": "https://www.timkenmuseum.org/accessibility",
+      "source_url": "https://www.timkenmuseum.org/accessibility",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "accessibility_url": "https://www.timkenmuseum.org/accessibility"
+    },
+    {
+      "catalog_id": "sd-065",
+      "name": "Museum of Contemporary Art San Diego",
+      "kind": "visit",
+      "url": "https://mcasd.org/visit",
+      "source_url": "https://mcasd.org/visit",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://mcasd.org/accessibility"
+    },
+    {
+      "catalog_id": "sd-066",
+      "name": "New Children's Museum",
+      "kind": "tickets",
+      "url": "https://thinkplaycreate.org/visit/",
+      "source_url": "https://thinkplaycreate.org/visit/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://thinkplaycreate.org/visit/accessibility/",
+      "aliases": [
+        "The New Children's Museum"
+      ]
+    },
+    {
+      "catalog_id": "sd-072",
+      "name": "Japanese Friendship Garden",
+      "kind": "tickets",
+      "url": "https://www.niwa.org/visit",
+      "source_url": "https://www.niwa.org/visit",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.niwa.org/garden-information"
+    },
+    {
+      "catalog_id": "sd-081",
+      "name": "Belmont Park",
+      "kind": "tickets",
+      "url": "https://www.belmontpark.com/tickets-reservation",
+      "source_url": "https://www.belmontpark.com/tickets-reservation",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "scope_note": "Check individual ride requirements. The existing accessibility source covers the website, not physical park access."
+    },
+    {
+      "catalog_id": "sd-082",
+      "name": "LEGOLAND California",
+      "kind": "tickets",
+      "url": "https://www.legoland.com/california/tickets-passes/",
+      "source_url": "https://www.legoland.com/california/tickets-passes/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.legoland.com/california/our-company/blog/legoland-accessibility-guide/"
+    },
+    {
+      "catalog_id": "sd-083",
+      "name": "Sesame Place San Diego",
+      "kind": "tickets",
+      "url": "https://sesameplace.com/san-diego/tickets/",
+      "source_url": "https://sesameplace.com/san-diego/tickets/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://sesameplace.com/san-diego/help/accessibility-guide/"
+    },
+    {
+      "catalog_id": "sd-089",
+      "name": "Coronado Playhouse",
+      "kind": "events",
+      "url": "https://www.coronadoplayhouse.org/",
+      "source_url": "https://www.coronadoplayhouse.org/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.coronadoplayhouse.org/plan-your-visit/",
+      "scope_note": "Choose an actual performance and confirm accessible seating and any support you need with the venue."
+    },
+    {
+      "catalog_id": "sd-090",
+      "name": "Old Globe Theatre",
+      "kind": "events",
+      "url": "https://www.theoldglobe.org/",
+      "source_url": "https://www.theoldglobe.org/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.theoldglobe.org/plan-your-visit/accessibility/",
+      "scope_note": "Choose an actual performance and confirm accessible seating and any support you need with the venue."
+    },
+    {
+      "catalog_id": "sd-092",
+      "name": "Snapdragon Stadium",
+      "kind": "events",
+      "url": "https://www.snapdragonstadium.com/events",
+      "source_url": "https://www.snapdragonstadium.com/events",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.snapdragonstadium.com/accessibility",
+      "scope_note": "Choose an actual performance and confirm accessible seating and any support you need with the venue."
+    },
+    {
+      "catalog_id": "sd-093",
+      "name": "Pechanga Arena",
+      "kind": "events",
+      "url": "https://pechangaarenasd.com/events/",
+      "source_url": "https://pechangaarenasd.com/events/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://pechangaarenasd.com/plan-your-visit/venue-accessibility/",
+      "scope_note": "Choose an actual performance and confirm accessible seating and any support you need with the venue."
+    },
+    {
+      "catalog_id": "sd-101",
+      "name": "Seaport Village",
+      "kind": "visit",
+      "url": "https://www.seaportvillage.com/ada",
+      "source_url": "https://www.seaportvillage.com/ada",
+      "reviewed_on": "2026-10-17",
+      "review_method": "existing_research_source",
+      "scope_note": "The existing source covers website accessibility. Physical access and tenant entrances still need checking."
+    },
+    {
+      "catalog_id": "sd-112",
+      "name": "Civico 1845",
+      "kind": "reservation",
+      "url": "https://civico1845.com/",
+      "source_url": "https://civico1845.com/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://civico1845.com/accessibility-parking-patio-amenities-at-civico-1845/"
+    },
+    {
+      "catalog_id": "sd-164",
+      "name": "Donna Jean",
+      "kind": "reservation",
+      "url": "https://donnajeanrestaurant.com/",
+      "source_url": "https://donnajeanrestaurant.com/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://donnajeanrestaurant.com/faq",
+      "scope_note": "Use the San Diego reservation option. Confirm the address and your access needs with the restaurant."
+    },
+    {
+      "catalog_id": "sd-181",
+      "name": "Rady Shell at Jacobs Park",
+      "kind": "events",
+      "url": "https://www.theshell.org/",
+      "source_url": "https://www.theshell.org/",
+      "reviewed_on": "2026-10-18",
+      "review_method": "official_page_review",
+      "accessibility_url": "https://www.theshell.org/plan-your-visit/venue-accessibility/",
+      "scope_note": "Choose an actual performance and confirm accessible seating and any support you need with the venue."
+    }
+  ]
+}
