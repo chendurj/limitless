@@ -424,3 +424,14 @@ def test_a_visit_past_the_end_of_the_day_is_left_out(ankle):  # noqa: F811
     facts = {p.id: facts_for(p.id) for p in places}
     t = build_trip(open_day(ankle), places, facts, start_date=START, nights=1, today=TODAY)
     assert not any(i.place and i.place.id == "show" for d in t.days for i in d.items)
+
+
+def test_every_day_has_an_activity_a_meal_and_one_more_stop(ankle):  # noqa: F811
+    t = trip(ankle)
+    for day in t.days:
+        kinds = [i.kind for i in day.items if i.place]
+        visits = kinds.count("visit")
+        meals = kinds.count("meal")  # cafes and dessert stops are also "meal" items
+        assert visits >= 1 and meals >= 1, kinds
+        assert visits + meals >= 3, kinds  # the third stop: a light stop or a second visit
+        assert day.energy_used <= day.energy_budget

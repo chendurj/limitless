@@ -113,10 +113,12 @@ def build_trip(
             notes = _compose_with_llm(composer, dna, days, limits)
         except LLMUnavailable as error:
             log.warning("composer failed, using greedy picks: %s", error)
+    snacks = sorted((c for c in kept if c.kind == "snack"), key=lambda c: c.ev.score, reverse=True)
     for day in days:
         if day.picks is None:
             day.picks, day.theme = _greedy(day, dna, limits, days)
         _fill_meals(day, days, dna)
+        _add_light_stop(day, days, dna, snacks)
 
     day_outs = []
     for day in days:
@@ -330,6 +332,27 @@ def _fill_meals(day: DayDraft, days: list[DayDraft], dna: AccessibilityDNA) -> N
         if meal:
             day.picks.append(_pick(meal, slot, dna))
             taken.add(meal.place.id)
+
+
+def _add_light_stop(
+    day: DayDraft, days: list[DayDraft], dna: AccessibilityDNA, snacks: list[Candidate]
+) -> None:
+    """At least 3 stops a day: an activity, a meal, and one more.
+
+    The third stop is a cafe, dessert shop or quiet rest stop, never a second activity:
+    a seated stop uses no energy, so the day stays inside the traveler's energy budget.
+    Nearby places come first. If none is left, the day keeps fewer stops.
+    """
+    assert day.picks is not None
+    visits = sum(1 for p in day.picks if p.cand.kind == "visit")
+    if visits >= 2 or any(p.cand.kind == "snack" for p in day.picks):
+        return
+    taken = {p.cand.place.id for d in days if d.picks for p in d.picks}
+    pool = [c for c in [*day.snacks, *snacks] if c.place.id not in taken]
+    local = [c for c in pool if nearby(c.place.neighborhood, day.clusters)]
+    pick = (local or pool or [None])[0]
+    if pick is not None:
+        day.picks.append(_pick(pick, "afternoon", dna))
 
 
 def _mode(dna: AccessibilityDNA) -> str:
