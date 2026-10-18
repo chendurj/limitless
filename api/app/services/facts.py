@@ -49,6 +49,24 @@ def trust(fact: "Fact") -> float:
     return min(SOURCE_TRUST.get(fact.source, 0.3), CONF_CAP[fact.confidence])
 
 
+def agreed_trust(effective: "Fact", facts: list["Fact"]) -> float:
+    """0-1: trust in the effective value, raised when other sources state the same value.
+
+    Each agreeing source is treated as an independent check: 1 - product(1 - trust).
+    Demo data agreeing with an official page adds a little; two demo rows of the same
+    value never come from different sources, so only distinct sources count.
+    """
+    best: dict[str, float] = {}
+    for fact in facts:
+        if fact.attribute == effective.attribute and fact.value == effective.value:
+            best[fact.source] = max(best.get(fact.source, 0.0), trust(fact))
+    best[effective.source] = max(best.get(effective.source, 0.0), trust(effective))
+    doubt = 1.0
+    for value in best.values():
+        doubt *= 1 - value
+    return round(1 - doubt, 3)
+
+
 # Values that count as negative evidence for each attribute. Default: {"no"}.
 NEGATIVE: dict[str, set[str]] = {
     "status": {"closed", "partial"},

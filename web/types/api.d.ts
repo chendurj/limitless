@@ -561,6 +561,8 @@ export interface components {
             accessibility_score?: number | null;
             /** Verification Score */
             verification_score?: number | null;
+            /** Verification Note */
+            verification_note?: string | null;
         };
         /** ItemPatch */
         ItemPatch: {

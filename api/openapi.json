@@ -1956,6 +1956,17 @@
               }
             ],
             "title": "Verification Score"
+          },
+          "verification_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verification Note"
           }
         },
         "additionalProperties": false,

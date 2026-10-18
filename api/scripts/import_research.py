@@ -26,6 +26,22 @@ from app.config import get_settings
 
 RESEARCH = Path(__file__).resolve().parents[2] / "data" / "locations-research.json"
 CSV = Path(__file__).resolve().parents[2] / "data" / "demo-san-diego-locations-200.csv"
+# Facts a team member (or a research agent, reviewed by a team member) read on an official
+# page, each with the exact quote and the URL. Used for places with or without research.
+VERIFIED = Path(__file__).resolve().parents[2] / "data" / "verified-facts.json"
+ATTRIBUTES = {
+    "entrance_step_free", "restroom_accessible", "parking_accessible", "dropoff_zone", "elevator",
+    "stairs", "terrain", "max_slope", "typical_walk_m", "seating", "shade", "wheelchair_rental",
+    "ecv_rental", "beach_wheelchair", "beach_mat", "captions_asl", "assistive_listening",
+    "audio_description", "braille_tactile", "service_animal_ok", "quiet_space", "sensory_kit",
+    "online_booking", "booking_phone_only", "text_contact", "kiosk_or_app_ordering", "status",
+    "edge_hazard", "ada_accessible",
+}  # fmt: skip
+# An official value removes demo values that contradict it.
+CONFLICTS = {
+    ("online_booking", "yes"): "booking_phone_only",
+    ("booking_phone_only", "yes"): "online_booking",
+}
 
 # location_id -> [(attribute, value, detail, index of the source in "sources", confidence)]
 # Copied by hand from the research summaries, which quote the official pages.
@@ -35,14 +51,14 @@ C, V = "COMMUNITY", "VERIFIED"
 CHECKED_ON = date(2026, 10, 18)
 OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
     "sd-021": [
-        ("status", "closed", "The reserve and all its trails are closed until March 2027.", 0, C)
+        ("status", "closed", "The reserve and all its trails are closed until March 2027.", 0, V)
     ],
     "sd-041": [
-        ("max_slope", "steep", "Steep grades in parts of the grounds.", 0, C),
-        ("wheelchair_rental", "yes", "Wheelchair and scooter rentals near the entrance.", 0, C),
+        ("max_slope", "steep", "Steep grades in parts of the grounds.", 0, V),
+        ("wheelchair_rental", "yes", "Wheelchair and scooter rentals near the entrance.", 0, V),
     ],
     "sd-043": [
-        ("parking_accessible", "yes", "Accessible and van-accessible parking.", 0, C),
+        ("parking_accessible", "yes", "Accessible and van-accessible parking.", 0, V),
         (
             "restroom_accessible",
             "yes",
@@ -50,7 +66,8 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
             0,
             C,
         ),
-        ("wheelchair_rental", "yes", "Wheelchair and scooter rentals.", 0, C),
+        ("wheelchair_rental", "yes", "Wheelchair and scooter rentals.", 0, V),
+        ("captions_asl", "partial", "Free ASL interpreters on request.", 0, V),
     ],
     "sd-044": [
         (
@@ -60,8 +77,8 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
             0,
             C,
         ),
-        ("parking_accessible", "yes", "Designated accessible parking.", 0, C),
-        ("dropoff_zone", "yes", "Drop-off in the front entrance traffic circle.", 0, C),
+        ("parking_accessible", "yes", "Designated accessible parking.", 0, V),
+        ("dropoff_zone", "yes", "Drop-off in the front entrance traffic circle.", 0, V),
     ],
     "sd-051": [
         ("captions_asl", "yes", "Prerecorded ASL tour with captions on a handheld device.", 0, V),
@@ -75,13 +92,13 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
         ),
     ],
     "sd-052": [
-        ("entrance_step_free", "yes", "Ramps at the plaza and to Evernham Hall.", 0, C),
-        ("elevator", "yes", "An elevator and a lift in the east wing.", 0, C),
-        ("wheelchair_rental", "yes", "Free wheelchairs.", 0, C),
+        ("entrance_step_free", "yes", "Ramps at the plaza and to Evernham Hall.", 0, V),
+        ("elevator", "yes", "An elevator and a lift in the east wing.", 0, V),
+        ("wheelchair_rental", "yes", "Free wheelchairs.", 0, V),
     ],
     "sd-053": [
-        ("entrance_step_free", "yes", "The museum says it is fully wheelchair accessible.", 0, C),
-        ("wheelchair_rental", "yes", "Free wheelchairs, first come, first served.", 0, C),
+        ("entrance_step_free", "yes", "The museum says it is fully wheelchair accessible.", 0, V),
+        ("wheelchair_rental", "yes", "Free wheelchairs, first come, first served.", 0, V),
     ],
     "sd-054": [
         ("entrance_step_free", "yes", "Accessible north entrance near the large fig tree.", 0, V),
@@ -112,9 +129,9 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
         ("restroom_accessible", "yes", "Several wheelchair-accessible restrooms.", 0, V),
     ],
     "sd-062": [
-        ("entrance_step_free", "yes", "Ramp at the east end of the front of the building.", 0, C),
-        ("restroom_accessible", "yes", "Accessible restrooms in the Rotunda and Gallery 15.", 0, C),
-        ("assistive_listening", "yes", "Headsets for screenings and lectures.", 0, C),
+        ("entrance_step_free", "yes", "Ramp at the east end of the front of the building.", 0, V),
+        ("restroom_accessible", "yes", "Accessible restrooms in the Rotunda and Gallery 15.", 0, V),
+        ("assistive_listening", "yes", "Headsets for screenings and lectures.", 0, V),
     ],
     "sd-063": [
         (
@@ -124,7 +141,8 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
             0,
             C,
         ),
-        ("elevator", "yes", "Elevators to the exhibition and lower levels.", 0, C),
+        ("elevator", "yes", "Elevators to the exhibition and lower levels.", 0, V),
+        ("parking_accessible", "yes", "ADA parking in the Alcazar and Organ Pavilion lots.", 0, V),
     ],
     "sd-064": [
         ("entrance_step_free", "yes", "Ramp to the left of the entrance.", 0, V),
@@ -132,15 +150,18 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
         ("captions_asl", "partial", "ASL tours on the first Saturday of each month only.", 1, V),
     ],
     "sd-065": [
-        ("entrance_step_free", "yes", "Ramps and power doors at both entrances.", 0, C),
-        ("elevator", "yes", "Elevators.", 0, C),
-        ("restroom_accessible", "yes", "Wheelchair-accessible restrooms.", 0, C),
-        ("quiet_space", "yes", "A Calm Room.", 0, C),
+        ("entrance_step_free", "yes", "Ramps and power doors at both entrances.", 0, V),
+        ("elevator", "yes", "Elevators.", 0, V),
+        ("restroom_accessible", "yes", "Wheelchair-accessible restrooms.", 0, V),
+        ("quiet_space", "yes", "A Calm Room.", 0, V),
+        ("assistive_listening", "yes", "SoundMate listening devices.", 0, V),
     ],
     "sd-066": [
-        ("entrance_step_free", "yes", "Automatic front door.", 0, C),
-        ("elevator", "yes", "A public elevator to every level.", 0, C),
-        ("quiet_space", "yes", "A Breathing Room on the main level.", 0, C),
+        ("entrance_step_free", "yes", "Automatic front door.", 0, V),
+        ("elevator", "yes", "A public elevator to every level.", 0, V),
+        ("quiet_space", "yes", "A Breathing Room on the main level.", 0, V),
+        ("restroom_accessible", "yes", "Accessible restrooms on all three floors.", 0, V),
+        ("parking_accessible", "yes", "Disabled parking spaces on Island Avenue.", 0, V),
     ],
     "sd-057": [
         (
@@ -151,12 +172,27 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
             C,
         ),
     ],
-    "sd-089": [("entrance_step_free", "yes", "Ground-level entrance with no steps.", 0, C)],
-    "sd-090": [
-        ("assistive_listening", "yes", "Listening systems in all three theaters.", 0, C),
-        ("captions_asl", "partial", "Open captions at selected performances only.", 0, C),
+    "sd-089": [
+        ("entrance_step_free", "yes", "Ground-level entrance with no steps.", 0, V),
+        (
+            "restroom_accessible",
+            "yes",
+            "Wheelchair-accessible restrooms in the community center.",
+            0,
+            V,
+        ),
+        ("assistive_listening", "yes", "Listening devices at the box office.", 0, V),
     ],
-    "sd-093": [("elevator", "no", "No elevators or escalators.", 0, C)],
+    "sd-090": [
+        ("assistive_listening", "yes", "Listening systems in all three theaters.", 0, V),
+        ("captions_asl", "partial", "Open captions at selected performances only.", 0, V),
+    ],
+    "sd-093": [
+        ("elevator", "no", "No elevators or escalators.", 0, V),
+        ("entrance_step_free", "yes", "A ramp at the North Entrance.", 0, V),
+        ("restroom_accessible", "yes", "Accessible restrooms on the outer concourse.", 0, V),
+        ("assistive_listening", "yes", "Listening devices, with an ID deposit.", 0, V),
+    ],
 }
 
 
@@ -218,7 +254,43 @@ def apply(conn: psycopg.Connection) -> tuple[int, int]:
                 ],
             )
             facts += 1
+    facts += _apply_verified(cur, slug_of)
     return updated, facts
+
+
+def _apply_verified(cur, slug_of: dict[str, str]) -> int:
+    if not VERIFIED.exists():
+        return 0
+    data = json.loads(VERIFIED.read_text())
+    checked_on = date.fromisoformat(data["checked_on"])
+    added = 0
+    for fact in data["facts"]:
+        if fact["attribute"] not in ATTRIBUTES or not fact.get("url", "").startswith("https://"):
+            continue
+        row = cur.execute(
+            "select id from places where slug = %s", [slug_of.get(fact["location_id"])]
+        ).fetchone()
+        if row is None:
+            continue
+        cur.execute(
+            "delete from place_accessibility where place_id = %s and attribute = %s",
+            [row[0], fact["attribute"]],
+        )
+        conflict = CONFLICTS.get((fact["attribute"], fact["value"]))
+        if conflict:
+            cur.execute(
+                """delete from place_accessibility
+                   where place_id = %s and attribute = %s and source = 'demo_data'""",
+                [row[0], conflict],
+            )
+        cur.execute(
+            """insert into place_accessibility (place_id, attribute, value, detail, confidence,
+                   source, source_url, verified_at)
+               values (%s, %s, %s, %s, 'VERIFIED', 'official', %s, %s)""",
+            [row[0], fact["attribute"], fact["value"], fact["detail"], fact["url"], checked_on],
+        )
+        added += 1
+    return added
 
 
 def main(dry_run: bool) -> None:

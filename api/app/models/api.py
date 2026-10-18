@@ -182,6 +182,7 @@ class ItemOut(Model):
     insights: list[Insight]
     accessibility_score: int | None = None  # 0-100: how well the place fits this traveler
     verification_score: int | None = None  # 0-100: trust in the facts behind that fit
+    verification_note: str | None = None  # e.g. "2 of 3 checks from official pages"
 
 
 class Weather(Model):

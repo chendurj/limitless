@@ -1,0 +1,636 @@
+{
+ "checked_on": "2026-10-18",
+ "note": "Each fact was read on the official page at the url; the quote is the exact text. Reviewed by the team before import.",
+ "facts": [
+  {
+   "location_id": "sd-024",
+   "place": "Los Penasquitos Canyon Preserve",
+   "attribute": "shade",
+   "value": "some",
+   "detail": "The creek-side single-track trails are shady. The wide access road is sunny.",
+   "quote": "Trail users can take single track trails near the creek with near constant shade, or venture out to a wider, sunnier trail and access road.",
+   "url": "https://www.sdparks.org/content/sdparks/en/park-pages/LosPenasquitos.html"
+  },
+  {
+   "location_id": "sd-026",
+   "place": "Lake Miramar (Miramar Reservoir)",
+   "attribute": "seating",
+   "value": "some",
+   "detail": "There are picnic tables. The reservoir closes on the first Tuesday of each month.",
+   "quote": "Picnic Tables",
+   "url": "https://www.sandiego.gov/reservoirs-lakes/miramar-reservoir"
+  },
+  {
+   "location_id": "sd-027",
+   "place": "Marian Bear Memorial Park (San Clemente Canyon)",
+   "attribute": "max_slope",
+   "value": "gentle",
+   "detail": "The main canyon trail is mostly flat. The side-canyon trails up to the mesa are harder.",
+   "quote": "The public can enjoy over three miles of mostly flat trails along the canyon's length.",
+   "url": "https://www.sandiego.gov/park-and-recreation/parks/osp/marianbear"
+  },
+  {
+   "location_id": "sd-056",
+   "place": "Whaley House Museum",
+   "attribute": "elevator",
+   "value": "no",
+   "detail": "No elevator; wheelchair access is on the first floor only.",
+   "quote": "Wheelchair access available only on the first floor; no elevators on-site.",
+   "url": "https://whaleyhousesandiego.com/?p=1052"
+  },
+  {
+   "location_id": "sd-056",
+   "place": "Whaley House Museum",
+   "attribute": "service_animal_ok",
+   "value": "yes",
+   "detail": "Service dogs are allowed.",
+   "quote": "Service dogs allowed.",
+   "url": "https://whaleyhousesandiego.com/?p=1052"
+  },
+  {
+   "location_id": "sd-067",
+   "place": "Comic-Con Museum",
+   "attribute": "service_animal_ok",
+   "value": "yes",
+   "detail": "Service animals are welcome inside the museum.",
+   "quote": "Service animals required to assist with a disability are welcome inside the Museum.",
+   "url": "https://www.comic-con.org/museum/visit/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "captions_asl",
+   "value": "partial",
+   "detail": "ASL interpreters for programs with three weeks notice; captions on videos where possible.",
+   "quote": "ICA attempts to provide option captioning on all videos where possible.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "elevator",
+   "value": "yes",
+   "detail": "Elevator connects both levels, including the accessible restroom.",
+   "quote": "All public areas between the two levels of the ICA are accessible by elevator, including the ADA-compliant restroom.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible from the front entrance.",
+   "quote": "ICA Central is wheelchair accessible from the front entrance and there is elevator access to the lower level gallery.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "parking_accessible",
+   "value": "yes",
+   "detail": "Accessible parking in the Alcazar lot behind the building.",
+   "quote": "Accessible parking is available in the Alcazar Parking Lot located behind our building, The House of Charm.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "restroom_accessible",
+   "value": "yes",
+   "detail": "One accessible, gender-neutral restroom on the lower level.",
+   "quote": "There is one gender neutral and accessible restroom on the lower level.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "seating",
+   "value": "some",
+   "detail": "Seating is available in the gallery.",
+   "quote": "The ICA has seating available in the gallery.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "sensory_kit",
+   "value": "yes",
+   "detail": "Free ear defenders and sensory bags at the front desk.",
+   "quote": "Sensory support bags containing fidgets and foam earplugs are available at the Front Desk.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "service_animal_ok",
+   "value": "yes",
+   "detail": "Service dogs are allowed; emotional support animals are not.",
+   "quote": "allows service dogs in all public areas of the ICA.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-069",
+   "place": "ICA San Diego Central",
+   "attribute": "wheelchair_rental",
+   "value": "yes",
+   "detail": "A few loaner wheelchairs, first come, first served.",
+   "quote": "The ICA has a limited number of wheelchairs for use by visitors on a first-come, first serve basis.",
+   "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-071",
+   "place": "Balboa Park El Prado",
+   "attribute": "parking_accessible",
+   "value": "yes",
+   "detail": "ADA parking spaces are in the Alcazar and Spreckels Organ Pavilion lots, near El Prado.",
+   "quote": "The nearest ADA parking spots are available in the Alcazar parking lot or the Spreckels Organ Pavilion parking lot.",
+   "url": "https://www.balboapark.org/accessibility/"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "attribute": "assistive_listening",
+   "value": "yes",
+   "detail": "Assistive listening devices are in use at the ballpark.",
+   "quote": "emergency information will be displayed on the video board and announced on the assistive listening devices",
+   "url": "https://www.mlb.com/padres/ballpark/accessibility-guide"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "attribute": "captions_asl",
+   "value": "partial",
+   "detail": "Public address announcements are captioned in the MLB Ballpark app; no ASL stated.",
+   "quote": "The Padres are pleased to offer closed captioning of the public address announcements here at Petco Park.",
+   "url": "https://www.mlb.com/padres/ballpark/accessibility-guide"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "attribute": "elevator",
+   "value": "yes",
+   "detail": "Elevators to the ballpark levels; guests with disabilities have priority.",
+   "quote": "Guests with disabilities have priority on all public elevators at Petco Park.",
+   "url": "https://www.mlb.com/padres/ballpark/accessibility-guide"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "attribute": "restroom_accessible",
+   "value": "yes",
+   "detail": "Family restrooms for guests with disabilities at Sections 109, 202, 219, 310 and 311.",
+   "quote": "Family restrooms are designated for families and guests with disabilities who require private accommodations",
+   "url": "https://www.mlb.com/padres/ballpark/accessibility-guide"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "attribute": "sensory_kit",
+   "value": "yes",
+   "detail": "KultureCity sensory bags with noise-cancelling headphones; ID required.",
+   "quote": "We are proud to partner with KultureCity and offer sensory bags at our Sensory Activation Vehicle",
+   "url": "https://www.mlb.com/padres/ballpark/accessibility-guide"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "attribute": "service_animal_ok",
+   "value": "yes",
+   "detail": "Trained service animals are welcome; emotional support animals are not.",
+   "quote": "Service animals are welcomed at Petco Park.",
+   "url": "https://www.mlb.com/padres/ballpark/accessibility-guide"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "attribute": "wheelchair_rental",
+   "value": "no",
+   "detail": "The ballpark does not lend wheelchairs; bring your own.",
+   "quote": "Wheelchairs cannot be \"checked out.\"",
+   "url": "https://www.mlb.com/padres/ballpark/accessibility-guide"
+  },
+  {
+   "location_id": "sd-104",
+   "place": "Westfield UTC",
+   "attribute": "parking_accessible",
+   "value": "yes",
+   "detail": "Accessible parking near the main center entrances.",
+   "quote": "Also, for your convenience, handicapped parking is located near the main center entrances.",
+   "url": "https://www.westfield.com/en/united-states/utc/services/wheelchairs"
+  },
+  {
+   "location_id": "sd-104",
+   "place": "Westfield UTC",
+   "attribute": "wheelchair_rental",
+   "value": "yes",
+   "detail": "Free wheelchairs from Westfield Security with photo ID, subject to availability.",
+   "quote": "Complimentary wheelchairs are available for our visitors with limited mobility.",
+   "url": "https://www.westfield.com/en/united-states/utc/services/wheelchairs"
+  },
+  {
+   "location_id": "sd-114",
+   "place": "Cucina Urbana",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order takeout online.",
+   "quote": "CUCINA urbana San Diego -> https://www.toasttab.com/cucina-urbana/v3/?mode=fulfillment",
+   "url": "https://www.urbankitchengroup.com/order-online/"
+  },
+  {
+   "location_id": "sd-114",
+   "place": "Cucina Urbana",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online on OpenTable.",
+   "quote": "Reservations -> https://www.opentable.com/cucina-urbana-reservations-san-diego?restref=3933 (listed under 'Bankers Hill, 505 Laurel Street')",
+   "url": "https://www.urbankitchengroup.com/reservations/"
+  },
+  {
+   "location_id": "sd-115",
+   "place": "Buona Forchetta South Park",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order pickup or delivery online.",
+   "quote": "ORDER PICK-UP + DELIVERY -> https://order.toasttab.com/online/officine-buona-forchetta-south-park-252-n-el-camino-real-ste-5",
+   "url": "https://buonaforchettasd.com/"
+  },
+  {
+   "location_id": "sd-115",
+   "place": "Buona Forchetta South Park",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online on OpenTable.",
+   "quote": "Reserve at South Park -> https://www.opentable.com/restref/client/?restref=458953",
+   "url": "https://buonaforchettasd.com/"
+  },
+  {
+   "location_id": "sd-118",
+   "place": "Il Fornaio Coronado",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online.",
+   "quote": "Order Online -> https://www.ilfornaio.com/order-online/",
+   "url": "https://www.ilfornaio.com/location/il-fornaio-coronado/"
+  },
+  {
+   "location_id": "sd-118",
+   "place": "Il Fornaio Coronado",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Email the Coronado restaurant.",
+   "quote": "mailto:coronado@ilfo.com",
+   "url": "https://www.ilfornaio.com/location/il-fornaio-coronado/"
+  },
+  {
+   "location_id": "sd-119",
+   "place": "Piatti La Jolla",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order takeout online.",
+   "quote": "ORDER TAKEOUT -> https://www.toasttab.com/piatti-la-jolla",
+   "url": "https://lajolla.piatti.com/"
+  },
+  {
+   "location_id": "sd-121",
+   "place": "Puesto at the Headquarters",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online on OpenTable.",
+   "quote": "https://www.opentable.com/r/puesto-at-the-headquarters-reservations-san-diego?restref=113968 (reservation link on the San Diego locations page)",
+   "url": "https://www.eatpuesto.com/san-diego/"
+  },
+  {
+   "location_id": "sd-125",
+   "place": "Lucha Libre Taco Shop",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online for pickup.",
+   "quote": "Order Online -> https://order.luchalibretacoshop.com/",
+   "url": "https://www.luchalibretacoshop.com/"
+  },
+  {
+   "location_id": "sd-125",
+   "place": "Lucha Libre Taco Shop",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Send a message with the contact form.",
+   "quote": "Name (Required) ... Email (Required) ... Message: (Required)",
+   "url": "https://www.luchalibretacoshop.com/contact/"
+  },
+  {
+   "location_id": "sd-126",
+   "place": "Tahona Bar",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online on OpenTable.",
+   "quote": "Reserve on OpenTable -> https://www.opentable.com/restaurant/profile/1033258",
+   "url": "https://www.tahonabar.com/"
+  },
+  {
+   "location_id": "sd-128",
+   "place": "City Tacos North Park",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online.",
+   "quote": "ORDER ONLINE -> https://www.toasttab.com/city-tacos-north-park-3028-university-ave",
+   "url": "https://citytacossd.com/locations-north-park/"
+  },
+  {
+   "location_id": "sd-131",
+   "place": "Din Tai Fung UTC",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order pickup online.",
+   "quote": "Order Pick Up -> https://order.dtf.com/menu/din-tai-fung-utc",
+   "url": "https://dtf.com/en-us/locations/san-diego"
+  },
+  {
+   "location_id": "sd-131",
+   "place": "Din Tai Fung UTC",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online through the Yelp link on the restaurant's San Diego page.",
+   "quote": "Reserve -> https://www.yelp.com/reservations/din-tai-fung-san-diego-3",
+   "url": "https://dtf.com/en-us/locations/san-diego"
+  },
+  {
+   "location_id": "sd-152",
+   "place": "Point Loma Seafoods",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Email the market.",
+   "quote": "info@pointlomaseafoods.com",
+   "url": "https://pointlomaseafoods.com/"
+  },
+  {
+   "location_id": "sd-153",
+   "place": "Mitch's Seafood",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order takeout online for pickup.",
+   "quote": "Take Out For Pickup -> https://www.toasttab.com/mitchs-seafood-1403-scott-st/v3",
+   "url": "https://mitchsseafood.com/"
+  },
+  {
+   "location_id": "sd-154",
+   "place": "The Fish Market Harbor Drive",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online on OpenTable.",
+   "quote": "San Diego We are now open 750 N Harbor Dr ... Make Reservation -> https://www.opentable.com/r/fish-market-downtown-reservations-san-diego?restref=1423804",
+   "url": "https://www.thefishmarket.com/locations/"
+  },
+  {
+   "location_id": "sd-156",
+   "place": "C Level Lounge",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online on OpenTable.",
+   "quote": "RESERVATIONS -> https://www.opentable.com/island-prime-reservations-san-diego?restref=4855",
+   "url": "https://www.islandprime.com/"
+  },
+  {
+   "location_id": "sd-163",
+   "place": "Plant Power Fast Food",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online (chain-wide ordering site).",
+   "quote": "ORDER NOW -> https://order.plantpowerfastfood.com/",
+   "url": "https://www.plantpowerfastfood.com/"
+  },
+  {
+   "location_id": "sd-165",
+   "place": "Kindred",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Mostly walk-in; some tables can be booked online.",
+   "quote": "KINDRED offers primarily walk-in seating and some reservations (page embeds OpenTable widget rid=293692)",
+   "url": "https://barkindred.com/pages/reservations"
+  },
+  {
+   "location_id": "sd-170",
+   "place": "Peace Pies",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online from the Ocean Beach cafe.",
+   "quote": "ORDER FROM OCEAN BEACH -> https://www.clover.com/online-ordering/peace-pies-san-diego",
+   "url": "https://www.peacepies.com/"
+  },
+  {
+   "location_id": "sd-172",
+   "place": "Salt and Straw Little Italy",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order pickup or delivery online.",
+   "quote": "ORDER LOCAL PICKUP OR DELIVERY -> http://orders.saltandstraw.com/menu/salt-straw-little-italy",
+   "url": "https://saltandstraw.com/pages/little-italy"
+  },
+  {
+   "location_id": "sd-174",
+   "place": "Bobboi Natural Gelato",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Use the contact page to send a message.",
+   "quote": "Talk to Us -> https://www.bobboi.com/contact-us-bobboi",
+   "url": "https://www.bobboi.com/"
+  },
+  {
+   "location_id": "sd-176",
+   "place": "Better Buzz Point Loma",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order ahead online.",
+   "quote": "order now -> https://betterbuzzcoffee.olo.com/menu/better-buzz-coffee-point-loma",
+   "url": "https://betterbuzzcoffee.com/pages/point-loma-location"
+  },
+  {
+   "location_id": "sd-177",
+   "place": "Holy Matcha",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Email the cafe.",
+   "quote": "hello@holymatchasd.com",
+   "url": "https://www.holymatchasd.com/"
+  },
+  {
+   "location_id": "sd-179",
+   "place": "An's Dry Cleaning Gelato",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Buy pints online for pickup in North Park.",
+   "quote": "Purchase & Pick Up in North Park -> https://order.toasttab.com/online/ans-dry-cleaning",
+   "url": "https://adcgelato.com/contact-adcgelato/"
+  },
+  {
+   "location_id": "sd-179",
+   "place": "An's Dry Cleaning Gelato",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Email the shop.",
+   "quote": "Say Hi | hello@ansgelato.com",
+   "url": "https://adcgelato.com/contact-adcgelato/"
+  },
+  {
+   "location_id": "sd-182",
+   "place": "House of Blues San Diego",
+   "attribute": "assistive_listening",
+   "value": "yes",
+   "detail": "Assistive listening for Music Hall concerts; photo ID needed for a receiver.",
+   "quote": "Assistive Listening Devices are available for Music Hall concerts.",
+   "url": "https://sandiego.houseofblues.com/accessibility"
+  },
+  {
+   "location_id": "sd-182",
+   "place": "House of Blues San Diego",
+   "attribute": "captions_asl",
+   "value": "partial",
+   "detail": "Sign language interpreter on request, at least 2 weeks ahead by email.",
+   "quote": "If you will need an interpreter for an event, please email your request to HOBSDHelp@livenation.com",
+   "url": "https://sandiego.houseofblues.com/accessibility"
+  },
+  {
+   "location_id": "sd-182",
+   "place": "House of Blues San Diego",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "The venue states it has accessible entrances; ask the box office for the location.",
+   "quote": "There are accessible entrances and accessible parking at our location.",
+   "url": "https://sandiego.houseofblues.com/accessibility"
+  },
+  {
+   "location_id": "sd-182",
+   "place": "House of Blues San Diego",
+   "attribute": "parking_accessible",
+   "value": "yes",
+   "detail": "Accessible parking is available.",
+   "quote": "There are accessible entrances and accessible parking at our location.",
+   "url": "https://sandiego.houseofblues.com/accessibility"
+  },
+  {
+   "location_id": "sd-182",
+   "place": "House of Blues San Diego",
+   "attribute": "restroom_accessible",
+   "value": "yes",
+   "detail": "All restrooms are accessible.",
+   "quote": "All of the restrooms are accessible.",
+   "url": "https://sandiego.houseofblues.com/accessibility"
+  },
+  {
+   "location_id": "sd-182",
+   "place": "House of Blues San Diego",
+   "attribute": "service_animal_ok",
+   "value": "yes",
+   "detail": "ADA service animals allowed; they must stay on the floor.",
+   "quote": "Service Animals must remain on the floor and are not allowed on dining chairs or tables",
+   "url": "https://sandiego.houseofblues.com/accessibility"
+  },
+  {
+   "location_id": "sd-182",
+   "place": "House of Blues San Diego",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Accessibility requests can be sent by email to HOBSDHelp@livenation.com.",
+   "quote": "If you will need an interpreter for an event, please email your request to HOBSDHelp@livenation.com",
+   "url": "https://sandiego.houseofblues.com/accessibility"
+  },
+  {
+   "location_id": "sd-184",
+   "place": "The Observatory North Park",
+   "attribute": "captions_asl",
+   "value": "partial",
+   "detail": "Sign language interpretation on request, 2 weeks ahead; not guaranteed.",
+   "quote": "The Observatory North Park offers sign language interpretation upon request only.",
+   "url": "https://www.observatorysd.com/accessibility"
+  },
+  {
+   "location_id": "sd-184",
+   "place": "The Observatory North Park",
+   "attribute": "dropoff_zone",
+   "value": "yes",
+   "detail": "Drop off at the main entrance on Granada Ave.",
+   "quote": "If you wish to drop off a member of your party, please drop them off at the main entrance on Granada Ave.",
+   "url": "https://www.observatorysd.com/accessibility"
+  },
+  {
+   "location_id": "sd-184",
+   "place": "The Observatory North Park",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "The main entrance is fully accessible.",
+   "quote": "The main entrance to the Observatory North Park is fully accessible.",
+   "url": "https://www.observatorysd.com/accessibility"
+  },
+  {
+   "location_id": "sd-184",
+   "place": "The Observatory North Park",
+   "attribute": "restroom_accessible",
+   "value": "yes",
+   "detail": "Accessible restrooms on the main level in the lobby.",
+   "quote": "The accessible restrooms are located on the main level in the lobby.",
+   "url": "https://www.observatorysd.com/accessibility"
+  },
+  {
+   "location_id": "sd-184",
+   "place": "The Observatory North Park",
+   "attribute": "service_animal_ok",
+   "value": "yes",
+   "detail": "ADA service animals allowed; they must stay on the floor.",
+   "quote": "Service animals must remain on the floor and are not allowed on dining chairs or tables in our food and beverage locations.",
+   "url": "https://www.observatorysd.com/accessibility"
+  },
+  {
+   "location_id": "sd-184",
+   "place": "The Observatory North Park",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "Interpreter requests go by email to the box office.",
+   "quote": "observatorysdboxoffice@livenation.com",
+   "url": "https://www.observatorysd.com/accessibility"
+  },
+  {
+   "location_id": "sd-185",
+   "place": "Humphreys Concerts by the Bay",
+   "attribute": "assistive_listening",
+   "value": "yes",
+   "detail": "Assistive listening on request; call 619-224-3577 ahead.",
+   "quote": "Assistive listening systems are available upon request.",
+   "url": "https://www.humphreysconcerts.com/accessibility_info.cfm"
+  },
+  {
+   "location_id": "sd-185",
+   "place": "Humphreys Concerts by the Bay",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Accessible seats can be bought on Ticketmaster or at the box office.",
+   "quote": "Accessible seating can be purchased through Ticketmaster.com or in person at the Humphreys box office.",
+   "url": "https://www.humphreysconcerts.com/accessibility_info.cfm"
+  },
+  {
+   "location_id": "sd-185",
+   "place": "Humphreys Concerts by the Bay",
+   "attribute": "parking_accessible",
+   "value": "yes",
+   "detail": "Accessible parking next to the main concert entrance ($25).",
+   "quote": "Accessible parking is available next to the main concert entrance.",
+   "url": "https://www.humphreysconcerts.com/accessibility_info.cfm"
+  },
+  {
+   "location_id": "sd-185",
+   "place": "Humphreys Concerts by the Bay",
+   "attribute": "restroom_accessible",
+   "value": "yes",
+   "detail": "Single-occupancy accessible restrooms to the right of the stage.",
+   "quote": "Accessible restrooms are single occupancy and are located on the right side of the stage, near the pond/bridge area.",
+   "url": "https://www.humphreysconcerts.com/accessibility_info.cfm"
+  },
+  {
+   "location_id": "sd-185",
+   "place": "Humphreys Concerts by the Bay",
+   "attribute": "service_animal_ok",
+   "value": "yes",
+   "detail": "Service and guide dogs are welcome.",
+   "quote": "Service and Guide dogs for the sight impaired are welcome.",
+   "url": "https://www.humphreysconcerts.com/accessibility_info.cfm"
+  }
+ ]
+}

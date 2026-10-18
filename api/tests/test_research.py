@@ -43,3 +43,17 @@ def test_demo_variety_is_stable_and_only_uses_known_values():
     assert demo_variety.values("demo-cafe", "cafe", None, None).get("captions_asl") is None
     # Indoor places are flat or gently sloped.
     assert first["max_slope"][0] in ("flat", "gentle")
+
+
+def test_verified_facts_file_is_well_formed():
+    import json
+
+    if not import_research.VERIFIED.exists():
+        return
+    data = json.loads(import_research.VERIFIED.read_text())
+    slugs = import_research.slugs()
+    for fact in data["facts"]:
+        assert fact["location_id"] in slugs, fact
+        assert fact["attribute"] in import_research.ATTRIBUTES, fact
+        assert fact["url"].startswith("https://"), fact
+        assert fact["quote"].strip() and fact["detail"].strip(), fact
