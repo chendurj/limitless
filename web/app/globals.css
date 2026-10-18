@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/*
+  Limitless color system.
+
+  Goals:
+  - Easy on the eyes. Light mode uses a soft off-white, not pure white, to cut
+    glare. Dark mode uses a deep slate, not pure black, to reduce halation for
+    low-vision readers.
+  - WCAG 2.2 AA contrast. Every text/background pair is at least 4.5:1; most
+    body text is 7:1 or better. (Ratios are listed in the PR notes.)
+  - Color is never the only signal. Status and confidence always pair color
+    with an icon and words.
+*/
+
+:root {
+  --background: #f5f7fa; /* soft cool off-white */
+  --surface: #ffffff; /* cards, raised panels */
+  --surface-muted: #eef1f5; /* subtle fills, hover */
+  --accent-soft: #eaf4f1; /* gentle teal tint for hero / highlights */
+  --foreground: #121820; /* main text, ~15:1 on background */
+  --muted: #475569; /* secondary text, ~7:1 on background */
+  --border: #d9dee6;
+  --primary: #0b6b61; /* deep teal, white text ~5.3:1 */
+  --primary-hover: #085149;
+  --primary-foreground: #ffffff;
+  --focus: #1457d6; /* strong blue focus ring */
+  --danger: #b4231f; /* errors and excluded places */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0e141c;
+    --surface: #161d27;
+    --surface-muted: #1d2631;
+    --accent-soft: #15222a; /* subtle lift, not a glare patch */
+    --foreground: #e8edf3; /* ~14:1 on background */
+    --muted: #a3b0c0; /* ~7:1 on background */
+    --border: #2a3340;
+    --primary: #2fd4c0; /* lighter teal reads better on dark */
+    --primary-hover: #58e0cf;
+    --primary-foreground: #06201c; /* dark text on the light teal */
+    --focus: #6aa6ff;
+    --danger: #ff6b66;
+  }
+}
+
+/* Map the variables above to Tailwind utilities (bg-primary, text-muted, ...). */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-accent-soft: var(--accent-soft);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-focus: var(--focus);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible keyboard focus on every interactive element (WCAG 2.4.7). */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip link: off-screen until focused, then pinned to the top-left. */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 50;
+  transform: translateY(-150%);
+  background: var(--surface);
+  color: var(--foreground);
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--focus);
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: transform 0.15s ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Screen-reader-only text: used by the live regions and hidden labels. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Honor a reduced-motion preference (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

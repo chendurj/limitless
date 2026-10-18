@@ -1,0 +1,277 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  intakeScreens,
+  visibleScreens,
+  isVisible,
+  type AnswerMap,
+  type IntakeQuestion,
+  type IntakeScreen,
+} from "@/lib/intakeQuestions";
+import { useAnnounce } from "@/components/LiveRegion";
+import { QuestionField, type FieldValue } from "@/components/QuestionField";
+
+const STORAGE_KEY = "limitless_intake";
+
+type Answers = Record<string, FieldValue>;
+
+// The branching engine only reads simple values, so drop the must-nice object.
+function toAnswerMap(answers: Answers): AnswerMap {
+  const map: AnswerMap = {};
+  for (const [key, value] of Object.entries(answers)) {
+    if (typeof value === "string" || Array.isArray(value)) map[key] = value;
+  }
+  return map;
+}
+
+function isEmpty(value: FieldValue | undefined): boolean {
+  if (value == null) return true;
+  if (typeof value === "string") return value.trim() === "";
+  if (Array.isArray(value)) return value.length === 0;
+  return value.must.length === 0 && value.nice.length === 0;
+}
+
+// Turn a stored answer back into words for the recap screen.
+function readable(question: IntakeQuestion, value: FieldValue | undefined): string {
+  if (value == null) return "";
+  const labelOf = (v: string) =>
+    question.options?.find((o) => o.value === v)?.label ?? v;
+
+  if (typeof value === "object" && !Array.isArray(value)) {
+    const must = value.must.map(labelOf);
+    const nice = value.nice.map(labelOf);
+    return (
+      [must.length ? `Must: ${must.join(", ")}` : "", nice.length ? `Nice: ${nice.join(", ")}` : ""]
+        .filter(Boolean)
+        .join(" · ") || "None"
+    );
+  }
+  if (Array.isArray(value)) return value.map(labelOf).join(", ");
+  return labelOf(value);
+}
+
+export function IntakeWizard() {
+  const announce = useAnnounce();
+  const [answers, setAnswers] = useState<Answers>({});
+  const [others, setOthers] = useState<Record<string, string>>({});
+  const [index, setIndex] = useState(0);
+  const [done, setDone] = useState(false);
+  const [invalidIds, setInvalidIds] = useState<string[]>([]);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const loaded = useRef(false);
+
+  // Restore a saved, unfinished session once on mount.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (saved.answers) setAnswers(saved.answers);
+        if (saved.others) setOthers(saved.others);
+        if (typeof saved.index === "number") setIndex(saved.index);
+      }
+    } catch {
+      // Ignore unavailable or corrupt storage; the wizard still works.
+    }
+    loaded.current = true;
+  }, []);
+
+  // Persist after the initial load so we don't overwrite saved answers with {}.
+  useEffect(() => {
+    if (!loaded.current) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, others, index }));
+    } catch {
+      // Storage may be full or blocked; losing persistence is acceptable.
+    }
+  }, [answers, others, index]);
+
+  const answerMap = useMemo(() => toAnswerMap(answers), [answers]);
+  const screens = useMemo(() => visibleScreens(answerMap), [answerMap]);
+  const safeIndex = Math.min(index, Math.max(0, screens.length - 1));
+  const current: IntakeScreen | undefined = screens[safeIndex];
+
+  // Move focus to the step heading and announce each change.
+  useEffect(() => {
+    headingRef.current?.focus();
+    if (done) {
+      announce("All done. Here's what we understood.", "assertive");
+    } else if (current) {
+      announce(`Step ${safeIndex + 1} of ${screens.length}: ${current.title}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeIndex, done]);
+
+  const questionsOn = (screen: IntakeScreen) =>
+    screen.questions.filter((q) => isVisible(q, answerMap));
+
+  const setAnswer = (id: string, value: FieldValue) => {
+    setAnswers((prev) => ({ ...prev, [id]: value }));
+    setInvalidIds((prev) => prev.filter((x) => x !== id));
+  };
+  const setOther = (id: string, text: string) =>
+    setOthers((prev) => ({ ...prev, [id]: text }));
+
+  const goNext = () => {
+    if (!current) return;
+    const required = questionsOn(current).filter(
+      (q) => !q.optional && q.inputType !== "must-nice",
+    );
+    const missing = required.filter((q) => isEmpty(answers[q.id])).map((q) => q.id);
+    if (missing.length > 0) {
+      setInvalidIds(missing);
+      announce("Please answer the highlighted question before continuing.", "assertive");
+      return;
+    }
+    setInvalidIds([]);
+    if (safeIndex >= screens.length - 1) setDone(true);
+    else setIndex(safeIndex + 1);
+  };
+
+  const goBack = () => {
+    setInvalidIds([]);
+    if (done) {
+      setDone(false);
+      return;
+    }
+    if (safeIndex > 0) setIndex(safeIndex - 1);
+  };
+
+  const restart = () => {
+    setAnswers({});
+    setOthers({});
+    setIndex(0);
+    setDone(false);
+    setInvalidIds([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // No-op.
+    }
+  };
+
+  // --- Completion recap -----------------------------------------------------
+  if (done) {
+    const answered = intakeScreens
+      .flatMap((s) => s.questions)
+      .filter((q) => !isEmpty(answers[q.id]));
+    return (
+      <div className="mx-auto w-full max-w-2xl px-6 py-12">
+        <h1
+          ref={headingRef}
+          tabIndex={-1}
+          className="text-2xl font-bold tracking-tight focus:outline-none"
+        >
+          Thanks — here&rsquo;s what we understood
+        </h1>
+        <p className="mt-2 text-muted">
+          You can go back and change anything. Next, we&rsquo;ll turn this into a
+          plan you can actually do.
+        </p>
+        <dl className="mt-8 divide-y divide-border rounded-xl border border-border bg-surface">
+          {answered.map((q) => (
+            <div key={q.id} className="px-4 py-3">
+              <dt className="text-sm text-muted">{q.prompt}</dt>
+              <dd className="mt-1 text-sm font-semibold">
+                {readable(q, answers[q.id])}
+                {others[q.id] ? `, ${others[q.id]}` : ""}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex h-12 items-center rounded-lg border border-border px-5 font-semibold text-foreground transition-colors hover:bg-surface-muted"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={restart}
+            className="inline-flex h-12 items-center rounded-lg border border-border px-5 font-semibold text-foreground transition-colors hover:bg-surface-muted"
+          >
+            Start over
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!current) return null;
+
+  const progress = Math.round(((safeIndex + 1) / screens.length) * 100);
+  const isLast = safeIndex >= screens.length - 1;
+
+  return (
+    <div className="mx-auto w-full max-w-2xl px-6 py-12">
+      <p className="text-sm font-medium text-muted">
+        Step {safeIndex + 1} of {screens.length}
+      </p>
+      <div
+        className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-muted"
+        aria-hidden="true"
+      >
+        <div
+          className="h-full rounded-full bg-primary transition-all"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <h1
+        ref={headingRef}
+        tabIndex={-1}
+        className="mt-6 text-2xl font-bold tracking-tight focus:outline-none"
+      >
+        {current.title}
+      </h1>
+      {current.description && <p className="mt-2 text-muted">{current.description}</p>}
+
+      <form
+        className="mt-8 space-y-8"
+        onSubmit={(e) => {
+          e.preventDefault();
+          goNext();
+        }}
+      >
+        {questionsOn(current).map((q) => (
+          <QuestionField
+            key={q.id}
+            question={q}
+            value={answers[q.id]}
+            otherValue={others[q.id] ?? ""}
+            invalid={invalidIds.includes(q.id)}
+            onChange={(v) => setAnswer(q.id, v)}
+            onOtherChange={(t) => setOther(q.id, t)}
+          />
+        ))}
+
+        <div className="flex items-center justify-between gap-4 pt-2">
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={safeIndex === 0}
+            className="inline-flex h-12 items-center rounded-lg border border-border px-5 font-semibold text-foreground transition-colors hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="inline-flex h-12 items-center rounded-lg bg-primary px-6 font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
+          >
+            {isLast ? "Finish" : "Next"}
+          </button>
+        </div>
+      </form>
+
+      <p className="mt-6 text-sm">
+        <Link href="/" className="text-primary underline underline-offset-4">
+          Save and exit
+        </Link>
+      </p>
+    </div>
+  );
+}
