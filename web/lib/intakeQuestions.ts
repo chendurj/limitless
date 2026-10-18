@@ -112,10 +112,10 @@ const DEAF_OR_NONSPEAKING: ShowCondition[] = [
 ];
 
 // ----------------------------------------------------------------------------
-// Screens (~10, matching the intake tree)
+// Source definitions: the short active flow below selects only eight questions.
 // ----------------------------------------------------------------------------
 
-export const intakeScreens: IntakeScreen[] = [
+const questionCatalog: IntakeScreen[] = [
   // 1 — Accessibility needs (spine) ------------------------------------------
   {
     id: "needs",
@@ -531,6 +531,41 @@ export const intakeScreens: IntakeScreen[] = [
     ],
   },
 ];
+
+// Six core questions, with at most two relevant follow-ups. One question per step.
+function question(id: string): IntakeQuestion {
+  const found = questionCatalog.flatMap(screen => screen.questions).find(q => q.id === id);
+  if (!found) throw new Error(`Missing intake question: ${id}`);
+  return found;
+}
+const communicationSupports: IntakeQuestion = {
+  id: "communication_supports",
+  prompt: "What helps you hear or communicate?",
+  help: "Choose what works for you. Add any specific support or contact preference below.",
+  inputType: "multi", targetField: "communication", optional: true, allowOther: true,
+  showIf: DEAF_OR_NONSPEAKING,
+  options: [
+    { value: "captions", label: "Captions" },
+    { value: "asl_interpretation", label: "ASL interpretation" },
+    { value: "assistive_listening", label: "Listening device" },
+    { value: "writing_or_typing", label: "Writing or typing" },
+    { value: "aac_device", label: "My speech app (AAC)" },
+    { value: "companion_speaks", label: "Someone speaks for me" },
+  ],
+};
+const shortQuestions: IntakeQuestion[] = [
+  { ...question("needs"), help: "Choose what applies. We only ask follow-ups relevant to you." },
+  { ...question("walking"), prompt: "How much walking feels comfortable?", help: "Choose what works on a typical day. We will not assume what assistance or equipment you have.", allowOther: true },
+  communicationSupports,
+  { ...question("requirements"), prompt: "What access features do you need?", help: "Only mark Must have when it is essential. Add exact needs below, such as a transfer arrangement or a particular communication support." },
+  { ...question("interests"), prompt: "What would make this trip special?", allowOther: true, help: "Pick your interests, or tell us about your ideal day below." },
+  { ...question("avoid"), prompt: "What would make your day difficult?", allowOther: true, help: "Include any limits we should plan around, such as slopes, standing, noise or heat." },
+  question("pace"),
+  question("transport"),
+];
+export const intakeScreens: IntakeScreen[] = shortQuestions.map(q => ({
+  id: q.id, title: q.prompt, questions: [q],
+}));
 
 // ----------------------------------------------------------------------------
 // Deferred branches — NOT shown in the MVP.
