@@ -239,11 +239,12 @@ export function QuestionField({
       {/* Each date has its own voice input. Other answers use one microphone. */}
       <QuestionVoiceInput
         question={question.dateRange ? { ...question, prompt: "Start date" } : question}
+        speakLabel={question.dateRange ? "Speak start date" : undefined}
         value={value}
         onChange={onChange}
         onOther={question.allowOther ? onOtherChange : undefined}
       />
-      {question.dateRange && <QuestionVoiceInput question={{ ...question, id: "end_date", prompt: "End date", dateRange: false }} value={endDateValue} onChange={value => { if (typeof value === "string") onEndDateChange?.(value); }} />}
+      {question.dateRange && <QuestionVoiceInput speakLabel="Speak end date" question={{ ...question, id: "end_date", prompt: "End date", dateRange: false }} value={endDateValue} onChange={value => { if (typeof value === "string") onEndDateChange?.(value); }} />}
     </div>
   );
 }

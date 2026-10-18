@@ -1,5 +1,13 @@
 # App quality review — October 18, 2026
 
+## Complete start and return dates
+
+The previous calendar restoration omitted the return date. Both dates now share one calendar step with separate labels and voice controls; the five-to-seven-step flow remains intact. Both dates are optional together. A half-filled, reversed, same-day or over-seven-night range is rejected rather than silently using the planner default. The existing demo API supports overnight trips of one to seven nights; the help text states this limit.
+
+The end date is explicitly the return date. UTC calendar-day arithmetic calculates nights without daylight-saving errors. Both dates and the derived nights are sent to intake, and trip creation gets the selected start date and explicit nights. Draft reload preserves the end date. Old start-only drafts require an end date or clearing both; no return date is guessed.
+
+Validation against main `81406c7`: **86 Node tests and 59 browser cases passed** (two live API cases skipped). New checks cover partial/reversed/past/invalid ranges, one- and seven-night trips, daylight-saving transitions, leap days, year boundaries, end-date voice entry, draft reload, unchanged step counts and the exact trip-creation payload. The existing trip editing/deletion, AI dictation, booking and questionnaire journeys also passed. Lint, TypeScript and diff checks pass. Guest and planning API responses remain mocked; these are not live Python/database integration results.
+
 ## Calendar and shorter demo update
 
 The active intake now has **5–7 questions**, including an optional start-date calendar. Separate avoidances and transport screens are removed from the demo. Additional barriers can be entered under access needs; old explicitly selected avoidances and transport are preserved as editable notes during draft migration. Unanswered fields remain unknown.

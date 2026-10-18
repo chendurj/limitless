@@ -6,8 +6,9 @@ import type { FieldValue } from "@/components/QuestionField";
 import { parseVoiceAnswer, voiceAnswerHelp } from "@/lib/questionnaire-voice";
 import { useSpeechInput } from "@/lib/speech";
 
-export function QuestionVoiceInput({ question, value, onChange, onOther }: {
+export function QuestionVoiceInput({ question, value, onChange, onOther, speakLabel = "Speak answer" }: {
   question: IntakeQuestion;
+  speakLabel?: string;
   value: FieldValue | undefined;
   onChange: (value: FieldValue) => void;
   /** For questions with "Something else": put words that match no option there. */
@@ -31,7 +32,7 @@ export function QuestionVoiceInput({ question, value, onChange, onOther }: {
     <div className="mt-3">
       <button type="button" disabled={!mic.supported || mic.processing} onClick={toggle} aria-pressed={mic.listening} aria-label={`${mic.starting ? "Cancel microphone" : mic.listening ? "Stop microphone" : "Speak answer"}: ${question.prompt}`} aria-describedby={`${id}-help`} className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold disabled:opacity-50 ${mic.listening ? "border-danger text-danger" : "border-border text-primary hover:bg-surface-muted"}`}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3" /><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" /></svg>
-        {mic.starting ? "Cancel microphone" : mic.processing ? "Turning speech into text…" : mic.listening ? "Stop microphone" : "Speak answer"}
+        {mic.starting ? "Cancel microphone" : mic.processing ? "Turning speech into text…" : mic.listening ? "Stop microphone" : speakLabel}
       </button>
       <p id={`${id}-help`} className="mt-1 text-xs text-muted">{mic.supported ? "Optional. Review what we heard before using it. You can also use the fields above." : "Voice input isn't available in this browser. Use the fields above."}</p>
       {open && <div className="mt-3 rounded-lg border border-border bg-surface-muted p-4">

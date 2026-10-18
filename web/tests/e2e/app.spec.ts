@@ -607,6 +607,8 @@ test('end date accepts reviewed voice input without adding a question', async ({
   await speech(page);
   await seed(page);
   await page.getByLabel('Start date', { exact: true }).fill('2030-10-22');
+  await expect(page.getByRole('button', { name: 'Speak answer: Start date', exact: true })).toHaveText('Speak start date');
+  await expect(page.getByRole('button', { name: 'Speak answer: End date', exact: true })).toHaveText('Speak end date');
   await page.getByRole('button', { name: 'Speak answer: End date', exact: true }).click();
   await emit(page, 'October 25, 2030');
   await page.getByRole('button', { name: 'Stop microphone: End date', exact: true }).click();
