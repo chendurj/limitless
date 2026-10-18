@@ -2,12 +2,10 @@
 
 import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { components } from "@/types/api";
-import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 
 type TripOut = components["schemas"]["TripOut"];
 type DayOut = components["schemas"]["DayOut"];
 type ItemOut = components["schemas"]["ItemOut"];
-type Fact = components["schemas"]["Fact"];
 type PlaceOut = components["schemas"]["PlaceOut"];
 
 // Times and dates are shown in San Diego time regardless of where this renders.
@@ -44,31 +42,6 @@ const kindLabel: Record<ItemOut["kind"], string> = {
   meal: "Meal",
   rest: "Rest",
 };
-
-function FactRow({ fact }: { fact: Fact }) {
-  // Show source_label (e.g. "demo data, not verified"), not the raw source.
-  return (
-    <li className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-      <ConfidenceBadge level={fact.confidence} />
-      <span>{fact.detail}</span>
-      <span className="text-muted">
-        {fact.source_url ? (
-          <a
-            href={fact.source_url}
-            target="_blank"
-            rel="noreferrer"
-            className="underline underline-offset-2"
-          >
-            {fact.source_label}
-          </a>
-        ) : (
-          fact.source_label
-        )}
-        {fact.verified_at ? ` · checked ${fact.verified_at}` : ""}
-      </span>
-    </li>
-  );
-}
 
 function Score({ label, value }: { label: string; value: number }) {
   const low = value < 50;
@@ -184,14 +157,6 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
       )}
       <Scores item={item} />
       {item.rationale && <p className="mt-3 text-sm">{item.rationale}</p>}
-
-      {item.place && item.place.facts.length > 0 && (
-        <ul className="mt-4 space-y-2">
-          {item.place.facts.map((fact) => (
-            <FactRow key={fact.fact_id} fact={fact} />
-          ))}
-        </ul>
-      )}
 
       {item.warnings.length > 0 && (
         <ul className="mt-3 space-y-1">

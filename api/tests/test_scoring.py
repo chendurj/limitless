@@ -178,6 +178,19 @@ def test_moderate_slope_needs_a_companion_who_can_push(make_dna):
     assert alone.excluded
 
 
+def test_uneven_ground_costs_a_crutch_user_points(make_dna):
+    ankle = make_dna(
+        needs=["temporary_injury"],
+        mobility__equipment=["crutches"],
+        mobility__surfaces_to_avoid=["sand"],
+        preferences__avoid=[],
+    )
+    uneven = fact("terrain", "uneven", "COMMUNITY", "demo_data")
+    result = run(CAFE, [STEP_FREE, RESTROOM, uneven], ankle)
+    assert not result.excluded
+    assert result.accessibility_score == 84  # 1 - 0.2 x 0.8 (COMMUNITY)
+
+
 def test_sand_needs_beach_equipment(maya):
     sand = fact("terrain", "sand")
     assert run(BEACH, [RESTROOM, sand], maya).excluded
