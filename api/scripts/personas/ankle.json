@@ -1,0 +1,147 @@
+{
+  "raw_answers": {
+    "needs": {
+      "selected": [
+        "temporary_injury",
+        "limited_mobility"
+      ],
+      "freeform": "I sprained my ankle badly two weeks ago."
+    },
+    "equipment": {
+      "selected": [
+        "crutches"
+      ]
+    },
+    "walking": {
+      "selected": [
+        "under_5_min"
+      ]
+    },
+    "standing": {
+      "selected": [
+        "2_to_5_min"
+      ]
+    },
+    "slopes_stairs_surfaces": {
+      "selected": [
+        "gentle",
+        "none"
+      ],
+      "freeform": "No stairs please, and I can't do sand or gravel on crutches."
+    },
+    "assistance": {
+      "selected": [
+        "light_only"
+      ],
+      "freeform": "My friend Priya is coming, she can carry stuff but can't push a wheelchair."
+    },
+    "must_have": {
+      "selected": [
+        "seating",
+        "step_free_entrance"
+      ]
+    },
+    "interests": {
+      "selected": [
+        "food",
+        "museums_art",
+        "beaches"
+      ],
+      "freeform": "Tacos and good coffee!"
+    },
+    "trip": {
+      "freeform": "Next Friday for 3 nights, staying downtown, we'll use rideshare. Relaxed pace."
+    },
+    "temporary": {
+      "selected": [
+        "this_trip_only"
+      ]
+    }
+  },
+  "consent_aggregate": false,
+  "dna": {
+    "schema_version": "1.0",
+    "summary": "You’re traveling with crutches while your ankle heals, and you prefer step-free places with seating and no stairs. You’d like a relaxed trip with food, coffee, museums, and beaches.",
+    "needs": [
+      "temporary_injury",
+      "limited_mobility"
+    ],
+    "mobility": {
+      "equipment": [
+        "crutches"
+      ],
+      "walking": "under_5_min",
+      "standing": "2_to_5_min",
+      "slope_tolerance": "gentle",
+      "surfaces_to_avoid": [
+        "sand",
+        "gravel_dirt"
+      ],
+      "stairs_tolerance": "none",
+      "rest_interval": null
+    },
+    "vision": {
+      "level": null,
+      "nav_aids": [],
+      "supports": [],
+      "without_sighted_companion": null
+    },
+    "hearing": {
+      "supports": [],
+      "advance_booking": null
+    },
+    "sensory": {
+      "reduce": [],
+      "supports": []
+    },
+    "communication": {
+      "methods": [],
+      "phone_calls": null,
+      "contact_preferences": []
+    },
+    "temporary": {
+      "expected_duration": "this_trip_only"
+    },
+    "requirements": {
+      "must_have": [
+        "seating",
+        "step_free_entrance"
+      ],
+      "nice_to_have": [],
+      "other": []
+    },
+    "party": {
+      "travel_with": "partner_friend",
+      "size": 2,
+      "children_ages": [],
+      "companion_assist": "light_only",
+      "notes": "Your friend Priya can carry things but cannot push a wheelchair."
+    },
+    "trip": {
+      "destination": "San Diego",
+      "start_date": "2026-10-23",
+      "nights": 3,
+      "lodging_area": "downtown",
+      "transport": "rideshare",
+      "needs_accessible_vehicle": null,
+      "needs_rental_equipment": null
+    },
+    "preferences": {
+      "interests": [
+        "food",
+        "museums_art",
+        "beaches"
+      ],
+      "cuisines": [],
+      "avoid": [],
+      "pace": "relaxed",
+      "budget_per_day_usd": null,
+      "day_start": null,
+      "day_end": null
+    },
+    "missing_fields": [
+      "mobility.rest_interval"
+    ],
+    "assumptions": []
+  }
+}
