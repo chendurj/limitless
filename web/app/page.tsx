@@ -53,6 +53,10 @@ export default function Home() {
         <p className="mt-5 text-lg text-zinc-200 sm:text-xl">
           Your world to discover. Your right to explore.
         </p>
+        <p className="mt-3 max-w-lg text-base leading-relaxed text-zinc-300">
+          Explore your world with a trip built around your access needs, interests
+          and pace.
+        </p>
 
         <Link
           href="/intake"
