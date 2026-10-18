@@ -24,20 +24,28 @@ async function speech(page: Page, supported = true) {
   await page.addInitScript(enabled => {
     const w = window as unknown as Record<string, unknown>;
     w.recognitions = [];
-    class Recognition {
+    class Recorder {
+      static isTypeSupported() { return true; }
       aborted = false;
-      onresult: ((event: unknown) => void) | null = null;
-      onend: (() => void) | null = null;
-      onerror: ((event: unknown) => void) | null = null;
+      state = 'inactive';
+      mimeType = 'audio/webm';
+      text = '';
+      ondataavailable: ((event: unknown) => void) | null = null;
+      onstop: (() => void) | null = null;
+      onerror: (() => void) | null = null;
       constructor() { (w.recognitions as unknown[]).push(this); }
-      start() {}
-      stop() { this.onend?.(); }
-      abort() { this.aborted = true; this.onend?.(); }
-      emit(text: string) { this.onresult?.({ results: [[{ transcript: text }]] }); }
-      fail(error: string) { this.onerror?.({ error }); }
+      start() { this.state = 'recording'; }
+      stop() { this.state = 'inactive'; this.ondataavailable?.({ data: new Blob([this.text || 'Demo audio'], { type: 'audio/webm' }) }); this.onstop?.(); }
+      emit(text: string) { this.text = text; }
     }
-    for (const key of ['SpeechRecognition', 'webkitSpeechRecognition']) Object.defineProperty(window, key, { configurable: true, value: enabled ? Recognition : undefined });
+    Object.defineProperty(window, 'MediaRecorder', { configurable: true, value: enabled ? Recorder : undefined });
+    Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: { getUserMedia: async () => {
+      if (w.denyMicrophone) throw new DOMException('Denied for test', 'NotAllowedError');
+      const track = { onended: null, stop: () => { const last = (w.recognitions as Recorder[]).at(-1); if (last) last.aborted = true; } };
+      return { getTracks: () => [track] };
+    } } });
   }, supported);
+  await page.route('**/api/transcribe', route => route.fulfill({ json: { text: route.request().postDataBuffer()?.toString() || 'Demo transcript' } }));
 }
 async function emit(page: Page, text: string) {
   await page.evaluate(value => {
@@ -71,7 +79,7 @@ async function api(page: Page, options: { delay?: number; followups?: unknown[] 
 }
 function field(page: Page, id: string) { return page.locator(`[data-question-id="${id}"]`); }
 
-// These browser cases plus the 27 chat/voice unit cases make 49 tests.
+// Includes real recording/transcription when VOICE_TEST_AUDIO is configured.
 test('01 desktop homepage navigation is clickable without overlap', async ({ page }) => {
   await page.goto('/');
   await page.locator('#assistant-question').focus();
@@ -107,13 +115,14 @@ test('04 failed chat retains the draft and retries without duplicate text', asyn
   await expect(page.getByRole('log').getByText('Please help.', { exact: true })).toHaveCount(1);
   await expect(page.getByRole('log').getByText('Recovered reply.', { exact: true })).toHaveCount(1);
 });
-test('05 interim speech replaces interim text rather than appending duplicates', async ({ page }) => {
+test('05 recorded speech is appended once after transcription completes', async ({ page }) => {
   await speech(page); await page.goto('/');
   await page.locator('#assistant-question').fill('Please');
   await page.getByRole('button', { name: 'Speak your question', exact: true }).click();
   await emit(page, 'help'); await emit(page, 'help me'); await emit(page, 'help me plan');
-  await expect(page.locator('#assistant-question')).toHaveValue('Please help me plan');
+  await expect(page.locator('#assistant-question')).toHaveValue('Please');
   await page.getByRole('button', { name: 'Stop microphone', exact: true }).click();
+  await expect(page.locator('#assistant-question')).toHaveValue('Please help me plan');
 });
 test('06 every visible question has unique choices and exactly one microphone across all branches', async ({ page }) => {
   await speech(page); await page.goto('/intake');
@@ -198,7 +207,9 @@ test('14 switching microphones cancels the previous field and errors keep manual
   await field(page, 'equipment').getByRole('button', { name: /^Speak answer:/ }).click();
   await field(page, 'walking').getByRole('button', { name: /^Speak answer:/ }).click();
   expect(await page.evaluate(() => (window as unknown as { recognitions: { aborted: boolean }[] }).recognitions.at(-2)!.aborted)).toBe(true);
-  await page.evaluate(() => (window as unknown as { recognitions: { fail: (error: string) => void }[] }).recognitions.at(-1)!.fail('not-allowed'));
+  await field(page, 'walking').getByRole('button', { name: 'Cancel voice answer', exact: true }).click();
+  await page.evaluate(() => { (window as unknown as { denyMicrophone: boolean }).denyMicrophone = true; });
+  await field(page, 'walking').getByRole('button', { name: /^Speak answer:/ }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Microphone access is off' })).toBeVisible();
   await field(page, 'walking').getByRole('radio').first().check();
   await expect(field(page, 'walking').getByRole('radio').first()).toBeChecked();
@@ -285,4 +296,76 @@ test('22 live assistant returns a nonempty answer and records actual response ti
   const result = await response.json();
   expect(typeof result.message).toBe('string'); expect(result.message.trim().length).toBeGreaterThan(10);
   testInfo.annotations.push({ type: 'timing', description: `Live OpenAI chat response: ${Math.round(performance.now() - start)}ms` });
+});
+
+test('23 real browser recording reaches live transcription and selects the reviewed option', async ({ page }, testInfo) => {
+  test.skip(!process.env.VOICE_TEST_AUDIO, 'Provide a WAV saying Option one to test real capture and live transcription.');
+  test.setTimeout(60000);
+  await page.addInitScript(() => {
+    const original = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getUserMedia = async constraints => {
+      const stream = await original(constraints);
+      (window as unknown as { capturedStream: MediaStream }).capturedStream = stream;
+      return stream;
+    };
+  });
+  await page.goto('/intake');
+  const needs = field(page, 'needs');
+  await needs.getByRole('button', { name: /^Speak answer:/ }).click();
+  await expect(needs.getByRole('button', { name: /^Stop microphone:/ })).toBeVisible();
+  await expect(page.locator('#voice-needs')).toHaveCount(0);
+  // Let the known short audio fixture play into the real MediaRecorder.
+  await page.waitForTimeout(2000);
+  const start = performance.now();
+  await needs.getByRole('button', { name: /^Stop microphone:/ }).click();
+  await expect(needs.getByText('Turning your speech into text…', { exact: true })).toBeVisible();
+  await expect(page.locator('#voice-needs')).toHaveValue(/option\s+(one|1)/i, { timeout: 50000 });
+  expect(await page.evaluate(() => (window as unknown as { capturedStream: MediaStream }).capturedStream.getTracks().every(track => track.readyState === 'ended'))).toBe(true);
+  await needs.getByRole('button', { name: 'Use this answer', exact: true }).click();
+  await expect(needs.getByRole('checkbox').first()).toBeChecked();
+  testInfo.annotations.push({ type: 'timing', description: `Real recording to live transcription: ${Math.round(performance.now() - start)}ms` });
+});
+test('24 failed transcription shows one error without an empty review box', async ({ page }) => {
+  await speech(page);
+  await page.route('**/api/transcribe', route => route.fulfill({ status: 502, json: { error: 'Demo transcription connection error.' } }));
+  await page.goto('/intake');
+  const needs = field(page, 'needs');
+  await needs.getByRole('button', { name: /^Speak answer:/ }).click();
+  await emit(page, 'option one');
+  await needs.getByRole('button', { name: /^Stop microphone:/ }).click();
+  await expect(needs.getByRole('alert')).toHaveText('Demo transcription connection error.');
+  await expect(page.locator('#voice-needs')).toHaveCount(0);
+  await expect(needs.getByRole('button', { name: 'Use this answer', exact: true })).toHaveCount(0);
+  await needs.getByRole('checkbox').first().check();
+});
+test('25 cancelled transcription never fills or selects an answer later', async ({ page }) => {
+  await speech(page);
+  await page.route('**/api/transcribe', async route => { await delay(300); await route.fulfill({ json: { text: 'option one' } }); });
+  await page.goto('/intake');
+  const needs = field(page, 'needs');
+  await needs.getByRole('button', { name: /^Speak answer:/ }).click();
+  await emit(page, 'option one');
+  await needs.getByRole('button', { name: /^Stop microphone:/ }).click();
+  await needs.getByRole('button', { name: 'Cancel voice answer', exact: true }).click();
+  await delay(400);
+  await expect(page.locator('#voice-needs')).toHaveCount(0);
+  await expect(needs.getByRole('checkbox', { checked: true })).toHaveCount(0);
+  await expect(needs.getByRole('button', { name: /^Speak answer:/ })).toBeEnabled();
+});
+test('26 cancelled permission prompts release a stream that arrives late', async ({ page }) => {
+  await speech(page);
+  await page.addInitScript(() => {
+    navigator.mediaDevices.getUserMedia = () => new Promise(resolve => {
+      const w = window as unknown as { resolveMicrophone: () => void; lateStopped: boolean };
+      w.lateStopped = false;
+      w.resolveMicrophone = () => resolve({ getTracks: () => [{ stop: () => { w.lateStopped = true; } }] } as unknown as MediaStream);
+    });
+  });
+  await page.goto('/intake');
+  const needs = field(page, 'needs');
+  await needs.getByRole('button', { name: /^Speak answer:/ }).click();
+  await needs.getByRole('button', { name: /^Cancel microphone:/ }).click();
+  await page.evaluate(() => (window as unknown as { resolveMicrophone: () => void }).resolveMicrophone());
+  await expect.poll(() => page.evaluate(() => (window as unknown as { lateStopped: boolean }).lateStopped)).toBe(true);
+  await expect(needs.getByRole('button', { name: /^Speak answer:/ })).toBeEnabled();
 });

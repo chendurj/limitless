@@ -12,6 +12,10 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     actionTimeout: 5000,
+    launchOptions: process.env.VOICE_TEST_AUDIO ? { args: [
+      "--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream",
+      `--use-file-for-fake-audio-capture=${process.env.VOICE_TEST_AUDIO}`,
+    ] } : {},
   },
   webServer: {
     command: "npm run dev -- --hostname 127.0.0.1",

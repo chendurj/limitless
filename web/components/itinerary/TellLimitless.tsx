@@ -51,6 +51,7 @@ export function TellLimitless({
     setUsedVoice(true);
   }, []);
   const mic = useSpeechInput(onHeard);
+  const micBusy = mic.starting || mic.listening || mic.processing;
 
   const open = () => {
     requestRun.current++;
@@ -73,7 +74,7 @@ export function TellLimitless({
   };
 
   const send = async () => {
-    if (operation.current || mic.listening) return;
+    if (operation.current || micBusy) return;
     if (!text.trim()) {
       setError("Tell us how it is going first.");
       textBox.current?.focus();
@@ -165,7 +166,7 @@ export function TellLimitless({
                 }}
                 rows={4}
                 maxLength={2000}
-                readOnly={phase === "sending" || mic.listening}
+                readOnly={phase === "sending" || micBusy}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={error ? "tell-error" : undefined}
                 className="mt-2 w-full rounded-lg border border-border bg-surface p-3 text-base"
@@ -173,18 +174,18 @@ export function TellLimitless({
               {mic.supported && (
                 <button
                   type="button"
-                  onClick={mic.listening ? mic.stop : mic.start}
-                  disabled={phase === "sending"}
+                  onClick={mic.starting ? mic.cancel : mic.listening ? mic.stop : mic.start}
+                  disabled={phase === "sending" || mic.processing}
                   aria-pressed={mic.listening}
                   className={`${secondary} mt-3`}
                 >
                   <span aria-hidden="true">{mic.listening ? "■" : "🎤"}</span>
-                  <span className="ml-2">{mic.listening ? "Stop listening" : "Speak instead"}</span>
+                  <span className="ml-2">{mic.starting ? "Cancel microphone" : mic.processing ? "Turning speech into text…" : mic.listening ? "Stop listening" : "Speak instead"}</span>
                 </button>
               )}
-              {mic.listening && (
+              {micBusy && (
                 <p className="mt-2 text-sm text-muted" role="status">
-                  Listening… You can edit the text before you send it.
+                  {mic.starting ? "Allow microphone access in your browser." : mic.processing ? "Turning your speech into text…" : "Listening… Choose Stop listening when you are done."}
                 </p>
               )}
               {(error || mic.error) && (
@@ -193,7 +194,7 @@ export function TellLimitless({
                 </p>
               )}
               <div className="mt-6 flex flex-wrap gap-3">
-                <button type="submit" disabled={phase === "sending" || mic.listening} className={primary}>
+                <button type="submit" disabled={phase === "sending" || micBusy} className={primary}>
                   {phase === "sending" ? (
                     <span className="inline-flex items-center gap-2">
                       <Spinner size={16} />
