@@ -212,9 +212,11 @@ def evaluate(
     bonus = round(min(sum(e.weight for e, _ in bonuses), MAX_BONUS), 3)
 
     reasons = list(hard)
-    if not hard and access_fit < MIN_ACCESS_FIT:
-        # Name every problem, including the unknown must-haves, so the reason is complete.
-        problems = [e.reason for e, _ in soft] + list(unknown.values())
+    # Only known problems can skip a place. Unknown facts lower the rank and add a
+    # "call ahead" warning, but missing data alone never removes a place.
+    known_fit = 1 - sum(e.weight * f.weight for e, f in soft)
+    if not hard and known_fit < MIN_ACCESS_FIT:
+        problems = [e.reason for e, _ in soft]
         reasons.append("Too many problems together: " + " ".join(problems))
 
     display_fit = _display_fit(relevant, must_q, effects, effective, dna)

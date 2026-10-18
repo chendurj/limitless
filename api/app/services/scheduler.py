@@ -64,7 +64,7 @@ DINNER = (time(17, 30), time(19, 30))
 MEAL_MIN = 60
 REST_MIN = 20
 DRIVE_BUFFER_MIN = 15  # loading a wheelchair or mobility device, and parking
-UNKNOWN_CRITICAL_PER_DAY = 1
+UNKNOWN_CRITICAL_PER_DAY = 2
 
 
 @dataclass
