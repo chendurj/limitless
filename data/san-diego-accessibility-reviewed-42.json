@@ -1,0 +1,615 @@
+{
+  "schema_version": "1.0",
+  "research_date": "2026-10-17",
+  "source_catalog": {
+    "repository": "chendurj/accesspath",
+    "path": "prehack/demo-san-diego-locations-200.csv",
+    "blob_sha": "614ff4bd72d0df2b19c8a334e3159b5537862979",
+    "catalog_is_synthetic": true
+  },
+  "score_metadata": {
+    "field": "provisional_mobility_score",
+    "scale_min": 0,
+    "scale_max": 100,
+    "type": "coarse_analyst_estimate",
+    "official_rating": false,
+    "personal_suitability_score": false,
+    "null_means": "Insufficient evidence, stale evidence, unresolved location scope, or not researched",
+    "rubric": {
+      "0": "Operator explicitly states venue is not currently ADA-accessible",
+      "50": "Limited or specific-route access",
+      "75": "Mobility provision with assistance or activity conditions",
+      "100": "Broad public-area mobility access documented"
+    },
+    "limitations": "Scores are provisional analyst judgments, not percentages, certifications, verification scores, or a substitute for feature-level eligibility checks. Read source conditions and limitations; 100 does not mean every experience suits every traveler."
+  },
+  "usage_notes": [
+    "This is a research supplement, not a validated production seed. Do not import generated attributes or coordinates from the synthetic catalog.",
+    "Official source review does not mean every accessibility attribute is supported or that a venue has been visited or called.",
+    "Keep unknown values null. Do not treat a non-null score or source link as a VERIFIED badge or as satisfying a must-have.",
+    "Sources include conditional, historical, negative, and inconclusive findings. Some were available through official indexed text only; see summaries.",
+    "Generic CSV names may require exact entrance, campus, operator, or trail mapping before using the supporting record."
+  ],
+  "locations": [
+    {
+      "location_id": "sd-001",
+      "location_name": "Coronado Central Beach",
+      "accessibility_summary": "The city provides a free wide-wheel beach chair at the Main Lifeguard Tower, 920 Ocean Boulevard. It documents two accessible parking spaces, a ramp and walkway across sand to the tower, and staff transfer assistance. Checkout requires photo ID and a form. First come, first served; no reservations; daylight use, listed as 8 a.m. to sunset. Chair must stay on dry sand; emergency lifeguard duties may delay service. Do not promise water entry or an available chair at arrival. Restroom dimensions remain unknown.",
+      "sources": [
+        {
+          "document_title": "City of Coronado beach wheelchair program",
+          "url": "https://www.coronado.ca.us/246/Beach-Wheelchair-Program"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-002",
+      "location_name": "Mission Beach Boardwalk",
+      "accessibility_summary": "The city's Beach Accessibility and Wheelchair Program explicitly serves Mission Beach and describes chairs that permit independent movement over sand. Its general beach guide says the boardwalk and adjacent beach areas are wheelchair accessible. Store the chair program separately from boardwalk access. Define the entry point and intended segment before claiming an end-to-end route. Do not infer every restroom, sand crossing, transfer, or water activity is accessible.",
+      "sources": [
+        {
+          "document_title": "Mission Beach wheelchair program",
+          "url": "https://www.sandiego.gov/park-and-recreation/activities/trs/beachwheelchair"
+        },
+        {
+          "document_title": "City beach amenities",
+          "url": "https://www.sandiego.gov/lifeguards/safety/bchreg"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-003",
+      "location_name": "Pacific Beach Boardwalk",
+      "accessibility_summary": "The same city guide supports boardwalk access at a general level and lists public restrooms and parking at Pacific Beach. It does not establish an accessible toilet's layout, specific curb transitions, or every segment's slope. Crystal Pier is listed as closed for repairs; exclude it from an assumed boardwalk itinerary. Treat precise route suitability as pending.",
+      "sources": [
+        {
+          "document_title": "City beach amenities",
+          "url": "https://www.sandiego.gov/lifeguards/safety/bchreg"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-004",
+      "location_name": "La Jolla Shores",
+      "accessibility_summary": "The city beach page resolves the location. Its amenities guide lists restrooms, showers, parking, picnic areas, and a playground here. These are existence claims, not proof that a particular toilet or parking-to-water route meets a traveler's needs. Do not assign an accessible-restroom yes from the existence of public toilets. Exact beach-chair availability and pickup arrangements need a location-specific check.",
+      "sources": [
+        {
+          "document_title": "La Jolla Shores",
+          "url": "https://www.sandiego.gov/lifeguards/beaches/shores"
+        },
+        {
+          "document_title": "City beach amenities",
+          "url": "https://www.sandiego.gov/lifeguards/safety/bchreg"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-005",
+      "location_name": "Ocean Beach Waterfront",
+      "accessibility_summary": "The city confirms Ocean Beach Municipal Pier is closed to the public and planned for replacement. This does not mean the entire waterfront is closed. Resolve the CSV's generic waterfront name to a specific route, correct its Downtown neighborhood assignment, and exclude the pier. No particular waterfront route's wheelchair suitability was established here.",
+      "sources": [
+        {
+          "document_title": "City Ocean Beach page",
+          "url": "https://www.sandiego.gov/lifeguards/beaches/ob"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-006",
+      "location_name": "Silver Strand Beach",
+      "accessibility_summary": "State Parks lists accessible parking in all three ocean-side lots, accessible restrooms, shaded accessible picnic tables, beach chairs, and limited beach-mat access. The Crown Cove Trail is described as accessible for 0.8 mile. Tunnel 3 includes short 10% slopes. The record explicitly says updated November 2009: retain these as historical official claims requiring reconfirmation before use in strict matching. Correct the CSV's Old Town assignment to the Silver Strand/Coronado area.",
+      "sources": [
+        {
+          "document_title": "California State Parks accessible features: Silver Strand",
+          "url": "https://parks.ca.gov/AccessibleFeatures/Details/654"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-011",
+      "location_name": "Cabrillo Bay Overlook",
+      "accessibility_summary": "NPS names a Visitor Center Bay Overlook and connects it with other main areas by gently sloping concrete sidewalks and ramps. It documents accessible mounted binoculars at that overlook, accessible parking, two accessible single-stall restrooms at the visitor center, and a loan wheelchair. Map the generic CSV name to this exact overlook before importing. Do not transfer these claims to Bayside Trail or tidepools: NPS describes uneven dirt/steps there. Old Point Loma Lighthouse interior is stairs-only. NPS page last updated July 7, 2025.",
+      "sources": [
+        {
+          "document_title": "NPS Cabrillo mobility services",
+          "url": "https://www.nps.gov/cabr/planyourvisit/mobilityservices.htm"
+        }
+      ],
+      "provisional_mobility_score": 50,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-012",
+      "location_name": "Sunset Cliffs Viewpoint",
+      "accessibility_summary": "The city page states there are no restrooms available. The CSV's single viewpoint name does not identify a specific access point. Obtain a precise pin and route, surface information, grade, edge protection, and parking-to-viewpoint conditions before recommending it to a strict mobility profile. A scenic photograph cannot establish those facts.",
+      "sources": [
+        {
+          "document_title": "City Sunset Cliffs Natural Park",
+          "url": "https://www.sandiego.gov/park-and-recreation/parks/regional/shoreline/sunset"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-015",
+      "location_name": "Torrey Pines Outlook",
+      "accessibility_summary": "State Parks announced closure of Torrey Pines State Natural Reserve from September 22, 2026, with reopening scheduled for March 2027. The notice includes all reserve trails, the Beach Trail Staircase, Lodge, and upper parking lots. Torrey Pines State Beach and its north/south beach parking lots remain open. Both CSV names are generic: establish whether each pin is inside the reserve. If it is, suppress it for dates within this closure; do not apply the reserve closure to the separate beach or golf course. Recheck the project page because reopening is a schedule, not a guarantee.",
+      "sources": [
+        {
+          "document_title": "State Parks closure release, September 18, 2026",
+          "url": "https://parks.ca.gov/NewsRelease/1578"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-021",
+      "location_name": "Torrey Pines Nature Trail",
+      "accessibility_summary": "State Parks announced closure of Torrey Pines State Natural Reserve from September 22, 2026, with reopening scheduled for March 2027. The notice includes all reserve trails, the Beach Trail Staircase, Lodge, and upper parking lots. Torrey Pines State Beach and its north/south beach parking lots remain open. Both CSV names are generic: establish whether each pin is inside the reserve. If it is, suppress it for dates within this closure; do not apply the reserve closure to the separate beach or golf course. Recheck the project page because reopening is a schedule, not a guarantee.",
+      "sources": [
+        {
+          "document_title": "State Parks closure release, September 18, 2026",
+          "url": "https://parks.ca.gov/NewsRelease/1578"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-022",
+      "location_name": "Mission Trails Visitor Loop",
+      "accessibility_summary": "The park's official trail map lists Visitor Center Loop Trail as approximately 1.5 miles round trip with 206 feet of elevation gain. A visitor center's accessibility does not establish this trail's suitability. The CSV name should be mapped explicitly to the trail, then checked for surface, grades, width, and barriers. Do not classify a trail accessible merely because it is a short loop beside a visitor center.",
+      "sources": [
+        {
+          "document_title": "Official park trail map, April 2020",
+          "url": "https://mtrp.org/wp-content/uploads/2020/05/MTRP_Trail_Map_Apr_2020.pdf"
+        },
+        {
+          "document_title": "Visitor Center",
+          "url": "https://mtrp.org/visitor-center/"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-030",
+      "location_name": "San Elijo Lagoon Walk",
+      "accessibility_summary": "The City of Encinitas identifies the Nature Center Trail Loop and quotes an ADA-accessible double loop. The county's 2024 brochure distinguishes the Nature Center inner loop (0.3 mile) and outer loop (0.7 mile). Resolve the generic CSV “walk” to the Nature Center loop; do not transfer access claims to Annie's Canyon or the entire lagoon network. Sources describe distances differently, so store the specific loop and its source instead of one invented distance. Current closures and exact grades need checking.",
+      "sources": [
+        {
+          "document_title": "City recommended walks",
+          "url": "https://www.encinitasca.gov/government/departments/parks-recreation-cultural-arts/parks-beaches-trails/trails-open-space/recommended-walks-hikes"
+        },
+        {
+          "document_title": "County reserve page",
+          "url": "https://www.sdparks.org/content/sdparks/en/park-pages/SanElijo.html"
+        },
+        {
+          "document_title": "County 2024 brochure",
+          "url": "https://www.sdparks.org/content/dam/sdparks/en/pdf/BrochuresMiscellaneous/2024_San%20Elijo_Brochure_Web.pdf"
+        }
+      ],
+      "provisional_mobility_score": 50,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-041",
+      "location_name": "San Diego Zoo",
+      "accessibility_summary": "Slopes: Steep grades occur in parts of the grounds. Mobility transport: Complimentary ADA shuttle for visitors with mobility disabilities. Equipment: Wheelchair and electric-scooter rentals near the entrance, subject to availability. Bus boarding: Ramp access with limited first-come wheelchair/scooter securing space. Companion: Free admission for a necessary personal attendant/caregiver. Service animals: Trained service animals permitted, subject to park rules. Conditions: Staff cannot lift visitors or provide personal-care assistance. Bus transfer is an alternative only for someone able to transfer.",
+      "sources": [
+        {
+          "document_title": "Guests with Disabilities",
+          "url": "https://zoo.sandiegozoo.org/visit/guests-with-disabilities"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-042",
+      "location_name": "San Diego Zoo Safari Park",
+      "accessibility_summary": "Restrooms: Wheelchair-accessible restrooms documented. Safari access: Many safaris have wheelchair access; the statement does not cover every activity. Equipment: Wheelchair and scooter rentals at Safari Outfitters, first come. Shuttle: Mobility-assistance loop between Guest Services and Okavango Outpost. Standing support: Africa Tram Easy Access Pass provides a return time for guests who struggle to stand in line. Companion: Free admission for a necessary personal attendant/caregiver. Service animals: Trained service animals permitted under park policy. Conditions: ECV operators must be at least 18. Tram return-time arrangements include up to four additional party members.",
+      "sources": [
+        {
+          "document_title": "Guests with Disabilities",
+          "url": "https://sdzsafaripark.org/guests-disabilities"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-043",
+      "location_name": "SeaWorld San Diego",
+      "accessibility_summary": "Parking: Accessible spaces, including van-compatible spaces. Restrooms: Wheelchair-accessible restrooms throughout the park. Equipment: Wheelchair and ECV rentals; reservations available online. ASL: Complimentary interpreters by request at least 14 days before visiting. Written material: Scripts for selected presentations from Guest Services. Ride participation: Requirements depend on the specific ride and visitor abilities. Conditions: Staff may steady a transfer but cannot lift the rider. Casts, braces, or walking boots can restrict rides. ASL arrangements require confirmation; scripts are not documented for every presentation.",
+      "sources": [
+        {
+          "document_title": "Accessibility Guide",
+          "url": "https://seaworld.com/san-diego/park-info/accessibility-guide/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-044",
+      "location_name": "Birch Aquarium at Scripps",
+      "accessibility_summary": "Wheelchair access: Operator describes the aquarium as wheelchair accessible. Level changes: Most areas share one level; ramps serve Tide Pool Plaza and Little Blue Penguins. Parking: Designated accessible parking. Drop-off: Curbside pickup/drop-off in the front entrance traffic circle. Equipment: Wheelchairs available to borrow from Guest Services, first come. Service animals: Trained service animals admitted. Sensory: Operator identifies the venue as KultureCity Sensory Inclusive. Conditions: The described approach from public transport includes a downhill walk. Accessible venue interiors do not establish an appropriate transit-to-door route.",
+      "sources": [
+        {
+          "document_title": "FAQs and Rules",
+          "url": "https://aquarium.ucsd.edu/plan-your-visit/faqs-and-rules"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-045",
+      "location_name": "Living Coast Discovery Center",
+      "accessibility_summary": "The operator documents an ADA-accessible shuttle, accessible parking, one checkout wheelchair with ID held, private restrooms, and one complimentary attendant ticket per paid visitor with disabilities, subject to its policy. “Private restroom” alone is not evidence of a measured accessible toilet. Service animals have a Shorebird Aviary restriction. Correct the CSV's Downtown location: the official address is 1000 Gunpowder Point Drive, Chula Vista. Call ahead for parking details and chair availability.",
+      "sources": [
+        {
+          "document_title": "Living Coast accessibility",
+          "url": "https://www.thelivingcoast.org/visit/accessibility-zoo-aquarium/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-051",
+      "location_name": "USS Midway Museum",
+      "accessibility_summary": "Boarding / decks: Elevators connect Navy Pier with Hangar Deck, Hangar Deck with the second deck below, and Hangar with Flight Deck. Restrooms: Accessible restrooms on Hangar and Flight Decks. Equipment: Complimentary wheelchairs, first come. ASL / captions: Prerecorded ASL tour with captions on a handheld device. Written material: Written audio-tour script. Alternative viewing: Video kiosks describe spaces with difficult physical access. Conditions: Some areas constrain service-animal access because of ladders or enclosed spaces. The 48-hour notice relates to a docent assisting an unaccompanied blind/low-vision visitor, not a blanket ASL requirement.",
+      "sources": [
+        {
+          "document_title": "Accessibility",
+          "url": "https://www.midway.org/visit/accessibility"
+        }
+      ],
+      "provisional_mobility_score": 50,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-052",
+      "location_name": "Museum of Us",
+      "accessibility_summary": "The operator describes a northeast California Plaza ramp, ramps to Evernham Hall, an eastern-wing lift, an elevator, and free wheelchairs. California Tower is explicitly not ADA-accessible and requires stairs; a ground-floor screen provides live tower views. Noise-reducing earmuffs are available, and sensory-friendly mornings are listed for Sundays 10–11 a.m. Store the tower restriction separately from main museum access. No measured toilet layout was established.",
+      "sources": [
+        {
+          "document_title": "Museum of Us visitor information",
+          "url": "https://museumofus.org/your-visit"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-053",
+      "location_name": "San Diego Air and Space Museum",
+      "accessibility_summary": "The FAQ states the museum is fully wheelchair accessible and offers free wheelchairs first come, first served, with identification held. Treat this as the operator's venue-level statement. It does not independently establish simulator transfer requirements, dimensions, sensory intensity, or restroom measurements. Its 3D/4D theater uses interactive seats and effects: verify that experience separately for each traveler's needs.",
+      "sources": [
+        {
+          "document_title": "Museum FAQ",
+          "url": "https://sandiegoairandspace.org/visit/frequently-asked-questions"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-054",
+      "location_name": "San Diego Natural History Museum",
+      "accessibility_summary": "Entrance: Accessible north entrance near the large fig tree. Parking: Six accessible spaces in the east lot and four in South Carousel lot. Equipment: Free wheelchair loans through Visitor Services, subject to availability. Listening: Infrared headsets for lectures and films in Kaplan Theater. Internal lifts: Keys needed for lifts in Coast to Cactus and Extraordinary Ideas; collect at Admissions. Companion: An escort to a disabled visitor receives free general admission. Service dogs: Permitted subject to leash and handling conditions.",
+      "sources": [
+        {
+          "document_title": "Accessibility",
+          "url": "https://www.sdnhm.org/visit/accessibility/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-055",
+      "location_name": "Maritime Museum of San Diego",
+      "accessibility_summary": "Berkeley's McKinney Deck has a lift at the forward starboard end. Other access may require staff assistance and depends on weather and sea state. Some historic areas and vessels cannot safely accommodate wheelchairs even with assistance. Pilot can accommodate sufficiently narrow chairs or a museum chair via a specific floating dock with advance notice. PCF 816 is described as impractical for wheelchair embarkation. The published policy offers free admission to wheelchair visitors. Request the intended vessel, chair dimensions, boarding route, and assistance in advance; never present the entire fleet as accessible.",
+      "sources": [
+        {
+          "document_title": "Maritime Museum ADA visitors information",
+          "url": "https://sdmaritime.org/about-the-maritime-museum/ada-policies-donations-jobs/ada-visitors-information/"
+        }
+      ],
+      "provisional_mobility_score": 50,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-057",
+      "location_name": "Junipero Serra Museum",
+      "accessibility_summary": "The History Center explicitly states that the Serra Museum and presidio site are not currently ADA-accessible. Retain this restriction rather than converting missing details into a positive label. It is a different property from the accessible History Center in Balboa Park.",
+      "sources": [
+        {
+          "document_title": "History Center accessibility",
+          "url": "https://sandiegohistory.org/accessibility/"
+        },
+        {
+          "document_title": "operator event page",
+          "url": "https://sandiegohistory.org/event/free-walking-tour-celebrating-97-years-of-the-junipero-serra-museum/"
+        }
+      ],
+      "provisional_mobility_score": 0,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-058",
+      "location_name": "San Diego History Center",
+      "accessibility_summary": "Its operator documents an accessible El Prado entrance, elevator access to all building levels, accessible restrooms and water fountains, and free first-come manual wheelchair loans for indoor use. Captions may be requested for the Thornton Theatre documentary; selected exhibits have captioning, audio description, and large-print text. Noise, light, and crowds vary; a quiet visit is not guaranteed.",
+      "sources": [
+        {
+          "document_title": "History Center accessibility",
+          "url": "https://sandiegohistory.org/accessibility/"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-061",
+      "location_name": "Fleet Science Center",
+      "accessibility_summary": "Captions: Complimentary adjustable captioning devices for Dome Theater films; request when purchasing the ticket. Listening: Complimentary headsets enhance theater narration/dialogue. Equipment: Limited complimentary wheelchairs, requested at the ticket counter. Theater access: Designated wheelchair areas. Restrooms: Several wheelchair-accessible restrooms. Elevator: Staff can assist with second-floor elevator access. Parking: Accessible spaces in the Space Theater Way lot. Sensory: Noise-cancelling devices available on request. Conditions: Caption service uses the upper seating area. Captioning and listening devices may not cover every special event. Listening support excludes music-only presentations.",
+      "sources": [
+        {
+          "document_title": "Accessibility",
+          "url": "https://www.fleetscience.org/accessibility"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-062",
+      "location_name": "San Diego Museum of Art",
+      "accessibility_summary": "Wheelchair access: Operator says all museum parts accommodate wheelchairs/mobility equipment. Entrance: Ramp at the east end of the front facade. Restrooms: Accessible facilities in Rotunda and Gallery 15. Equipment: Two free loan wheelchairs; first come, ID held, no advance reservation. Listening: Headsets for screenings and lectures, limited stock; reserve ahead. Written content: Gallery labels available online in English and Spanish. Companion: Complimentary caretaker admission with a paying guest.",
+      "sources": [
+        {
+          "document_title": "Accessibility & Belonging",
+          "url": "https://www.sdmart.org/accessibility"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-063",
+      "location_name": "Mingei International Museum",
+      "accessibility_summary": "Wheelchair entry is available through Alcazar Garden and Plaza de Panama entrances; elevators reach the Exhibitions and Lower Levels. Two checkout wheelchairs are first come, first served and for museum use only. Nearby accessible parking is identified at Alcazar and Spreckels Organ Pavilion lots. Toilet dimensions and communication accommodations remain unknown from the reviewed section.",
+      "sources": [
+        {
+          "document_title": "Mingei visit FAQ",
+          "url": "https://mingei.org/visit/"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-064",
+      "location_name": "Timken Museum of Art",
+      "accessibility_summary": "Mobility: All public areas accommodate mobility equipment; ramp left of entrance. Seating: Permanent benches in every gallery. Equipment: Limited loan wheelchairs; no advance reservations. Communication: Assistive communication tablet with pictures/sounds. Sensory: Kits, noise-cancelling headphones, visual timers, weighted lap pads. Color vision: Adult and child EnChroma glasses available. Lighting: Some galleries use low lighting. ASL: Free enhanced tours on the first Saturday monthly; student interpreters, no reservation. Conditions: Amenities are first come; some require ID. Check the events calendar for the actual ASL date. General group tours have separate advance-notice requirements.",
+      "sources": [
+        {
+          "document_title": "Accessibility",
+          "url": "https://www.timkenmuseum.org/accessibility"
+        },
+        {
+          "document_title": "Tours and Talks",
+          "url": "https://www.timkenmuseum.org/tours-and-talks"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-065",
+      "location_name": "Museum of Contemporary Art San Diego",
+      "accessibility_summary": "The operator documents wheelchair-accessible public areas and restrooms, elevators, loan wheelchairs, and ramps/power-assist doors at the Prospect Street and Coast Boulevard entrances. It lists a Calm Room. SoundMate listening devices are available for qualifying amplified programs in named rooms; visitors supply headphones and arrange use. Complimentary valet has placard/vehicle eligibility requirements. Resolve the museum campus explicitly; the La Jolla address is 700 Prospect Street, not the CSV's Old Town assignment. A Calm Room does not guarantee a quiet entire museum.",
+      "sources": [
+        {
+          "document_title": "MCASD accessibility",
+          "url": "https://mcasd.org/accessibility"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-066",
+      "location_name": "New Children's Museum",
+      "accessibility_summary": "Entrance: Automatic front door. Parking: Designated spaces on Island Avenue and behind the building in the Plaza. Elevator: Public elevator serves every level. Restrooms: Accessible restrooms across three floors, including family facilities. Sensory: Noise-cancelling headphones at Welcome Desk; Breathing Room on Main Level. Programs: Quarterly sensory-friendly mornings with reduced stimulation and fewer visitors. Companion: One caregiver accompanying a disabled child receives free admission. CSV row: Field to review sd-041: max_slope sd-043: accessible_restroom sd-044: accessible_parking sd-051: accessible_restroom sd-054: entrance access sd-061: captions_asl sd-062: neighborhood sd-064: seating sd-066: accessible_restroom Conditions: The general accessibility statement does not prove every interactive installation works for every ability. Confirm an individual installation if essential.",
+      "sources": [
+        {
+          "document_title": "Accessibility",
+          "url": "https://thinkplaycreate.org/visit/accessibility/"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-072",
+      "location_name": "Japanese Friendship Garden",
+      "accessibility_summary": "The operator states that all pathways are ADA-accessible. Shuttle assistance from Lower to Upper Garden is available on request through the gift shop. Braille guides can be requested at the Front Gate; virtual preparation guides and audio tours are offered. Store the operator's pathway claim without inventing measured slopes. The lower-to-upper assistance option is relevant to stamina matching. Do not infer every event or time slot is low sensory.",
+      "sources": [
+        {
+          "document_title": "Garden information",
+          "url": "https://www.niwa.org/garden-information"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-081",
+      "location_name": "Belmont Park",
+      "accessibility_summary": "The official accessibility page discusses WCAG website standards and website issue reporting. It establishes neither physical park access nor ride boarding suitability. Keep wheelchair entrance, toilets, ride transfer, and sensory features unknown until a physical-access guide or operator response is obtained.",
+      "sources": [
+        {
+          "document_title": "Belmont Park accessibility statement",
+          "url": "https://www.belmontpark.com/accessibility"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-082",
+      "location_name": "LEGOLAND California",
+      "accessibility_summary": "The operator's May 18, 2026 guide describes an Assisted Access Pass, wheelchair/ECV rentals near the entrance, companion restrooms, and individual ride needs. Most rides require transfer from a wheelchair. Do not equate a pass or wheelchair rental with ability to ride every attraction. Correct the CSV's Old Town assignment to Carlsbad and retain the specific ride requirements separately.",
+      "sources": [
+        {
+          "document_title": "LEGOLAND California accessibility guide",
+          "url": "https://www.legoland.com/california/our-company/blog/legoland-accessibility-guide/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-083",
+      "location_name": "Sesame Place San Diego",
+      "accessibility_summary": "The park lists accessible parking, wheelchair/ECV rentals subject to availability, wheelchair-accessible restrooms, companion restrooms, accessible theater seating, and two quiet rooms with adjustable lighting. Obtain the quiet-room code from Guest Services. Staff may steady a transferring guest but cannot lift them; ride boarding must be possible independently or with party assistance. Individual rides have separate requirements and evacuation considerations. Correct the location to Chula Vista, official address 2052 Entertainment Circle.",
+      "sources": [
+        {
+          "document_title": "Sesame Place San Diego accessibility guide",
+          "url": "https://sesameplace.com/san-diego/help/accessibility-guide/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-089",
+      "location_name": "Coronado Playhouse",
+      "accessibility_summary": "The operator says its entrance is at ground level with no stairs or steps, and the auditorium is not raked. Cabaret seating allows removal of a chair so a wheelchair user can join their group's table; wheelchair and companion seating can be accommodated. Book in advance. No hearing assistance or toilet layout was established in the reviewed passage.",
+      "sources": [
+        {
+          "document_title": "Coronado Playhouse visit information",
+          "url": "https://www.coronadoplayhouse.org/plan-your-visit/"
+        }
+      ],
+      "provisional_mobility_score": 100,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-090",
+      "location_name": "Old Globe Theatre",
+      "accessibility_summary": "All three theaters offer wheelchair seating and assistive listening systems with limited headsets and induction neck loops. Selected performances have open captions or sensory-friendly formats. ASL interpretation requires at least three weeks' notice and remains subject to interpreter/seating availability and management discretion; four or more weeks allows more flexibility. Do not mark captions, ASL, or relaxed conditions as available at every performance. Match the traveler to an actual performance date and seating arrangement.",
+      "sources": [
+        {
+          "document_title": "Old Globe accessibility",
+          "url": "https://www.theoldglobe.org/plan-your-visit/accessibility/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-092",
+      "location_name": "Snapdragon Stadium",
+      "accessibility_summary": "Accessible seats are listed in the 100, club, and 300 sections, with accessible parking first come, first parked. Free listening devices are available at Guest Services behind sections 101, 114, 135, and 328, with deposit/identification conditions. Family restrooms are provided for fans with disabilities and families. Do not promise parking or seats without checking availability, and do not infer a calm sound environment at a stadium event.",
+      "sources": [
+        {
+          "document_title": "Snapdragon accessibility",
+          "url": "https://www.snapdragonstadium.com/accessibility"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-093",
+      "location_name": "Pechanga Arena",
+      "accessibility_summary": "The North Entrance has a wheelchair ramp. The arena explicitly has no elevators or escalators; floor-ticket wheelchair users should arrange assistance. The operator lists accessible seating, modified accessible restrooms, listening devices with ID deposit, and temporary wheelchair escorts. Escort chairs cannot be kept for the event. Listening-device reservations are recommended 24–48 hours ahead. Step-edge markings support visitors with limited sight. Retain these constraints rather than one generic high score.",
+      "sources": [
+        {
+          "document_title": "Pechanga Arena venue accessibility",
+          "url": "https://pechangaarenasd.com/plan-your-visit/venue-accessibility/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-101",
+      "location_name": "Seaport Village",
+      "accessibility_summary": "The official ADA page discusses website contrast, keyboard navigation, alt text, and WCAG. These do not prove step-free entrances, accessible restrooms, or access to each tenant. Keep physical attributes unknown from this record.",
+      "sources": [
+        {
+          "document_title": "Seaport Village ADA page",
+          "url": "https://www.seaportvillage.com/ada"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-112",
+      "location_name": "Civico 1845",
+      "accessibility_summary": "An official article titled “Accessibility, Parking & Patio Amenities” gives the India Street identity and says covered patio seating may be available, with access questions to be discussed before visiting. It does not explicitly establish step-free entry, an accessible restroom, table clearance, or wheelchair maneuvering space. This is a useful contact lead, not positive evidence for those fields.",
+      "sources": [
+        {
+          "document_title": "Civico 1845 article, June 25, 2026",
+          "url": "https://civico1845.com/accessibility-parking-patio-amenities-at-civico-1845/"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-164",
+      "location_name": "Donna Jean",
+      "accessibility_summary": "The official FAQ was located and inspected, but no explicit physical-access statement was established. Retain unknown for step-free entrance, accessible toilet, aisle/table clearance, and noise accommodation. A restaurant's existence, vegan menu, or online reservation system cannot answer these questions. Confirm the intended branch/address before collecting evidence.",
+      "sources": [
+        {
+          "document_title": "Donna Jean FAQ",
+          "url": "https://donnajeanrestaurant.com/faq"
+        }
+      ],
+      "provisional_mobility_score": null,
+      "research_status": "official_source_review"
+    },
+    {
+      "location_id": "sd-181",
+      "location_name": "Rady Shell at Jacobs Park",
+      "accessibility_summary": "The venue documents an accessible shuttle with lift, designated accessible seating, accessible restrooms below the seating area, and limited free listening devices with headphones/neck loops. Wheelchair transport escorts are first come, first served on event nights; the operator explicitly cannot provide loan or rental wheelchairs. Book accessible seating and confirm the event transport arrangement. Ordinary middle-row seats cannot simply be removed for mobility devices.",
+      "sources": [
+        {
+          "document_title": "Rady Shell venue accessibility",
+          "url": "https://www.theshell.org/plan-your-visit/venue-accessibility/"
+        }
+      ],
+      "provisional_mobility_score": 75,
+      "research_status": "official_source_review"
+    }
+  ],
+  "selection": {
+    "description": "Only the 42 catalog entries with reviewed official-source documents. Includes conditional, negative, stale, and inconclusive findings; not a list of universally accessible or fully verified venues.",
+    "count": 42,
+    "parent_file": "data/san-diego-accessibility-evidence.json",
+    "parent_blob_sha": "ece16a60def9b591b299e0c0dfc8525ed214269f"
+  }
+}
