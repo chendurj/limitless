@@ -91,6 +91,11 @@ def answer_followups(
     return _response(updated)
 
 
+@router.get("/profiles", response_model=list[ProfileOut])
+def list_profiles(user: User, store: Store) -> list[ProfileOut]:
+    return [_profile_out(row) for row in store.list_for_user(user)]
+
+
 @router.get("/profiles/{profile_id}", response_model=ProfileOut)
 def get_profile(profile_id: str, user: User, store: Store) -> ProfileOut:
     return _profile_out(_owned(store, user, profile_id))

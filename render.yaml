@@ -14,8 +14,12 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
-      - key: DEMO_BEARER_TOKEN
+      - key: SUPABASE_URL
         sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: ALLOW_DEMO_AUTH
+        value: "false"
       - key: OPENAI_MODEL_EXTRACT
         value: gpt-6-luna
       - key: OPENAI_MODEL_COMPOSE

@@ -26,6 +26,9 @@ class MemoryStore:
         self.rows[pid] = {"id": pid, "user_id": user_id, **row}
         return self.rows[pid]
 
+    def list_for_user(self, user_id):
+        return [row for row in reversed(list(self.rows.values())) if row["user_id"] == user_id]
+
     def get(self, user_id, profile_id):
         row = self.rows.get(profile_id)
         return row if row and row["user_id"] == user_id else None

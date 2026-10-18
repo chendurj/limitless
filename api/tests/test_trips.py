@@ -40,6 +40,13 @@ class Trips:
             "versions": {1: (copy.deepcopy(plan), {})},
         }
 
+    def list_for_user(self, user_id):
+        return [
+            self.get(user_id, tid)["plan"]
+            for tid, row in self.trips.items()
+            if row["user_id"] == user_id
+        ]
+
     def get(self, user_id, trip_id, version=None):
         t = self.trips.get(trip_id)
         if not t or t["user_id"] != user_id:
@@ -117,6 +124,30 @@ def test_create_and_read_a_trip(api):
     assert trip["disclaimer"]
     again = client.get(f"/api/trips/{trip['id']}", headers=AUTH).json()
     assert again == trip
+    saved = client.get("/api/trips", headers=AUTH)
+    assert saved.json() == [trip]
+    assert saved.headers["Cache-Control"] == "private, no-store"
+
+
+def test_public_sample_is_allowlisted_and_cannot_be_edited_by_guests(api, monkeypatch):
+    from app import deps
+
+    client, profile_id, trips, _ = api
+    trip = client.post("/api/trips", json={"profile_id": profile_id}, headers=AUTH).json()
+    sample_id = "00000000-0000-4000-8000-0000000000b2"
+    trips.create(
+        DEMO_USER_ID, {"id": sample_id, "profile_id": profile_id}, {**trip, "id": sample_id}
+    )
+    assert client.get("/api/trips/samples/deaf").json()["id"] == sample_id
+    monkeypatch.setattr(deps, "verified_user_id", lambda _: uuid.uuid4())
+    guest = {"Authorization": "Bearer guest.jwt.token"}
+    assert client.get(f"/api/trips/{sample_id}", headers=guest).status_code == 404
+    assert (
+        client.post(
+            f"/api/trips/{sample_id}/replan", headers=guest, json={"apply_version": 1}
+        ).status_code
+        == 404
+    )
 
 
 def test_mark_an_item_done(api):
@@ -128,6 +159,48 @@ def test_mark_an_item_done(api):
     assert patched.json()["status"] == "done" and patched.json()["locked"] is True
     saved = client.get(f"/api/trips/{trip['id']}", headers=AUTH).json()
     assert saved["days"][0]["items"][0]["status"] == "done"
+
+
+def test_manual_stop_edits_persist_and_can_be_restored(api):
+    client, profile_id, _, _ = api
+    trip = client.post("/api/trips", json={"profile_id": profile_id}, headers=AUTH).json()
+    item = first_stop(trip)
+    url = f"/api/trips/{trip['id']}/items/{item['id']}"
+    changed = client.patch(
+        url,
+        headers=AUTH,
+        json={"status": "skipped", "locked": True, "user_note": "  Bring my camera.  "},
+    )
+    assert changed.status_code == 200
+    assert changed.json()["user_note"] == "Bring my camera."
+    saved = client.get("/api/trips", headers=AUTH).json()[0]
+    stop = next(i for d in saved["days"] for i in d["items"] if i["id"] == item["id"])
+    assert stop["status"] == "skipped" and stop["locked"] is True
+    assert stop["user_note"] == "Bring my camera."
+    restored = client.patch(
+        url, headers=AUTH, json={"status": "planned", "locked": False, "user_note": ""}
+    ).json()
+    assert restored["status"] == "planned" and restored["user_note"] == ""
+    assert client.patch(url, headers=AUTH, json={"user_note": "x" * 501}).status_code == 422
+    assert (
+        client.patch(url, headers=AUTH, json={"title": "Unverified replacement"}).status_code == 422
+    )
+
+
+def test_ai_replanning_preserves_skipped_stops_and_personal_notes(api):
+    client, profile_id, _, _ = api
+    trip = client.post("/api/trips", json={"profile_id": profile_id}, headers=AUTH).json()
+    item = first_stop(trip)
+    client.patch(
+        f"/api/trips/{trip['id']}/items/{item['id']}",
+        headers=AUTH,
+        json={"status": "skipped", "user_note": "Visit another day."},
+    )
+    response = send(client, trip, fatigue="high", terrain_difficulty="high")
+    assert response.status_code == 200
+    proposed = response.json()["replan"]["trip"]
+    saved = next(i for d in proposed["days"] for i in d["items"] if i["id"] == item["id"])
+    assert saved["status"] == "skipped" and saved["user_note"] == "Visit another day."
 
 
 def test_other_users_trip_is_not_found(api):

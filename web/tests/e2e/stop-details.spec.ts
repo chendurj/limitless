@@ -3,12 +3,28 @@ import fixture from '../../fixtures/trip_ankle.json';
 import deafFixture from '../../fixtures/trip_deaf.json';
 import type { components } from '../../types/api';
 
+test.beforeEach(async ({ page }) => {
+  // Test-only guest session: no real Supabase accounts or user data are touched.
+  const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!projectUrl) throw new Error('Set NEXT_PUBLIC_SUPABASE_URL for the guest flow tests.');
+  const user = { id: '00000000-0000-4000-8000-0000000000e1', aud: 'authenticated', role: 'authenticated', is_anonymous: true, app_metadata: {}, user_metadata: { display_name: 'Demo traveler' }, created_at: '2026-10-18T00:00:00Z' };
+  await page.addInitScript(({ projectUrl, user }) => {
+    const key = `sb-${new URL(projectUrl).hostname.split('.')[0]}-auth-token`;
+    const expires_at = Math.floor(Date.now() / 1000) + 3600;
+    const access_token = `${btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))}.${btoa(JSON.stringify({ sub: user.id, exp: expires_at, role: 'authenticated' }))}.test-only-signature`;
+    localStorage.setItem(key, JSON.stringify({ access_token, refresh_token: 'test-only-refresh', expires_at, expires_in: 3600, token_type: 'bearer', user }));
+  }, { projectUrl, user });
+  await page.route('**/auth/v1/**', route => route.fulfill({ json: user }));
+});
+
 async function preview(page: Page, options: { name?: string; website?: string | null; noFacts?: boolean; stale?: boolean; status?: 'planned' | 'skipped' } = {}) {
   const trip = structuredClone(fixture) as unknown as components["schemas"]["TripOut"];
   const item = trip.days[0].items.find(item => item.place)!;
   item.place!.name = options.name ?? 'San Diego Zoo';
   item.title = item.place!.name;
   item.place!.website = options.website ?? null;
+  item.user_note = 'Demo personal note: meet at the entrance.';
+  item.locked = true;
   item.rationale = 'Demo planner explanation: this stop is part of your museum and wildlife day.';
   item.warnings = ['Confirm assistance before visiting.', ' Confirm assistance before visiting. '];
   if (options.noFacts) { item.place!.facts = []; item.cited_fact_ids = []; item.rationale = ''; }
@@ -24,6 +40,8 @@ async function preview(page: Page, options: { name?: string; website?: string | 
 test('official ticket links and cited demo evidence stay clearly separate', async ({ page }) => {
   await preview(page);
   await expect(page.getByRole('heading', { name: 'Why this stop', exact: true })).toHaveCount(1);
+  await expect(page.getByText('Kept during AI re-planning', { exact: true })).toBeVisible();
+  await expect(page.getByText('Demo personal note: meet at the entrance.', { exact: false })).toBeVisible();
   const link = page.getByRole('link', { name: /View tickets/ });
   await expect(link).toHaveAttribute('href', 'https://zoo.sandiegozoo.org/tickets');
   await expect(link).toHaveAttribute('target', '_blank');

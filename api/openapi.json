@@ -108,6 +108,36 @@
         }
       }
     },
+    "/api/profiles": {
+      "get": {
+        "tags": [
+          "intake"
+        ],
+        "summary": "List Profiles",
+        "operationId": "list_profiles_api_profiles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProfileOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Profiles Api Profiles Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/api/profiles/{profile_id}": {
       "get": {
         "tags": [
@@ -211,6 +241,34 @@
       }
     },
     "/api/trips": {
+      "get": {
+        "tags": [
+          "trips"
+        ],
+        "summary": "List Trips",
+        "operationId": "list_trips_api_trips_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TripOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Trips Api Trips Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
       "post": {
         "tags": [
           "trips"
@@ -254,6 +312,52 @@
             "HTTPBearer": []
           }
         ]
+      }
+    },
+    "/api/trips/samples/{persona}": {
+      "get": {
+        "tags": [
+          "trips"
+        ],
+        "summary": "Sample Trip",
+        "operationId": "sample_trip_api_trips_samples__persona__get",
+        "parameters": [
+          {
+            "name": "persona",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "ankle",
+                "deaf"
+              ],
+              "type": "string",
+              "title": "Persona"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/trips/{trip_id}": {
@@ -1675,6 +1779,11 @@
             "type": "boolean",
             "title": "Locked"
           },
+          "user_note": {
+            "type": "string",
+            "title": "User Note",
+            "default": ""
+          },
           "place": {
             "anyOf": [
               {
@@ -1760,6 +1869,7 @@
               {
                 "type": "string",
                 "enum": [
+                  "planned",
                   "done",
                   "skipped",
                   "in_progress"
@@ -1781,6 +1891,18 @@
               }
             ],
             "title": "Locked"
+          },
+          "user_note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Note"
           }
         },
         "additionalProperties": false,

@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Profiles */
+        get: operations["list_profiles_api_profiles_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/profiles/{profile_id}": {
         parameters: {
             query?: never;
@@ -63,10 +80,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List Trips */
+        get: operations["list_trips_api_trips_get"];
         put?: never;
         /** Create Trip */
         post: operations["create_trip_api_trips_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/trips/samples/{persona}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sample Trip */
+        get: operations["sample_trip_api_trips_samples__persona__get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -494,6 +529,11 @@ export interface components {
             status: "planned" | "in_progress" | "done" | "skipped";
             /** Locked */
             locked: boolean;
+            /**
+             * User Note
+             * @default
+             */
+            user_note: string;
             place: components["schemas"]["PlaceOut"] | null;
             /** Rationale */
             rationale: string;
@@ -511,9 +551,11 @@ export interface components {
         /** ItemPatch */
         ItemPatch: {
             /** Status */
-            status?: ("done" | "skipped" | "in_progress") | null;
+            status?: ("planned" | "done" | "skipped" | "in_progress") | null;
             /** Locked */
             locked?: boolean | null;
+            /** User Note */
+            user_note?: string | null;
         };
         /** Lodging */
         Lodging: {
@@ -904,6 +946,26 @@ export interface operations {
             };
         };
     };
+    list_profiles_api_profiles_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileOut"][];
+                };
+            };
+        };
+    };
     get_profile_api_profiles__profile_id__get: {
         parameters: {
             query?: never;
@@ -970,6 +1032,26 @@ export interface operations {
             };
         };
     };
+    list_trips_api_trips_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TripOut"][];
+                };
+            };
+        };
+    };
     create_trip_api_trips_post: {
         parameters: {
             query?: never;
@@ -982,6 +1064,37 @@ export interface operations {
                 "application/json": components["schemas"]["CreateTripRequest"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TripOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sample_trip_api_trips_samples__persona__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                persona: "ankle" | "deaf";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {

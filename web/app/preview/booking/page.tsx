@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import type { components } from "@/types/api";
 import { ItineraryView } from "@/components/itinerary/ItineraryView";
 import deaf from "@/fixtures/trip_deaf.json";
@@ -16,6 +17,8 @@ export default function BookingPreview() {
       <p className="font-semibold text-foreground">Demo trip preview</p>
       <p>Explore each day using the tabs below. Booking links open the venue’s website.</p>
     </div>
-    <ItineraryView trip={trip} />
+    <Suspense fallback={<p role="status" className="px-6 py-10">Loading preview…</p>}>
+      <ItineraryView trip={trip} />
+    </Suspense>
   </>;
 }

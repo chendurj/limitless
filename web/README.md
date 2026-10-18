@@ -14,6 +14,50 @@ measured timings, known limits, and the commands for all 61 tests.
 
 Use Node.js 24 and run `npm ci` before starting development.
 
+### Guest profiles and saved trips
+
+Enable **Allow anonymous sign-ins** in the existing Supabase project's
+Authentication → Sign In / Providers settings. In `web/.env.local`, configure:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Use the same Supabase project as the API's `SUPABASE_URL` and
+`SUPABASE_SECRET_KEY`. Never put the secret/service-role key in a public variable.
+Restart the web server after changing environment variables.
+
+Choose **My trips** or **Plan your trip**, then **Continue as guest**. A nickname
+is optional. Supabase persists and refreshes the session in browser storage.
+The browser sends its access token to FastAPI; the API verifies it with Supabase
+Auth and uses the verified user ID for every profile, trip, and feedback query.
+Existing database RLS remains deny-by-default for direct browser access; there
+are no schema changes to apply. Private API responses are never cached.
+
+My trips opens a separate dashboard with search, upcoming/past filters, trip
+counts, and the guest's 50 most recent itineraries. The guest profile sits in a
+collapsed settings panel. Each trip offers **Open itinerary**, **Edit with AI**,
+and **Edit manually**. AI edits are previewed before Apply and support Undo.
+Manual edits can skip/restore stops, set whether a stop is kept during re-planning,
+and save a personal note (up to 500 characters). Personal notes are not
+accessibility evidence; manual edits retain the existing schedule. AI re-planning
+preserves skipped stops and carries notes forward for places that remain.
+The homepage assistant can guide navigation but cannot directly
+read or change a saved trip. The two seeded samples remain public, read-only
+examples and do not become the guest's personal trips.
+
+Clearing browser storage or switching browser/device can lose access to a guest
+account. Do not silently create a replacement when session refresh fails. Linking
+an email or Google identity later is a separate feature. Enable Supabase's bot
+protection and integrate its CAPTCHA challenge before a broad public launch.
+
+The old shared bearer token is disabled by default. `ALLOW_DEMO_AUTH=true` on the
+API explicitly restores legacy demo authentication for development only; the
+frontend never falls back to that token. Existing shared demo itineraries are
+not migrated into a new guest's account.
+
 ### Homepage assistant
 
 The homepage “Ask me anything” card posts to the same-origin `/api/chat` route.

@@ -129,6 +129,8 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
       )}
       <Scores item={item} />
       {item.place ? <StopFit item={item} /> : item.rationale && <p className="mt-3 text-sm">{item.rationale}</p>}
+      {item.locked && <p className="mt-2 text-xs font-medium text-primary">Kept during AI re-planning</p>}
+      {item.user_note && <p className="mt-3 rounded-lg border border-border p-3 text-sm"><span className="font-semibold">Your note:</span> {item.user_note}</p>}
 
       {(!item.place || item.status === "skipped") && item.warnings.length > 0 && (
         <ul className="mt-3 space-y-1">

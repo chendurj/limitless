@@ -1,6 +1,6 @@
 # Trip fit and venue booking links
 
-Status: local review; do not commit or publish until the user asks.
+Status: ready for pull request review. The user approved committing and preserving the latest main-branch trip notes and kept-stop labels.
 
 Each venue stop now presents the planner's existing rationale under “Why this stop,” with evidence tied to `cited_fact_ids` inside one “Details & sources” disclosure. The browser does not generate access claims, change scores or decide eligibility. Missing citations, demo data, inferred claims and missing source links stay explicit. Opposing yes/no records for a cited attribute are shown together and trigger a visible warning. Existing warnings and researched restrictions appear before booking actions.
 

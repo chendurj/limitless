@@ -174,6 +174,7 @@ class ItemOut(Model):
     travel: Travel | None
     status: Literal["planned", "in_progress", "done", "skipped"]
     locked: bool
+    user_note: str = ""  # traveler's personal note; never an accessibility fact
     place: PlaceOut | None
     rationale: str
     cited_fact_ids: list[int]
@@ -229,8 +230,9 @@ class TripOut(Model):
 
 
 class ItemPatch(Model):
-    status: Literal["done", "skipped", "in_progress"] | None = None
+    status: Literal["planned", "done", "skipped", "in_progress"] | None = None
     locked: bool | None = None
+    user_note: str | None = Field(default=None, max_length=500)
 
 
 # --- Feedback and re-plan -------------------------------------------------------------
