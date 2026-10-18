@@ -241,8 +241,10 @@ class FeedbackParsed(Model):
     noise: Level | None
     restroom_ok: bool | None
     entrance_ok: bool | None
+    captions_ok: bool | None  # false = no captions or ASL were available
+    booking_phone_only: bool | None  # true = the place could only be booked by phone
     needs_met: Literal["yes", "partially", "no"] | None
-    sentiment: int = Field(ge=-2, le=2)
+    sentiment: int  # -2..2; the server clamps it (no min/max in the model schema)
     needs_rest_now: bool
     wants_to_skip_rest_of_today: bool
     summary: str  # third person, no names
@@ -260,7 +262,7 @@ class ChangeOut(Model):
 
 
 class ReplanRequest(Model):
-    reason: str | None = None
+    apply_version: int  # the proposed version to apply, or an earlier version to undo
 
 
 class ReplanResult(Model):

@@ -448,6 +448,7 @@
           "trips"
         ],
         "summary": "Replan",
+        "description": "Apply a proposed version, or undo to an earlier version.",
         "operationId": "replan_api_trips__trip_id__replan_post",
         "security": [
           {
@@ -1235,6 +1236,28 @@
             ],
             "title": "Entrance Ok"
           },
+          "captions_ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Captions Ok"
+          },
+          "booking_phone_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booking Phone Only"
+          },
           "needs_met": {
             "anyOf": [
               {
@@ -1253,8 +1276,6 @@
           },
           "sentiment": {
             "type": "integer",
-            "maximum": 2.0,
-            "minimum": -2.0,
             "title": "Sentiment"
           },
           "needs_rest_now": {
@@ -1296,6 +1317,8 @@
           "noise",
           "restroom_ok",
           "entrance_ok",
+          "captions_ok",
+          "booking_phone_only",
           "needs_met",
           "sentiment",
           "needs_rest_now",
@@ -2447,20 +2470,16 @@
       },
       "ReplanRequest": {
         "properties": {
-          "reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reason"
+          "apply_version": {
+            "type": "integer",
+            "title": "Apply Version"
           }
         },
         "additionalProperties": false,
         "type": "object",
+        "required": [
+          "apply_version"
+        ],
         "title": "ReplanRequest"
       },
       "ReplanResult": {

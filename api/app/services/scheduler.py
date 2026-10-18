@@ -183,8 +183,14 @@ def lay_out(
     limits: PaceLimits,
     lodging: tuple[float, float],
     hot: bool = False,
+    start_at: datetime | None = None,
+    energy_spent: float = 0.0,
 ) -> tuple[list[Timed], float]:
-    """Set times for one day. Drop the weakest visits until the day fits. Returns (items, energy)."""
+    """Set times for one day. Drop the weakest visits until the day fits. Returns (items, energy).
+
+    For a re-plan, start_at is the end of the last locked stop, lodging is that stop's location,
+    and energy_spent is the energy of the locked stops.
+    """
     picks = _order(picks, dna, hot)
     # A meal window outside the traveler's day is dropped, not the visits.
     day_start, day_end = _at(day, limits.start), _at(day, limits.end)
@@ -193,7 +199,7 @@ def lay_out(
     if day_start > _at(day, LUNCH[1]):
         picks = [p for p in picks if p.slot != "lunch"]
     while True:
-        items, energy, travel, ok = _try(picks, day, dna, limits, lodging)
+        items, energy, travel, ok = _try(picks, day, dna, limits, lodging, start_at, energy_spent)
         unknown = [p for p in picks if p.cand.ev.unknown_critical]
         over = (
             not ok
@@ -235,6 +241,8 @@ def _try(
     dna: AccessibilityDNA,
     limits: PaceLimits,
     lodging: tuple[float, float],
+    start_at: datetime | None = None,
+    energy_spent: float = 0.0,
 ) -> tuple[list[Timed], float, int, bool]:
     driving = dna.trip.transport in ("personal_car", "accessible_vehicle", "rideshare", None)
     buffer = (
@@ -243,20 +251,23 @@ def _try(
         else 0
     )
     rest_every = dna.rest_every_min or 90
-    t = _at(day, limits.start)
+    t = start_at or _at(day, limits.start)
     end_of_day = _at(day, limits.end)
     here = lodging
+    from_hotel = start_at is None
     items: list[Timed] = []
-    energy = 0.0
+    energy = energy_spent
     travel_total = 0
     active = 0  # minutes since the last rest
     ok = True
     for i, pick in enumerate(picks):
         place = pick.cand.place
         leg = travel_minutes(here, (place.lat, place.lng)) + buffer
-        if items and leg - buffer > limits.max_leg_min:  # the first leg from the hotel is exempt
+        if (
+            items or not from_hotel
+        ) and leg - buffer > limits.max_leg_min:  # the first leg from the hotel is exempt
             continue  # too far from the last stop: leave this pick out
-        if items:
+        if items or not from_hotel:
             travel_total += leg - buffer  # road time between stops; not the hotel leg or the buffer
         start = t + timedelta(minutes=leg)
         kind = "meal" if pick.cand.kind in ("meal", "snack") else "visit"

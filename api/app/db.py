@@ -194,6 +194,15 @@ class TripStore(Protocol):
     def save_plan(
         self, user_id: uuid.UUID, trip_id: str, version: int, plan: dict[str, Any]
     ) -> None: ...
+    def add_version(
+        self,
+        user_id: uuid.UUID,
+        trip_id: str,
+        plan: dict[str, Any],
+        overrides: dict[str, Any],
+        reason: str,
+    ) -> int: ...
+    def apply(self, user_id: uuid.UUID, trip_id: str, version: int) -> bool: ...
 
 
 class PgTripStore:
@@ -218,7 +227,8 @@ class PgTripStore:
         with pool().connection() as conn:
             return conn.execute(
                 """
-                select t.id::text, t.current_version, v.version, v.plan
+                select t.id::text, t.profile_id::text, t.current_version, v.version, v.plan, v.status,
+                       v.overrides
                 from trips t join trip_versions v on v.trip_id = t.id
                 where t.id = %s and t.user_id = %s and v.version = coalesce(%s, t.current_version)
                 """,
@@ -239,6 +249,74 @@ class PgTripStore:
                 [Jsonb(plan), trip_id, user_id, version],
             )
 
+    def add_version(
+        self,
+        user_id: uuid.UUID,
+        trip_id: str,
+        plan: dict[str, Any],
+        overrides: dict[str, Any],
+        reason: str,
+    ) -> int:
+        """Save a proposed version. The current version does not change until apply()."""
+        with pool().connection() as conn, conn.transaction():
+            owner = conn.execute(
+                "select 1 from trips where id = %s and user_id = %s for update", [trip_id, user_id]
+            ).fetchone()
+            if owner is None:
+                raise LookupError("trip not found")
+            version = conn.execute(
+                "select coalesce(max(version), 0) + 1 as v from trip_versions where trip_id = %s",
+                [trip_id],
+            ).fetchone()["v"]
+            conn.execute(
+                """insert into trip_versions (trip_id, version, plan, reason, status, overrides)
+                   values (%s, %s, %s, %s, 'proposed', %s)""",
+                [trip_id, version, Jsonb({**plan, "version": version}), reason, Jsonb(overrides)],
+            )
+            return version
+
+    def apply(self, user_id: uuid.UUID, trip_id: str, version: int) -> bool:
+        """Make a version current: apply a proposal, or undo to an earlier version."""
+        with pool().connection() as conn, conn.transaction():
+            row = conn.execute(
+                """update trips t set current_version = %s
+                   where t.id = %s and t.user_id = %s
+                     and exists (select 1 from trip_versions v where v.trip_id = t.id and v.version = %s)
+                   returning t.id""",
+                [version, trip_id, user_id, version],
+            ).fetchone()
+            if row:
+                conn.execute(
+                    "update trip_versions set status = 'applied' where trip_id = %s and version = %s",
+                    [trip_id, version],
+                )
+            return row is not None
+
 
 def get_trip_store() -> TripStore:
     return PgTripStore()
+
+
+# --- feedback -------------------------------------------------------------------------------
+
+
+class FeedbackStore(Protocol):
+    def create(self, user_id: uuid.UUID, row: dict[str, Any]) -> str: ...
+
+
+class PgFeedbackStore:
+    def create(self, user_id: uuid.UUID, row: dict[str, Any]) -> str:
+        columns = ["user_id", *row]
+        params = [user_id, *(Jsonb(v) if isinstance(v, (dict, list)) else v for v in row.values())]
+        placeholders = ", ".join(
+            "%s::extensions.vector" if c == "reporter_vector" else "%s" for c in columns
+        )
+        with pool().connection() as conn:
+            return conn.execute(
+                f"insert into feedback ({', '.join(columns)}) values ({placeholders}) returning id::text",
+                params,
+            ).fetchone()["id"]
+
+
+def get_feedback_store() -> FeedbackStore:
+    return PgFeedbackStore()
