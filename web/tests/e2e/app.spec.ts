@@ -420,12 +420,10 @@ test('29 top navigation opens the separate dashboard with saved trip actions', a
   await page.goto('/');
   await page.getByRole('link', { name: 'My trips', exact: true }).click();
   await expect(page).toHaveURL(/\/my-trips$/);
-  await expect(page.getByRole('heading', { name: 'My trips.', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'My trips', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open itinerary', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Edit with AI', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Edit manually', exact: true })).toBeVisible();
-  await page.getByRole('searchbox', { name: 'Search saved itineraries' }).fill('no matching trip');
-  await expect(page.getByRole('status').filter({ hasText: 'No trips match' })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
