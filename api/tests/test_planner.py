@@ -266,6 +266,8 @@ def test_deaf_trip_is_different(ankle, deaf_non_speaking):  # noqa: F811
     assert {e.place_id for e in a.excluded} != {e.place_id for e in d.excluded}
     assert "hist" in {e.place_id for e in d.excluded}  # captions are a must-have
     assert "zoo" not in {e.place_id for e in d.excluded}
+    for day in d.days:
+        assert [i.kind for i in day.items].count("meal") >= 2, "lunch and dinner on every day"
 
 
 def test_meals_are_in_their_windows(ankle):  # noqa: F811
