@@ -20,6 +20,7 @@ export function QuestionVoiceInput({ question, value, onChange, onOther, speakLa
   const mic = useSpeechInput(heard => { setTranscript(heard.slice(0, 2000)); setApplied(false); });
   const micBusy = mic.starting || mic.listening || mic.processing;
   const parsed = parseVoiceAnswer(question, transcript, value);
+  const canSaveWords = Boolean(onOther && transcript.trim());
   const id = `voice-${question.id}`;
 
   function toggle() {
@@ -36,21 +37,21 @@ export function QuestionVoiceInput({ question, value, onChange, onOther, speakLa
       </button>
       <p id={`${id}-help`} className="mt-1 text-xs text-muted">{mic.supported ? "Optional. Review what we heard before using it. You can also use the fields above." : "Voice input isn't available in this browser. Use the fields above."}</p>
       {open && <div className="mt-3 rounded-lg border border-border bg-surface-muted p-4">
-        <p role="status" className="text-sm">{mic.starting ? "Allow microphone access in your browser." : mic.listening ? "Listening. Speak, then choose Stop microphone." : mic.processing ? "Turning your speech into text…" : applied ? "Answer added. Check the fields above before continuing." : transcript ? "value" in parsed ? `Ready to use: ${parsed.summary}` : parsed.error : mic.error ? "" : "Choose Speak answer to try again."}</p>
+        <p role="status" className="text-sm">{mic.starting ? "Allow microphone access in your browser." : mic.listening ? "Listening. Speak, then choose Stop microphone." : mic.processing ? "Turning your speech into text…" : applied ? "Answer added. Check the fields above before continuing." : transcript ? "value" in parsed ? `Ready to use: ${parsed.summary}` : canSaveWords ? "We’ll save your words below. Your selected options will stay the same." : parsed.error : mic.error ? "" : "Choose Speak answer to try again."}</p>
         {transcript && <>
           <label htmlFor={id} className="mt-3 block text-sm font-semibold">Review your answer</label>
           <textarea id={id} rows={2} value={transcript} readOnly={micBusy} maxLength={2000} onChange={event => { setTranscript(event.target.value); setApplied(false); }} className="mt-2 w-full rounded-lg border border-border bg-surface p-3 text-base" />
-          {!("value" in parsed) && <p className="mt-2 text-sm text-muted">{voiceAnswerHelp(question)}</p>}
+          {!("value" in parsed) && !canSaveWords && <p className="mt-2 text-sm text-muted">{voiceAnswerHelp(question)}</p>}
         </>}
         {mic.error && <p role="alert" className="mt-2 text-sm text-danger">{mic.error}</p>}
         <div className="mt-3 flex flex-wrap gap-3">
-          {transcript && <button type="button" disabled={micBusy || !("value" in parsed) || applied} onClick={() => {
-            if (!("value" in parsed)) return;
-            mic.cancel(); onChange(parsed.value); setApplied(true);
+          {transcript && <button type="button" disabled={micBusy || (!("value" in parsed) && !canSaveWords) || applied} onClick={() => {
+            if (!("value" in parsed) && !canSaveWords) return;
+            mic.cancel();
+            if ("value" in parsed) onChange(parsed.value);
+            else onOther?.(transcript.trim());
+            setApplied(true);
           }} className="min-h-11 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50">Use this answer</button>}
-          {onOther && transcript.trim() && !("value" in parsed) && <button type="button" disabled={micBusy || applied} onClick={() => {
-            mic.cancel(); onOther(transcript.trim()); setApplied(true);
-          }} className="min-h-11 rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary disabled:opacity-50">Use as &ldquo;Something else&rdquo;</button>}
           <button type="button" onClick={() => { mic.cancel(); setOpen(false); setTranscript(""); setApplied(false); }} className="min-h-11 rounded-lg border border-border px-4 py-2 text-sm">Cancel voice answer</button>
         </div>
       </div>}
