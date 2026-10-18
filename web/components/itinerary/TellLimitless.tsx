@@ -23,7 +23,7 @@ const secondary = `${button} border border-border text-foreground hover:bg-surfa
 
 /**
  * "Tell Limitless": the traveler says or types how it is going. The server proposes changes.
- * Nothing changes until the traveler chooses Apply. onApplied gets the new trip and the
+ * Nothing changes until the traveler chooses Save changes. onApplied gets the new trip and the
  * version to go back to for Undo.
  */
 export function TellLimitless({
@@ -42,6 +42,8 @@ export function TellLimitless({
   const announce = useAnnounce();
   const operation = useRef<"send" | "apply" | null>(null);
   const requestRun = useRef(0);
+  // Closing or reopening invalidates earlier responses; a slow proposal must not
+  // overwrite the traveler's next request. The separate operation ref blocks double submits.
   useEffect(() => () => { requestRun.current++; operation.current = null; }, []);
   const canSpeak = useCanSpeak();
   const [phase, setPhase] = useState<Phase>("compose");

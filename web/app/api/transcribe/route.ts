@@ -1,3 +1,5 @@
+// Receive bounded audio from the browser, call the provider with a server-only key,
+// and return editable text. Audio is forwarded in memory, not saved to an app file.
 export const maxDuration = 60;
 const MAX_BYTES = 8 * 1024 * 1024;
 const formats: Record<string, string> = {

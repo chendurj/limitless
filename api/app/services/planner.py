@@ -94,6 +94,8 @@ def build_trip(
     here = (lodging[1], lodging[2])
 
     kept: list[Candidate] = []
+    # Establish eligible places before the composer sees them. Language-model wording
+    # cannot override a rule exclusion; omitted places retain reasons for the traveler.
     excluded: list[api.ExcludedPlace] = []
     for place in places:
         facts = facts_by_place.get(place.id, [])
@@ -121,6 +123,8 @@ def build_trip(
         _add_light_stop(day, days, dna, snacks)
 
     day_outs = []
+    # Composition chooses stops; scheduling owns clock times, travel estimates,
+    # breaks, and effort limits for both the LLM and deterministic fallback paths.
     for day in days:
         timed, energy = lay_out(day.picks, day.date, dna, limits, here, hot=is_hot(day.weather))
         day_outs.append(

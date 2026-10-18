@@ -42,6 +42,8 @@ function buildAnswers(
   answers: Record<string, FieldValue>,
   others: Record<string, string>,
 ): Record<string, QAnswer> {
+  // Recompute visibility at submission: answers from abandoned branches stay out
+  // of the extraction request, even if the browser draft still contains them.
   const out: Record<string, QAnswer> = {};
   const map: AnswerMap = {};
   for (const [id, value] of Object.entries(answers)) if (typeof value === "string" || Array.isArray(value)) map[id] = value;
@@ -135,6 +137,8 @@ export function IntakeSubmit({
   };
 
   const planTrip = async () => {
+    // Guard synchronously, before React renders the disabled state, so rapid clicks
+    // cannot create duplicate itineraries. Explicit calendar dates bypass LLM inference.
     if (actionBusy.current) return;
     actionBusy.current = true;
     setPhase("creating");

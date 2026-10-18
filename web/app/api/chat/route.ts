@@ -1,3 +1,5 @@
+// Server boundary for the homepage conversation. This route can explain and guide;
+// it has no trip-editing tools. Personal itinerary changes go through FastAPI instead.
 export const maxDuration = 60;
 
 type Message = { role: "user" | "assistant"; content: string };

@@ -20,6 +20,8 @@ class Strict(BaseModel):
 def output_model(short_ids: list[str]) -> type[BaseModel]:
     """A schema whose place_id is an enum of this request's short IDs (p1..pN)."""
     PlaceId = Literal[tuple(short_ids)]  # type: ignore[valid-type]
+    # Constrain generated place IDs to this request's shortlist. The planner still
+    # validates citations and day placement after schema parsing succeeds.
     item = create_model(
         "ComposedItem",
         __base__=Strict,

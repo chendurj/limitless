@@ -1,171 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Limitless web
 
-## Browser regression tests
+Next.js App Router interface for the Limitless accessible travel planner. The [root README](../README.md) covers the product story, walkthrough, architecture, and complete local setup.
 
-Use `npm run test:e2e` for the Playwright suite. Install Chromium with
-`npx playwright install chromium`, or use `PLAYWRIGHT_CHANNEL=chrome` with an
-installed Chrome browser. The runner reuses or starts the local development server.
-Planning API responses are intercepted demo fixtures. Set `LIVE_CHAT_TEST=1` with
-a configured server key to include the real assistant request; otherwise that one
-case is skipped. See [the quality review](../docs/quality-review.md) for coverage,
-measured timings, known limits, and the commands for all 61 tests.
+## Development
 
-## Getting Started
-
-Use Node.js 24 and run `npm ci` before starting development.
-
-### Guest profiles and saved trips
-
-Enable **Allow anonymous sign-ins** in the existing Supabase project's
-Authentication → Sign In / Providers settings. In `web/.env.local`, configure:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-Use the same Supabase project as the API's `SUPABASE_URL` and
-`SUPABASE_SECRET_KEY`. Never put the secret/service-role key in a public variable.
-Restart the web server after changing environment variables.
-
-Choose **My trips** or **Plan your trip**, then **Continue as guest**. A nickname
-is optional. Supabase persists and refreshes the session in browser storage.
-The browser sends its access token to FastAPI; the API verifies it with Supabase
-Auth and uses the verified user ID for every profile, trip, and feedback query.
-Existing database RLS remains deny-by-default for direct browser access; there
-are no schema changes to apply. Private API responses are never cached.
-
-My trips opens a simple list of the guest's 50 most recent itineraries, with a
-**Plan a trip** button. The guest profile sits in a collapsed settings panel.
-Each trip offers **Open itinerary**, **Edit with AI**,
-and **Edit manually**. AI edits are previewed before Apply and support Undo.
-Manual edits can skip/restore stops, set whether a stop is kept during re-planning,
-and save a personal note (up to 500 characters). Personal notes are not
-accessibility evidence; manual edits retain the existing schedule. AI re-planning
-preserves skipped stops and carries notes forward for places that remain.
-The homepage assistant can guide navigation but cannot directly
-read or change a saved trip. The two seeded samples remain public, read-only
-examples and do not become the guest's personal trips.
-
-Clearing browser storage or switching browser/device can lose access to a guest
-account. Do not silently create a replacement when session refresh fails. Linking
-an email or Google identity later is a separate feature. Enable Supabase's bot
-protection and integrate its CAPTCHA challenge before a broad public launch.
-
-The old shared bearer token is disabled by default. `ALLOW_DEMO_AUTH=true` on the
-API explicitly restores legacy demo authentication for development only; the
-frontend never falls back to that token. Existing shared demo itineraries are
-not migrated into a new guest's account.
-
-### Homepage assistant
-
-The homepage “Ask me anything” card posts to the same-origin `/api/chat` route.
-The Next.js server calls OpenAI's Responses API; no additional Python service is
-needed for chat. Set these **server-only** values in `web/.env.local`:
-
-```dotenv
-OPENAI_API_KEY=your-key
-OPENAI_MODEL_CHAT=gpt-6-luna
-```
-
-Use an available model in your OpenAI project if needed. Never add `NEXT_PUBLIC_`
-to these names. Restart the web server after changing environment values.
-The route returns a friendly unavailable message until the key is configured.
-Conversation history stays in page memory, sends up to the last twenty exchanges (within a 60,000-character request budget),
-and is cleared on reload or “New chat”. Requests use `store: false`.
-
-The assistant helps with travel preparation and app questions. It has no database
-or live venue access and directs personalized place selection to `/intake`.
-It cannot book travel or modify itineraries.
-
-The microphone records audio using the browser's MediaRecorder API. Choose the
-microphone, allow access, speak, then choose Stop microphone. The web server sends
-that recording to OpenAI's transcription API and returns the recognized text. The
-browser's SpeechRecognition service is not used, so its network failures no longer
-block dictation. It uses the existing server `OPENAI_API_KEY`; optionally set
-`OPENAI_MODEL_TRANSCRIBE` (default `gpt-4o-mini-transcribe`).
-
-Text appears after you stop, rather than while you are speaking. Review or edit it
-before sending or applying it. Recordings stop after one minute and are limited to
-8 MiB. Cancel, navigation, and unmount discard unsent recordings and abort pending
-transcription. The app does not persist audio files. Microphone recording requires
-HTTPS or localhost, browser permission, and a browser supporting getUserMedia and
-MediaRecorder. Permission denial, busy devices, and transcription errors leave the
-normal text and choice controls available. AI replies remain in text chat.
-
-### Questionnaire voice answers
-
-Every rendered intake question offers **Speak answer**, including all nine steps
-in the mobility flow and the conditional hearing/communication branch. Speak,
-choose **Stop microphone**, review or edit the transcript, then choose **Use this
-answer**. Check the regular fields before choosing Next. Voice never advances a
-step or changes an answer without that confirmation.
-
-- Choices accept the complete shown label or numbered choices, such as “option
-  two” or “option one and option three”. Multi-select answers replace that
-  question's selected choices after confirmation.
-- Requirements need an explicit level: “option two must have, option five nice
-  to have”. Other existing requirement levels remain unchanged.
-- Numbers accept digits or simple number words. Dates require a full date, such
-  as “October 22, 2026”; unclear or incomplete dates are not guessed.
-- Text and existing Something else fields accept dictated text. Unsupported or
-  unclear answers can be edited or entered using the original controls.
-- Only one microphone records at a time. Changing questions, cancelling, or
-  leaving a screen releases the microphone and discards pending transcription.
-
-Run `npm run test:questionnaire-voice` for parsing and questionnaire coverage tests.
-
-Run `npm run test:chat`, `npm run lint`, and `npm run build` to verify changes.
-For around-the-clock access, deploy the web app on an always-available Next.js
-host and configure the same server environment variables there. Availability
-depends on your host and OpenAI quota. Apply the host's rate limiting and spend
-controls before opening this unauthenticated endpoint to public traffic.
-
-First, run the development server:
+Use Node.js 24. From the repository root:
 
 ```bash
+cd web
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The planning API runs separately on port 8000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `web/.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-### Microphone regression checks
-
-`npm run test:transcribe` checks the server endpoint, including unsupported files,
-size limits, missing configuration, upstream failures, and empty transcripts.
-Browser tests normally mock audio and API results. To test actual MediaRecorder
-capture and the real transcription endpoint with generated speech, provide an
-absolute WAV path containing “Option one” followed by a few seconds of silence:
-
-```sh
-PLAYWRIGHT_CHANNEL=chrome LIVE_CHAT_TEST=1 VOICE_TEST_AUDIO=/absolute/path/option-one.wav npm run test:e2e
+```dotenv
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+OPENAI_API_KEY=your_server_only_openai_key
 ```
 
-Chrome uses that file as its test microphone; this does not record the user's
-microphone. Without VOICE_TEST_AUDIO, the live recording case is skipped.
+Optional server variables are `OPENAI_MODEL_CHAT` and `OPENAI_MODEL_TRANSCRIBE`; defaults are documented in [`.env.example`](../.env.example). Never prefix an OpenAI or Supabase secret key with `NEXT_PUBLIC_`. Restart the development server after changing environment variables.
+
+## Screens and boundaries
+
+| Path | Purpose |
+| --- | --- |
+| `/` | Landing page and conversational app/travel guide. |
+| `/intake` | Guest sign-in, adaptive questions, reviewed answers, and trip creation. |
+| `/my-trips` | Saved trip cards, editing links, deletion confirmation, and guest nickname. |
+| `/trips/[id]` | Day tabs, stop details, status controls, AI edits, manual edits, and Undo. |
+| `/how-it-works`, `/features` | Product explanation. |
+| `/reviews` | Coming-soon page. |
+| `/api/chat` | Server-side conversation proxy; it cannot access or modify saved trips. |
+| `/api/transcribe` | Server-side audio-to-text endpoint. |
+
+The two explicit sample trip IDs render read-only. All personal trip routes use `GuestGate`. Supabase persists the guest identity in browser storage and refreshes its session; FastAPI verifies the access token and enforces ownership. Clearing browser storage or changing devices can lose access to an unlinked guest identity.
+
+## Voice input
+
+Recording uses `getUserMedia` and `MediaRecorder`, with transcription handled by the Next.js server. It requires HTTPS or localhost, microphone permission, and a compatible browser.
+
+1. Choose **Speak answer** or **Speak**.
+2. Speak, then choose the stop control.
+3. Review or edit the transcript.
+4. Confirm the answer or submit the trip-change request.
+
+Questionnaire voice parsing matches the question’s allowed choices. When supported, unmatched words can be saved in the question’s additional-notes field. A voice answer never advances the questionnaire automatically. Dates and date ranges still pass the shared calendar validation.
+
+Recordings stop after one minute and are limited to 8 MiB. Cancel and navigation discard pending input. Audio is not persisted to an application file; it is sent to the transcription provider. Normal text/choice controls remain available if recording fails.
+
+## Itinerary editing
+
+- **AI:** describe the change → **Update my plan** → review → **Save changes**. **Undo** selects the earlier saved version. Completed, in-progress, skipped, and kept stops are protected during repair.
+- **Manual:** skip/restore a stop, keep it during AI replanning, or save a personal note. These edits retain the existing schedule.
+- **Delete:** an inline confirmation precedes the owner-scoped API request; the card is removed after success.
+
+Venue actions open external websites; they do not create reservations inside Limitless. See [the architecture guide](../docs/architecture.md) for scoring-display notes and the main implementation files.
+
+## Checks
+
+```bash
+npm run lint
+npx tsc --noEmit
+npm run test:chat
+npm run test:transcribe
+npm run test:questionnaire-voice
+node --experimental-strip-types --test tests/voice-edge-cases.test.mjs tests/trip-dates.test.mjs tests/trip-evidence.test.mjs
+npm run build
+PLAYWRIGHT_CHANNEL=chrome npm run test:e2e
+```
+
+Use installed Chrome with `PLAYWRIGHT_CHANNEL=chrome`, or install Playwright Chromium with `npx playwright install chromium`. Browser tests use mocked sessions and planning responses. Real-provider cases are opt-in and need the corresponding environment configuration; see [the quality review](../docs/quality-review.md).
+
+To exercise the real recording/transcription path with a synthetic test microphone, provide an absolute WAV path:
+
+```bash
+PLAYWRIGHT_CHANNEL=chrome VOICE_TEST_AUDIO=/absolute/path/option-one.wav npm run test:e2e
+```
+
+The homepage assistant’s live-provider test is separately enabled with `LIVE_CHAT_TEST=1`. These options may consume provider quota.
+
+## API types and deployment
+
+API types are generated from FastAPI. Change the Python models first, then run `./scripts/gen-types.sh` from the repository root. Do not hand-edit `types/api.d.ts`.
+
+Vercel uses `web` as the project root. Configure the same public Supabase variables, a deployed `NEXT_PUBLIC_API_URL`, and server-side OpenAI credentials, then redeploy. See [deployment instructions](../docs/deploy.md).

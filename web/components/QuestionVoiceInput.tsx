@@ -6,6 +6,9 @@ import type { FieldValue } from "@/components/QuestionField";
 import { parseVoiceAnswer, voiceAnswerHelp } from "@/lib/questionnaire-voice";
 import { useSpeechInput } from "@/lib/speech";
 
+/** Speech creates an editable draft, not an automatic selection. The traveler
+ * confirms it with Use this answer; unmatched words can remain a personal note.
+ */
 export function QuestionVoiceInput({ question, value, onChange, onOther, speakLabel = "Speak answer" }: {
   question: IntakeQuestion;
   speakLabel?: string;

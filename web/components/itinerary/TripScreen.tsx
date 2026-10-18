@@ -17,6 +17,8 @@ const errorText = (err: unknown, fallback: string) =>
 // Loads a trip from the API by the [id] route param and renders it, with
 // accessible loading and error states. Live mode: mark stops, Tell Limitless, Undo.
 export function TripScreen() {
+  // Only the two explicit sample IDs bypass GuestGate, and those render read-only.
+  // Every other route resolves the current guest before requesting a personal trip.
   const params = useParams<{ id: string }>();
   const search = useSearchParams();
   const tripId = typeof params.id === "string" ? params.id : "";

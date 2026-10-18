@@ -56,6 +56,8 @@ export function StopFit({ item }: { item: Item }) {
 }
 
 export function StopBooking({ item }: { item: Item }) {
+  // This is an external venue handoff, not an in-app reservation. Keep access
+  // warnings beside the link so opening a ticket page never implies suitability.
   if (!item.place || item.status === "skipped") return null;
   const action = visitAction(item.place);
   const checks = uniqueText([...evidenceWarnings(item), ...item.warnings, ...(action.entry?.scope_note ? [action.entry.scope_note] : [])]);

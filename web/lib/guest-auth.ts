@@ -9,6 +9,8 @@ export function getSupabase() {
   if (!url || !key || key.startsWith("sb_secret_")) {
     throw new Error("Guest sign-in is not configured. Please ask the Limitless team to connect it.");
   }
+  // Share one auth client across screens so refresh timers and session events agree.
+  // The browser receives only a publishable key; ownership is enforced by the API.
   client ??= createClient(url, key, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
   });

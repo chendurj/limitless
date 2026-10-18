@@ -1,3 +1,8 @@
+"""Resolve a verified traveler identity for every personal API request.
+
+Supabase Auth owns session validation; route handlers pass its user ID to scoped stores.
+"""
+
 import json
 import secrets
 import uuid

@@ -1,5 +1,8 @@
 "use client";
 
+// Manual edits change stop status, keep-during-replanning flags, and personal notes.
+// They do not assert new accessibility facts or rebuild the day's schedule.
+
 import { useRef, useState } from "react";
 import { api, type ItemOut, type TripOut } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";

@@ -1,3 +1,5 @@
+"""Convert reviewed answers into an owned profile, then expose it for review and edits."""
+
 import uuid
 from collections.abc import Callable
 from typing import Annotated, Any

@@ -83,6 +83,8 @@ class Candidate:
 
     @property
     def energy(self) -> float:
+        # Relative planning effort, not a measurement of the traveler's health.
+        # Longer or more demanding visits consume more of their chosen pace budget.
         if self.kind != "visit":
             return 0.0  # a seated meal or cafe stop is a rest
         cost = self.place.exertion_level * self.place.est_visit_min / 60

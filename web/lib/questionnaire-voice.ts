@@ -125,6 +125,9 @@ export function voiceAnswerHelp(question: IntakeQuestion): string {
     : 'Say one choice label, or its number, like "option two."';
 }
 
+/** Parse against this question's allowed choices, not an unrestricted AI answer.
+ * Ambiguity and negation can require correction; callers still require explicit review.
+ */
 export function parseVoiceAnswer(question: IntakeQuestion, transcript: string, current?: FieldValue): ParsedAnswer {
   const text = transcript.trim();
   if (!text) return { error: "Speak an answer first, or type it in the box below." };

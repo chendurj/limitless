@@ -35,6 +35,8 @@ export class ApiError extends Error {
 }
 
 async function request<T>(method: string, path: string, body?: unknown, publicSample = false): Promise<T> {
+  // Keep authentication and error normalization in one place. Components receive
+  // generated response types and never submit a client-chosen owner ID.
   // Sample reads are explicitly public; personal requests never fall back to the demo token.
   const token = publicSample ? null : await guestAccessToken();
   let res: Response;

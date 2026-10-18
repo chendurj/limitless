@@ -220,6 +220,11 @@ class TripStore(Protocol):
 
 
 class PgTripStore:
+    """Owner-scoped trip snapshots; proposal creation and application are separate writes.
+
+    The server connection is privileged, so every private lookup also checks user_id.
+    Database RLS alone cannot replace that application-level ownership check.
+    """
     def delete(self, user_id: uuid.UUID, trip_id: str) -> bool:
         if not _valid_uuid(trip_id):
             return False
@@ -292,6 +297,8 @@ class PgTripStore:
         reason: str,
     ) -> int:
         """Save a proposed version. The current version does not change until apply()."""
+        # Serialize version allocation for this trip so simultaneous proposals cannot
+        # choose the same next version. The transaction also rechecks ownership.
         with pool().connection() as conn, conn.transaction():
             owner = conn.execute(
                 "select 1 from trips where id = %s and user_id = %s for update", [trip_id, user_id]

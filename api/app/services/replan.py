@@ -173,6 +173,7 @@ class Repair:
 
 
 def _locked(item: api.ItemOut) -> bool:
+    # Repair must preserve history, explicit skips, and commitments the traveler kept.
     return item.locked or item.status in ("done", "in_progress", "skipped")
 
 
@@ -221,6 +222,8 @@ def repair(
             new_days.append(day)
             continue
         items = list(day.items)
+        # Preserve the prefix through the last protected stop, keeping its sequence
+        # and timing intact rather than inserting new stops before a commitment.
         last_locked = max((n for n, i in enumerate(items) if _locked(i)), default=-1)
         rest_idx = next((n for n, i in enumerate(items) if i.id == rest_now_after), None)
         if rest_idx is not None:

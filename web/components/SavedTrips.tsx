@@ -26,6 +26,8 @@ export function SavedTrips() {
   const [deleteError, setDeleteError] = useState("");
 
   async function deleteTrip(tripId: string) {
+    // The inline confirmation is separate from this request. Remove the card only
+    // after the owner-scoped API confirms deletion, keeping failures recoverable in the UI.
     if (deleteBusy.current) return;
     deleteBusy.current = true;
     setDeleting(true);

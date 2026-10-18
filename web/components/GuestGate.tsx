@@ -14,6 +14,9 @@ export function useGuest() {
   return user;
 }
 
+/** Restore the browser's existing identity before rendering any personal-trip controls.
+ * A failed refresh must not silently create a new guest and strand their saved trips.
+ */
 export function GuestGate({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [checking, setChecking] = useState(true);

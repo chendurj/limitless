@@ -1,3 +1,5 @@
+"""API composition root: shared errors, allowed web origins, routes, and private caching."""
+
 import logging
 from contextlib import asynccontextmanager
 
@@ -37,6 +39,7 @@ for router in (intake.router, trips.router, places.router):
 
 @app.middleware("http")
 async def private_responses(request: Request, call_next):
+    # A shared browser/CDN cache must never replay one guest's itinerary to another.
     response = await call_next(request)
     if request.url.path.startswith(("/api/intake", "/api/profiles", "/api/trips")):
         response.headers["Cache-Control"] = "private, no-store"

@@ -44,6 +44,8 @@ def check(
 ) -> tuple[str, list[int]]:
     """Return a grounded (rationale, fact_ids)."""
     own = {f.id: f for f in facts}
+    # A fact ID from another venue is not supporting evidence for this explanation.
+    # These checks are conservative heuristics, not proof of every natural-language claim.
     cited = [own[i] for i in dict.fromkeys(fact_ids) if i in own]
     ids = [f.id for f in cited]
     cited_text = " ".join(f.detail for f in cited)

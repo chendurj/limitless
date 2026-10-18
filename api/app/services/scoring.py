@@ -225,6 +225,8 @@ def evaluate(
     )
 
     interest = _interest(place, dna)
+    # Ranking eligible places is separate from deciding eligibility. Interests and
+    # ratings influence ordering, but cannot cancel a hard access-related exclusion.
     quality = (place.rating - 1) / 4 if place.rating else 0.5
     score = (
         0.45 * interest

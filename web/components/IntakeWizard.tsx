@@ -40,6 +40,8 @@ type Draft = { answers: Answers; others: Record<string, string>; index: number }
 const noSubscribe = () => () => {};
 
 function readDraft(storageKey: string): Draft {
+  // Storage is untrusted and can outlive a questionnaire release. Restore only
+  // currently valid answer shapes; old hidden answers must not become new requirements.
   const draft: Draft = { answers: {}, others: {}, index: 0 };
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
@@ -95,6 +97,7 @@ function IntakeWizardForm({ storageKey }: { storageKey: string }) {
 
   const answerMap = useMemo(() => toAnswerMap(answers), [answers]);
   const screens = useMemo(() => visibleScreens(answerMap), [answerMap]);
+  // A changed access need can remove later steps while an old draft still points there.
   const safeIndex = Math.max(0, Math.min(index, screens.length - 1));
   const current: IntakeScreen | undefined = screens[safeIndex];
 

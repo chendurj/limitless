@@ -17,6 +17,8 @@ export class AudioRecorder {
   private timer: ReturnType<typeof setTimeout> | null = null;
   private permissionTimer: ReturnType<typeof setTimeout> | null = null;
   private run = 0;
+  // Each recording owns a run number. Late permission results and fetch responses
+  // from cancelled recordings cannot populate a different question or trip edit.
   private state: RecordingState = 'idle';
 
   constructor(callbacks: Callbacks) { this.callbacks = callbacks; }
@@ -77,6 +79,8 @@ export class AudioRecorder {
       };
       recorder.onerror = () => { if (run === this.run) this.fail('The microphone could not record. Please try again.'); };
       recorder.onstop = async () => {
+        // MediaRecorder delivers its final audio chunk before this event. Upload
+        // only after collecting it, and release the hardware before network work.
         if (run !== this.run) return;
         this.releaseTracks();
         this.recorder = null;

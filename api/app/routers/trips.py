@@ -243,6 +243,8 @@ def send_feedback(
         if r.place_ref in short and short[r.place_ref].place and short[r.place_ref] is not target
     ]
     new_dna, overrides, reasons = apply_feedback(dna, parsed, place_id, old, others)
+    # Feedback changes this trip's requirements/evidence, not the shared venue catalog
+    # or the traveler's base profile. Repair returns a proposal for explicit acceptance.
     from_day = next(
         (d.day_index for d in trip.days if target and any(i.id == target.id for i in d.items)),
         next((d.day_index for d in trip.days if any(i.status == "planned" for i in d.items)), 0),
