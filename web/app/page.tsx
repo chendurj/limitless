@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 import { DEMO_TRIPS } from "@/lib/api";
 
-// What Limitless does — the core feature set.
+// What Limitless does: the core feature set.
 const features = [
   {
     title: "Personalized itineraries",
@@ -10,7 +10,7 @@ const features = [
   },
   {
     title: "Accessibility Score",
-    body: "How well each place actually fits you — not just a yes-or-no “accessible” flag.",
+    body: "How well each place actually fits you, not just a simple “accessible” flag.",
   },
   {
     title: "Verification Score",
@@ -22,7 +22,7 @@ const features = [
   },
   {
     title: "24/7 support",
-    body: "An always-on AI travel agent that hands off to a real person when the data isn't enough.",
+    body: "An AI travel agent available any time, that hands off to a real person when the data isn't enough.",
   },
   {
     title: "Credible by design",
@@ -32,12 +32,12 @@ const features = [
 
 // Impact stats from the sources cited in our write-up.
 const stats = [
-  { value: "1 in 6", label: "people live with a significant disability — 1.3 billion worldwide (WHO)." },
+  { value: "1 in 6", label: "people live with a significant disability, 1.3 billion worldwide (WHO)." },
   { value: "28.7%", label: "of U.S. adults reported a disability in 2022 (CDC)." },
   { value: "$50B", label: "spent on U.S. disability travel over two years (Open Doors)." },
 ];
 
-// Example excluded places. Clearly demo data — never presented as real facts.
+// Example excluded places. Clearly demo data, never presented as real facts.
 const skipped = [
   {
     name: "Sunset Cliffs Natural Park",
@@ -104,7 +104,7 @@ export default function Home() {
               Your world to discover. Your right to explore.
             </h1>
             <p className="mt-5 max-w-xl text-lg text-zinc-200">
-              A trip planned around your real access needs — slopes, distances,
+              A trip planned around your real access needs: slopes, distances,
               restrooms, captions, and more. Every accessibility fact is sourced,
               and the plan adapts as your day changes.
             </p>
@@ -146,7 +146,7 @@ export default function Home() {
               </span>
             </div>
             <p className="mt-3 text-lg font-semibold">
-              Balboa Park — El Prado Promenade
+              Balboa Park, El Prado Promenade
             </p>
             <p className="text-sm text-muted">Wide, flat, paved walkway</p>
             <ul className="mt-4 space-y-3">
@@ -219,7 +219,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Credible data — we only show what we can back up */}
+      {/* Credible data: we only show what we can back up */}
       <section
         aria-labelledby="skip-heading"
         className="border-t border-border bg-surface"
@@ -229,7 +229,7 @@ export default function Home() {
             We only show what we can back up
           </h2>
           <p className="mt-3 max-w-2xl text-muted">
-            Missing information stays unknown — we never guess. When a place
+            Missing information stays unknown. We never guess. When a place
             doesn&rsquo;t fit, we leave it out and tell you why, so the choice is
             yours.
           </p>
