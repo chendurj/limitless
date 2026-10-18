@@ -44,7 +44,7 @@ Stay in your own folder to avoid merge conflicts.
 
 ## Working rules
 
-- One task card at a time, on its own branch named with the card key: `ap-19-scoring`.
+- One task card at a time, on its own branch named for the task: `scoring`. Do not use task keys in branches, commits, PRs or files.
 - Commit messages are plain, natural sentences with no prefix and no AI co-author trailer: `Add hard and soft filters to scoring`.
 - A human reviews every change before it merges to `main`. Pull before starting work.
 - Judging weights: functionality 30%, track fit (accessibility and assistive tech) 30%, design 20%, creativity 20%. A working end-to-end path beats extra features.
