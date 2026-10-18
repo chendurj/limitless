@@ -2,11 +2,11 @@
 
 import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { components } from "@/types/api";
+import { StopFit, StopBooking } from "@/components/itinerary/StopDetails";
 
 type TripOut = components["schemas"]["TripOut"];
 type DayOut = components["schemas"]["DayOut"];
 type ItemOut = components["schemas"]["ItemOut"];
-type PlaceOut = components["schemas"]["PlaceOut"];
 type ExcludedPlace = components["schemas"]["ExcludedPlace"];
 
 // Times and dates are shown in San Diego time regardless of where this renders.
@@ -94,35 +94,6 @@ function StatusControls({ item, live }: { item: ItemOut; live: Live }) {
   );
 }
 
-// The team's research from official pages. It is shown as written, with its links.
-function Research({ place }: { place: PlaceOut }) {
-  return (
-    <details className="mt-3 rounded-lg border border-border px-3 py-2 text-sm">
-      <summary className="cursor-pointer font-medium">
-        What official sources say
-      </summary>
-      <p className="mt-2">{place.research_summary}</p>
-      <ul className="mt-2 space-y-1">
-        {place.research_sources.map((source) => (
-          <li key={source.url}>
-            <a
-              href={source.url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary underline underline-offset-4"
-            >
-              {source.title}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-2 text-xs text-muted">
-        Team research from official pages. No one visited or phoned the place.
-      </p>
-    </details>
-  );
-}
-
 function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
   const status = statusLabel[item.status];
   return (
@@ -157,11 +128,11 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
         </p>
       )}
       <Scores item={item} />
-      {item.rationale && <p className="mt-3 text-sm">{item.rationale}</p>}
+      {item.place ? <StopFit item={item} /> : item.rationale && <p className="mt-3 text-sm">{item.rationale}</p>}
       {item.locked && <p className="mt-2 text-xs font-medium text-primary">Kept during AI re-planning</p>}
       {item.user_note && <p className="mt-3 rounded-lg border border-border p-3 text-sm"><span className="font-semibold">Your note:</span> {item.user_note}</p>}
 
-      {item.warnings.length > 0 && (
+      {(!item.place || item.status === "skipped") && item.warnings.length > 0 && (
         <ul className="mt-3 space-y-1">
           {item.warnings.map((warning, i) => (
             <li
@@ -175,31 +146,7 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
         </ul>
       )}
 
-      {item.insights.map((insight, i) => (
-        <p key={i} className="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm">
-          {insight.text}
-          {insight.includes_demo_data ? (
-            <span className="text-muted"> (includes demo data)</span>
-          ) : null}
-        </p>
-      ))}
-
-      {item.place?.research_summary ? (
-        <Research place={item.place} />
-      ) : (
-        item.place?.accessibility_url && (
-          <p className="mt-3 text-sm">
-            <a
-              href={item.place.accessibility_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary underline underline-offset-4"
-            >
-              Venue accessibility page
-            </a>
-          </p>
-        )
-      )}
+      <StopBooking item={item} />
 
       {live && <StatusControls item={item} live={live} />}
     </li>
