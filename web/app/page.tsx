@@ -2,20 +2,39 @@ import Link from "next/link";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 import { DEMO_TRIPS } from "@/lib/api";
 
-// Plain-language value points under the hero.
-const steps = [
+// What Limitless does — the core feature set.
+const features = [
   {
-    title: "Every fact is sourced",
-    body: "Each accessibility detail shows where it came from and how sure we are. We never guess.",
+    title: "Personalized itineraries",
+    body: "Built around your access needs, interests, stamina, sensory preferences, and pace.",
   },
   {
-    title: "It skips what won't work",
-    body: "Places that don't fit your needs are left out, with a clear reason you can read.",
+    title: "Accessibility Score",
+    body: "How well each place actually fits you — not just a yes-or-no “accessible” flag.",
   },
   {
-    title: "It adapts as you go",
-    body: "Tell us how a stop felt, and the rest of your day re-plans around you in seconds.",
+    title: "Verification Score",
+    body: "How confident we are in each fact, with its source and the date it was checked.",
   },
+  {
+    title: "Live adjustments",
+    body: "Tell us you're tired or something changed, and the rest of your day re-plans. Stops you've finished stay put.",
+  },
+  {
+    title: "24/7 support",
+    body: "An always-on AI travel agent that hands off to a real person when the data isn't enough.",
+  },
+  {
+    title: "Credible by design",
+    body: "Official sources and human review. Anything we can't back up stays marked unknown.",
+  },
+];
+
+// Impact stats from the sources cited in our write-up.
+const stats = [
+  { value: "1 in 6", label: "people live with a significant disability — 1.3 billion worldwide (WHO)." },
+  { value: "28.7%", label: "of U.S. adults reported a disability in 2022 (CDC)." },
+  { value: "$50B", label: "spent on U.S. disability travel over two years (Open Doors)." },
 ];
 
 // Example excluded places. Clearly demo data — never presented as real facts.
@@ -82,12 +101,12 @@ export default function Home() {
               Limitless
             </p>
             <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
-              Trips built around how you move.
+              Your world to discover. Your right to explore.
             </h1>
             <p className="mt-5 max-w-xl text-lg text-zinc-200">
-              Tell us your access needs once. We plan a day you can actually do
-              — every accessibility fact is sourced, and the plan changes when
-              your body says it needs to.
+              A trip planned around your real access needs — slopes, distances,
+              restrooms, captions, and more. Every accessibility fact is sourced,
+              and the plan adapts as your day changes.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -97,7 +116,7 @@ export default function Home() {
                 Plan your trip
               </Link>
               <a
-                href="#how-it-works"
+                href="#what-it-does"
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-white/30 px-6 font-semibold text-white transition-colors hover:bg-white/10"
               >
                 How it works
@@ -154,43 +173,65 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Impact stats */}
+      <section aria-labelledby="stats-heading" className="border-t border-border bg-surface">
+        <h2 id="stats-heading" className="sr-only">
+          Why this matters
+        </h2>
+        <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-10 sm:grid-cols-3">
+          {stats.map((stat) => (
+            <div key={stat.value}>
+              <p className="text-3xl font-extrabold tracking-tight text-primary">
+                {stat.value}
+              </p>
+              <p className="mt-1 text-sm text-muted">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* What Limitless does */}
       <section
-        id="how-it-works"
-        aria-labelledby="how-heading"
-        className="border-t border-border"
+        id="what-it-does"
+        aria-labelledby="what-heading"
+        className="border-t border-border scroll-mt-6"
       >
         <div className="mx-auto w-full max-w-5xl px-6 py-16">
-          <h2 id="how-heading" className="text-2xl font-bold">
-            How it works
+          <h2 id="what-heading" className="text-2xl font-bold">
+            What Limitless does
           </h2>
-          <ul className="mt-8 grid gap-6 sm:grid-cols-3">
-            {steps.map((step) => (
+          <p className="mt-3 max-w-2xl text-muted">
+            An accessible entrance says little about slopes, restrooms,
+            transfers, or assistance. We combine curated data, personal fit, and
+            during-trip adaptation.
+          </p>
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature) => (
               <li
-                key={step.title}
+                key={feature.title}
                 className="rounded-xl border border-border bg-surface p-5"
               >
-                <h3 className="text-base font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm text-muted">{step.body}</p>
+                <h3 className="text-base font-semibold">{feature.title}</h3>
+                <p className="mt-2 text-sm text-muted">{feature.body}</p>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      {/* What we skip */}
+      {/* Credible data — we only show what we can back up */}
       <section
         aria-labelledby="skip-heading"
         className="border-t border-border bg-surface"
       >
         <div className="mx-auto w-full max-w-5xl px-6 py-16">
           <h2 id="skip-heading" className="text-2xl font-bold">
-            We tell you what we skip — and why
+            We only show what we can back up
           </h2>
           <p className="mt-3 max-w-2xl text-muted">
-            Other planners quietly drop places, or list everything and leave the
-            risk to you. We show what we left out and the reason, so the choice
-            is yours.
+            Missing information stays unknown — we never guess. When a place
+            doesn&rsquo;t fit, we leave it out and tell you why, so the choice is
+            yours.
           </p>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2">
             {skipped.map((place) => (
@@ -222,10 +263,7 @@ export default function Home() {
       </section>
 
       {/* Built for everyone */}
-      <section
-        aria-labelledby="a11y-heading"
-        className="border-t border-border"
-      >
+      <section aria-labelledby="a11y-heading" className="border-t border-border">
         <div className="mx-auto w-full max-w-5xl px-6 py-16">
           <h2 id="a11y-heading" className="text-2xl font-bold">
             Built for everyone
@@ -240,6 +278,9 @@ export default function Home() {
               </li>
             ))}
           </ul>
+          <p className="mt-10 text-lg font-semibold text-primary">
+            Your world to discover. Your right to explore.
+          </p>
         </div>
       </section>
     </div>
