@@ -11,6 +11,8 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 npm-debug.log*
+test-results/
+playwright-report/
 
 # Python / uv
 __pycache__/

@@ -25,7 +25,7 @@ export default function Home() {
 
       <nav
         aria-label="Main"
-        className="relative z-10 flex w-full items-center justify-center gap-8 px-6 pt-6 text-sm font-medium"
+        className="relative z-20 flex w-full shrink-0 items-center justify-center gap-8 px-6 pt-6 text-sm font-medium"
       >
         <Link href="/how-it-works" className="text-zinc-200 hover:text-white">
           How it works

@@ -42,7 +42,7 @@ export function QuestionField({
 
   const error = invalid ? (
     <p id={errorId} role="alert" className="mt-3 text-sm font-medium text-danger">
-      Please answer this to continue.
+      {question.inputType === "number" ? `Enter a whole number of ${question.id === "party_size" ? 1 : 0} or more.` : "Please answer this to continue."}
     </p>
   ) : null;
 
@@ -65,7 +65,8 @@ export function QuestionField({
           id={question.id}
           type={question.inputType}
           value={current}
-          min={question.inputType === "number" ? 0 : undefined}
+          min={question.inputType === "number" ? question.id === "party_size" ? 1 : 0 : undefined}
+          step={question.inputType === "number" ? 1 : undefined}
           aria-describedby={describedBy}
           aria-invalid={invalid || undefined}
           onChange={(e) => onChange(e.target.value)}
@@ -178,6 +179,14 @@ export function QuestionField({
             </label>
           ))}
         </div>
+
+      </fieldset>
+    );
+  }
+
+  return (
+    <div data-question-id={question.id}>
+      {control}
         {question.allowOther && (
           <div className="mt-3">
             <label
@@ -195,13 +204,6 @@ export function QuestionField({
             />
           </div>
         )}
-      </fieldset>
-    );
-  }
-
-  return (
-    <div data-question-id={question.id}>
-      {control}
       {error}
       {/* One microphone per question. Words that match no option can go to "Something else". */}
       <QuestionVoiceInput

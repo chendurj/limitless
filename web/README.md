@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Browser regression tests
+
+Use `npm run test:e2e` for the Playwright suite. Install Chromium with
+`npx playwright install chromium`, or use `PLAYWRIGHT_CHANNEL=chrome` with an
+installed Chrome browser. The runner reuses or starts the local development server.
+Planning API responses are intercepted demo fixtures. Set `LIVE_CHAT_TEST=1` with
+a configured server key to include the real assistant request; otherwise that one
+case is skipped. See [the quality review](../docs/quality-review.md) for coverage,
+measured timings, known limits, and the commands for all 49 tests.
+
 ## Getting Started
 
 Use Node.js 24 and run `npm ci` before starting development.

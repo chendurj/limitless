@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
+  intakeScreens,
   visibleScreens,
   isVisible,
   type AnswerMap,
@@ -32,45 +33,57 @@ function isEmpty(value: FieldValue | undefined): boolean {
   return value.must.length === 0 && value.nice.length === 0;
 }
 
+type Draft = { answers: Answers; others: Record<string, string>; index: number };
+const noSubscribe = () => () => {};
+
+function readDraft(): Draft {
+  const draft: Draft = { answers: {}, others: {}, index: 0 };
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (!saved || typeof saved !== "object") return draft;
+    for (const question of intakeScreens.flatMap(screen => screen.questions)) {
+      const value = saved.answers?.[question.id];
+      const allowed = new Set(question.options?.map(option => option.value));
+      if (["text", "date", "number"].includes(question.inputType) && typeof value === "string") draft.answers[question.id] = value;
+      else if (question.inputType === "single" && typeof value === "string" && allowed.has(value)) draft.answers[question.id] = value;
+      else if (question.inputType === "multi" && Array.isArray(value)) draft.answers[question.id] = [...new Set(value.filter((entry: unknown): entry is string => typeof entry === "string" && allowed.has(entry)))];
+      else if (question.inputType === "must-nice" && value && Array.isArray(value.must) && Array.isArray(value.nice)) {
+        const must = [...new Set<string>(value.must.filter((entry: unknown) => typeof entry === "string" && allowed.has(entry)))];
+        const nice = [...new Set<string>(value.nice.filter((entry: unknown) => typeof entry === "string" && allowed.has(entry) && !must.includes(entry)))];
+        draft.answers[question.id] = { must, nice };
+      }
+      if (question.allowOther && typeof saved.others?.[question.id] === "string") draft.others[question.id] = saved.others[question.id];
+    }
+    if (Number.isInteger(saved.index) && saved.index >= 0) draft.index = saved.index;
+  } catch { /* A corrupt or unavailable draft must not block the form. */ }
+  return draft;
+}
+
 export function IntakeWizard() {
+  // Mount the stateful form only after hydration. Its lazy initializer can read
+  // browser storage before the first persistence effect, including in Strict Mode.
+  const ready = useSyncExternalStore(noSubscribe, () => true, () => false);
+  return ready ? <IntakeWizardForm /> : <p role="status" className="px-6 py-12">Loading your questions…</p>;
+}
+
+function IntakeWizardForm() {
   const announce = useAnnounce();
-  const [answers, setAnswers] = useState<Answers>({});
-  const [others, setOthers] = useState<Record<string, string>>({});
-  const [index, setIndex] = useState(0);
+  const [draft] = useState(readDraft);
+  const [answers, setAnswers] = useState<Answers>(draft.answers);
+  const [others, setOthers] = useState<Record<string, string>>(draft.others);
+  const [index, setIndex] = useState(draft.index);
   const [done, setDone] = useState(false);
   const [invalidIds, setInvalidIds] = useState<string[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const loaded = useRef(false);
-
-  // Restore a saved, unfinished session once on mount.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const saved = JSON.parse(raw);
-        if (saved.answers) setAnswers(saved.answers);
-        if (saved.others) setOthers(saved.others);
-        if (typeof saved.index === "number") setIndex(saved.index);
-      }
-    } catch {
-      // Ignore unavailable or corrupt storage; the wizard still works.
-    }
-    loaded.current = true;
-  }, []);
-
-  // Persist after the initial load so we don't overwrite saved answers with {}.
-  useEffect(() => {
-    if (!loaded.current) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, others, index }));
-    } catch {
-      // Storage may be full or blocked; losing persistence is acceptable.
-    }
+    } catch { /* Storage may be full or blocked; the form still works. */ }
   }, [answers, others, index]);
 
   const answerMap = useMemo(() => toAnswerMap(answers), [answers]);
   const screens = useMemo(() => visibleScreens(answerMap), [answerMap]);
-  const safeIndex = Math.min(index, Math.max(0, screens.length - 1));
+  const safeIndex = Math.max(0, Math.min(index, screens.length - 1));
   const current: IntakeScreen | undefined = screens[safeIndex];
 
   // Move focus to the step heading and announce each change.
@@ -99,7 +112,14 @@ export function IntakeWizard() {
     const required = questionsOn(current).filter(
       (q) => !q.optional && q.inputType !== "must-nice",
     );
-    const missing = required.filter((q) => isEmpty(answers[q.id])).map((q) => q.id);
+    const missing = questionsOn(current).filter(q => {
+      const value = answers[q.id];
+      if (q.inputType === "number" && typeof value === "string" && value.trim()) {
+        const n = Number(value);
+        if (!Number.isSafeInteger(n) || n < (q.id === "party_size" ? 1 : 0)) return true;
+      }
+      return required.includes(q) && isEmpty(value) && !(q.allowOther && others[q.id]?.trim());
+    }).map(q => q.id);
     if (missing.length > 0) {
       setInvalidIds(missing);
       announce("Please answer the highlighted question before continuing.", "assertive");

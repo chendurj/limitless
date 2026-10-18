@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:chat": "node --experimental-strip-types --test tests/chat.test.mjs",
-    "test:questionnaire-voice": "node --experimental-strip-types --test tests/questionnaire-voice.test.mjs"
+    "test:questionnaire-voice": "node --experimental-strip-types --test tests/questionnaire-voice.test.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "next": "16.4.2",
@@ -16,6 +17,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
