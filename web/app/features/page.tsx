@@ -82,9 +82,6 @@ export default function FeaturesPage() {
           <span className="text-xs font-semibold uppercase tracking-wide text-muted">
             Example stop
           </span>
-          <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-muted">
-            Demo data
-          </span>
         </div>
         <p className="mt-3 text-lg font-semibold">
           Balboa Park, El Prado Promenade
