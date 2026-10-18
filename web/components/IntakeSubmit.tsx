@@ -67,10 +67,12 @@ export function IntakeSubmit({
   answers,
   others,
   onBack,
+  onCreated,
 }: {
   answers: Record<string, FieldValue>;
   others: Record<string, string>;
   onBack: () => void;
+  onCreated: () => void;
 }) {
   const router = useRouter();
   const announce = useAnnounce();
@@ -148,6 +150,7 @@ export function IntakeSubmit({
       const dates = validateTripDates(typeof answers.start_date === "string" ? answers.start_date : "", typeof answers.end_date === "string" ? answers.end_date : "", new Date().toLocaleDateString("en-CA"));
       if (dates.error) throw new ApiError(422, "TRIP_DATES", dates.error);
       const trip = await api.createTrip({ profile_id: profileId, ...(dates.start_date ? { start_date: dates.start_date, nights: dates.nights } : {}) });
+      onCreated();
       router.push(`/trips/${trip.id}`);
     } catch (err) {
       fail(err);
