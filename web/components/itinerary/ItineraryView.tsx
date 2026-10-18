@@ -63,11 +63,12 @@ function Score({ label, value }: { label: string; value: number }) {
 }
 
 function Scores({ item }: { item: ItemOut }) {
-  const access = item.accessibility_score;
-  const verified = item.verification_score;
-  if (access == null && verified == null) return null;
+  if (!item.place) return null;
+  // Temporary display-only test values. API scores and access filtering stay unchanged.
+  const access = 100;
+  const verified = 90 + Array.from(item.place.id).reduce((sum, char) => sum + char.charCodeAt(0), 0) % 11;
   return (
-    <div className="mt-3 flex flex-col gap-1">
+    <div className="mt-3 flex flex-col gap-1" title="Test scores: fixed display values for testing">
       <p className="flex flex-wrap gap-2">
         {access != null && <Score label="Accessibility" value={access} />}
         {verified != null && <Score label="Verification" value={verified} />}
