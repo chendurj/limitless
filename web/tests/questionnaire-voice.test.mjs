@@ -42,3 +42,33 @@ test('supports reviewed personal text and multiple interests', () => {
     assert.ok('error' in parseVoiceAnswer(q(id), text));
   }
 });
+
+test("natural phrases select the one option they clearly name", () => {
+  const cases = [
+    ["needs", "I am deaf.", ["deaf_hoh"]],
+    ["needs", "I'm Deaf and I use a wheelchair", null],
+    ["needs", "I have a temporary injury", null],
+    ["interests", "beaches and museums", null],
+    ["avoid", "I hate hills and crowds", null],
+    ["needs", "I'm deaf or hard of hearing", null],
+  ];
+  for (const [id, said] of cases) {
+    const parsed = parseVoiceAnswer(q(id), said);
+    assert.ok("value" in parsed, `${id} "${said}": ${JSON.stringify(parsed)}`);
+  }
+  const deaf = parseVoiceAnswer(q("needs"), "I am deaf.");
+  assert.deepEqual(deaf.value, [q("needs").options.find(o => /deaf/i.test(o.label)).value]);
+  const both = parseVoiceAnswer(q("needs"), "I'm Deaf and I use a wheelchair");
+  assert.equal(both.value.length, 2);
+  const avoid = parseVoiceAnswer(q("avoid"), "I hate hills and crowds");
+  assert.deepEqual(new Set(avoid.summary.split(", ")), new Set(["Crowds", "Hills"]));
+});
+
+test("negations and unclear words are never guessed", () => {
+  for (const said of ["I am not deaf", "no wheelchair", "never mind", "pizza", "deaf or wheelchair", "I am deaf and hungry"]) {
+    assert.ok("error" in parseVoiceAnswer(q("needs"), said), said);
+  }
+  // A single-choice question still needs exactly one option.
+  assert.ok("error" in parseVoiceAnswer(q("pace"), "relaxed or busy"));
+  assert.ok("value" in parseVoiceAnswer(q("pace"), "something relaxed please"));
+});
