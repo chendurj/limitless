@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 import { DEMO_TRIPS } from "@/lib/api";
+import { AskAnything } from "@/components/AskAnything";
 
 // Plain-language value points under the hero.
 const steps = [
@@ -91,10 +92,12 @@ export default function Home() {
             </p>
           </div>
 
+          <AskAnything />
+
           {/* Example stop card: shows the cited-fact badges that define the app. */}
           <div
             aria-label="Example of an itinerary stop"
-            className="rounded-2xl border border-border bg-surface p-5 shadow-sm"
+            className="rounded-2xl border border-border bg-surface p-5 shadow-sm lg:col-span-2"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-muted">
