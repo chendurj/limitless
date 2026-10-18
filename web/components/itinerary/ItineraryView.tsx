@@ -45,27 +45,32 @@ const kindLabel: Record<ItemOut["kind"], string> = {
   rest: "Rest",
 };
 
+const isDemo = (fact: Fact) => fact.source === "demo_data";
+
 function FactRow({ fact }: { fact: Fact }) {
-  // Show source_label (e.g. "demo data, not verified"), not the raw source.
+  // Show source_label (e.g. "the official accessibility page"), not the raw source.
+  // The Demo badge already says where demo facts come from.
   return (
     <li className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-      <ConfidenceBadge level={fact.confidence} />
+      <ConfidenceBadge level={fact.confidence} demo={isDemo(fact)} />
       <span>{fact.detail}</span>
-      <span className="text-muted">
-        {fact.source_url ? (
-          <a
-            href={fact.source_url}
-            target="_blank"
-            rel="noreferrer"
-            className="underline underline-offset-2"
-          >
-            {fact.source_label}
-          </a>
-        ) : (
-          fact.source_label
-        )}
-        {fact.verified_at ? ` · checked ${fact.verified_at}` : ""}
-      </span>
+      {!isDemo(fact) && (
+        <span className="text-muted">
+          {fact.source_url ? (
+            <a
+              href={fact.source_url}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2"
+            >
+              {fact.source_label}
+            </a>
+          ) : (
+            fact.source_label
+          )}
+          {fact.verified_at ? ` · checked ${fact.verified_at}` : ""}
+        </span>
+      )}
     </li>
   );
 }
@@ -117,6 +122,30 @@ function StatusControls({ item, live }: { item: ItemOut; live: Live }) {
     >
       {busy ? "Saving…" : action.label}
     </button>
+  );
+}
+
+// Closed by default so the card stays short. <details> works with a keyboard and
+// screen readers with no extra code.
+function Facts({ facts }: { facts: Fact[] }) {
+  const demo = facts.filter(isDemo).length;
+  return (
+    <details className="mt-4 rounded-lg border border-border px-3 py-2 text-sm">
+      <summary className="cursor-pointer font-medium">
+        Accessibility facts ({facts.length})
+      </summary>
+      {demo > 0 && (
+        <p className="mt-2 text-xs text-muted">
+          {demo === facts.length ? "All" : demo} of these facts are demo data,
+          not verified.
+        </p>
+      )}
+      <ul className="mt-2 space-y-2">
+        {facts.map((fact) => (
+          <FactRow key={fact.fact_id} fact={fact} />
+        ))}
+      </ul>
+    </details>
   );
 }
 
@@ -186,11 +215,7 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
       {item.rationale && <p className="mt-3 text-sm">{item.rationale}</p>}
 
       {item.place && item.place.facts.length > 0 && (
-        <ul className="mt-4 space-y-2">
-          {item.place.facts.map((fact) => (
-            <FactRow key={fact.fact_id} fact={fact} />
-          ))}
-        </ul>
+        <Facts facts={item.place.facts} />
       )}
 
       {item.warnings.length > 0 && (

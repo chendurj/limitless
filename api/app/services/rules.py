@@ -229,9 +229,14 @@ def terrain_check(fact: Fact, ctx: Ctx) -> Effect | None:
     return None
 
 
+# Walking aids that make uneven ground harder, even when the traveler did not name it.
+WALKING_AIDS = {"crutches", "walker", "cane"}
+
+
 def avoids_uneven(dna: AccessibilityDNA) -> bool:
     return (
         dna.uses_wheelchair
+        or bool(WALKING_AIDS & set(dna.mobility.equipment))
         or bool(
             {"uneven_pavement", "cobblestone", "gravel_dirt", "sand"}
             & set(dna.mobility.surfaces_to_avoid)
