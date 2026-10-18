@@ -211,7 +211,7 @@ def _compose_with_llm(
                     "subcategories": list(c.place.subcategories),
                     "neighborhood": c.place.neighborhood,
                     "indoor": c.place.indoor,
-                    "est_visit_min": c.place.est_visit_min,
+                    "est_visit_min": c.minutes,
                     "score": c.ev.score,
                     "facts": [
                         {"fact_id": f.id, "detail": f.detail, "confidence": f.confidence}

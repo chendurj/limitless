@@ -402,3 +402,18 @@ def test_long_visit_drops_a_late_lunch(ankle):  # noqa: F811
             if i.kind == "meal":
                 start = datetime.fromisoformat(i.start)
                 assert (start.hour, start.minute) <= (13, 30) or start.hour >= 17, i.title
+
+
+def test_long_visits_are_capped_and_fit_the_day(ankle):  # noqa: F811
+    park = place("park", "Test Theme Park", "attraction", "balboa_park", 32.732, -117.150, 300, 1)
+    late = place("late", "Test Late Show", "attraction", "balboa_park", 32.733, -117.151, 240, 1)
+    places = [park, late] + [p for p in PLACES if p.category == "restaurant"]
+    facts = {p.id: facts_for(p.id) for p in places}
+    t = build_trip(open_day(ankle), places, facts, start_date=START, nights=2, today=TODAY)
+    for day in t.days:
+        end_of_day = datetime.fromisoformat(day.items[0].start).replace(hour=18, minute=30)
+        for i in day.items:
+            if i.kind == "visit":
+                start, end = datetime.fromisoformat(i.start), datetime.fromisoformat(i.end)
+                assert (end - start).total_seconds() <= 180 * 60, i.title
+                assert end <= end_of_day, i.title
