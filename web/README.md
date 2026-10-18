@@ -36,6 +36,28 @@ recognition is unavailable or permission is denied, typed chat remains available
 Microphone access ends when dictation is cancelled, the chat is minimized or reset,
 or the homepage is left.
 
+### Questionnaire voice answers
+
+Every rendered intake question offers **Speak answer**, including all nine steps
+in the mobility flow and the conditional hearing/communication branch. Speak,
+choose **Stop microphone**, review or edit the transcript, then choose **Use this
+answer**. Check the regular fields before choosing Next. Voice never advances a
+step or changes an answer without that confirmation.
+
+- Choices accept the complete shown label or numbered choices, such as “option
+  two” or “option one and option three”. Multi-select answers replace that
+  question's selected choices after confirmation.
+- Requirements need an explicit level: “option two must have, option five nice
+  to have”. Other existing requirement levels remain unchanged.
+- Numbers accept digits or simple number words. Dates require a full date, such
+  as “October 22, 2026”; unclear or incomplete dates are not guessed.
+- Text and existing Something else fields accept dictated text. Unsupported or
+  unclear answers can be edited or entered using the original controls.
+- Only one microphone listens at a time. Changing questions, cancelling, or
+  leaving a screen releases its recognition session.
+
+Run `npm run test:questionnaire-voice` for parsing and questionnaire coverage tests.
+
 Run `npm run test:chat`, `npm run lint`, and `npm run build` to verify changes.
 For around-the-clock access, deploy the web app on an always-available Next.js
 host and configure the same server environment variables there. Availability

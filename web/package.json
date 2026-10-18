@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:chat": "node --experimental-strip-types --test tests/chat.test.mjs"
+    "test:chat": "node --experimental-strip-types --test tests/chat.test.mjs",
+    "test:questionnaire-voice": "node --experimental-strip-types --test tests/questionnaire-voice.test.mjs"
   },
   "dependencies": {
     "next": "16.4.2",
