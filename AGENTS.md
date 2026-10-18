@@ -47,6 +47,7 @@ Stay in your own folder to avoid merge conflicts.
 - One task card at a time, on its own branch named for the task: `scoring`. Do not use task keys in branches, commits, PRs or files.
 - Commit messages are plain, natural sentences with no prefix and no AI co-author trailer: `Add hard and soft filters to scoring`.
 - A human reviews every change before it merges to `main`. Pull before starting work.
+- For every change, push the task branch and open or update a pull request so the repository owner can review it. Do not push directly to `main` unless the user explicitly requests it.
 - Judging weights: functionality 30%, track fit (accessibility and assistive tech) 30%, design 20%, creativity 20%. A working end-to-end path beats extra features.
 - Task board (status source of truth): https://claude.ai/artifact/QXYMhSfLr3xvCjHBczb6Xp
 - Times are Pacific. Gates: Devpost draft Sat 10:30 PM, feature freeze Sun 7:30 AM, submit Sun 9:30 AM.
