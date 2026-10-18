@@ -62,7 +62,6 @@ for _hood, _near in list(ADJACENT.items()):  # make the map symmetric
 LUNCH = (time(11, 45), time(13, 30))
 DINNER = (time(17, 30), time(19, 30))
 MEAL_MIN = 60
-MAX_VISIT_MIN = 180  # plan at most 3 hours at one place, even for a theme park
 REST_MIN = 20
 DRIVE_BUFFER_MIN = 15  # loading a wheelchair or mobility device, and parking
 UNKNOWN_CRITICAL_PER_DAY = 1
@@ -83,15 +82,10 @@ class Candidate:
         return "visit"
 
     @property
-    def minutes(self) -> int:
-        visit = self.place.est_visit_min
-        return min(visit, MAX_VISIT_MIN) if self.kind == "visit" else visit
-
-    @property
     def energy(self) -> float:
         if self.kind != "visit":
             return 0.0  # a seated meal or cafe stop is a rest
-        cost = self.place.exertion_level * self.minutes / 60
+        cost = self.place.exertion_level * self.place.est_visit_min / 60
         return cost + (1 if self.ev.access_fit < 0.7 else 0)
 
 
@@ -301,7 +295,7 @@ def _try(
             start = max(start, _at(day, DINNER[0]))
             if start > _at(day, DINNER[1]):
                 ok = False
-        minutes = MEAL_MIN if pick.cand.kind == "meal" else pick.cand.minutes
+        minutes = MEAL_MIN if pick.cand.kind == "meal" else place.est_visit_min
         end = start + timedelta(minutes=minutes)
         if kind == "visit" and end > end_of_day:
             continue  # it does not fit in the traveler's day: leave this pick out

@@ -270,7 +270,7 @@ def repair(
                                              old_item_id=old.id if old else None,
                                              reason=f"{pick.cand.place.name}: a lighter day to save your energy.",
                                              cited_fact_ids=[]))  # fmt: skip
-        new_items = kept + extra + [_item_out(t, 0, _mode(dna)) for t in timed]
+        new_items = kept + extra + [_item_out(t, 0, _mode(dna), limits.energy) for t in timed]
         for item in new_items:
             if item.place and item.place.id in replaced:
                 replaced[item.place.id].new_item_id = item.id

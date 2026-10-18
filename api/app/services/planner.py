@@ -129,7 +129,7 @@ def build_trip(
                 weather=day.weather,
                 energy_budget=round(limits.energy),
                 energy_used=round(energy),
-                items=[_item_out(t, seq, _mode(dna)) for seq, t in enumerate(timed)],
+                items=[_item_out(t, seq, _mode(dna), limits.energy) for seq, t in enumerate(timed)],
             )
         )
 
@@ -211,7 +211,7 @@ def _compose_with_llm(
                     "subcategories": list(c.place.subcategories),
                     "neighborhood": c.place.neighborhood,
                     "indoor": c.place.indoor,
-                    "est_visit_min": c.minutes,
+                    "est_visit_min": c.place.est_visit_min,
                     "score": c.ev.score,
                     "facts": [
                         {"fact_id": f.id, "detail": f.detail, "confidence": f.confidence}
@@ -393,10 +393,26 @@ def place_out(place: Place, facts: list[Fact]) -> api.PlaceOut:
     )
 
 
-def _item_out(t: Timed, seq: int, mode: str) -> api.ItemOut:
+def _long_visit(t: Timed, energy_budget: float) -> str | None:
+    """A warning when one visit is more than the traveler's usual daily energy."""
+    if t.kind != "visit" or t.pick is None:
+        return None
+    if round(t.pick.cand.energy) <= round(energy_budget):  # the same rounding as the page
+        return None
+    hours = round((t.end - t.start).total_seconds() / 1800) / 2
+    return (
+        f"Long visit: about {hours:g} hours. This is more than your usual daily energy. "
+        "Plan rest breaks."
+    )
+
+
+def _item_out(t: Timed, seq: int, mode: str, energy_budget: float | None = None) -> api.ItemOut:
     pick = t.pick
     place = place_out(pick.cand.place, pick.cand.facts) if pick else None
-    warnings = pick.cand.ev.warnings if pick else []
+    warnings = list(pick.cand.ev.warnings) if pick else []
+    long = _long_visit(t, energy_budget) if energy_budget is not None else None
+    if long:
+        warnings.append(long)
     rationale = pick.rationale if pick else t.note
     if pick and pick.tips:
         rationale = f"{rationale} Tip: {' '.join(pick.tips)}"
