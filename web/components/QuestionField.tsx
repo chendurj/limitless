@@ -12,6 +12,7 @@ type Props = {
   value: FieldValue | undefined;
   otherValue: string;
   invalid: boolean;
+  hidePrompt?: boolean;
   onChange: (value: FieldValue) => void;
   onOtherChange: (text: string) => void;
 };
@@ -27,6 +28,7 @@ export function QuestionField({
   value,
   otherValue,
   invalid,
+  hidePrompt = false,
   onChange,
   onOtherChange,
 }: Props) {
@@ -93,7 +95,7 @@ export function QuestionField({
 
     control = (
       <fieldset aria-describedby={describedBy}>
-        <legend className="text-lg font-semibold">{question.prompt}</legend>
+        <legend className={hidePrompt ? "sr-only" : "text-lg font-semibold"}>{question.prompt}</legend>
         {help}
         <ul className="mt-4 space-y-2">
           {question.options?.map((opt, index) => {
@@ -162,7 +164,7 @@ export function QuestionField({
 
     control = (
       <fieldset aria-describedby={describedBy}>
-        <legend className="text-lg font-semibold">{question.prompt}</legend>
+        <legend className={hidePrompt ? "sr-only" : "text-lg font-semibold"}>{question.prompt}</legend>
         {help}
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           {question.options?.map((opt, index) => (

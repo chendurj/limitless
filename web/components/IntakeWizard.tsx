@@ -14,6 +14,7 @@ import { QuestionField, type FieldValue } from "@/components/QuestionField";
 import { IntakeSubmit } from "@/components/IntakeSubmit";
 
 const STORAGE_KEY = "limitless_intake";
+const DRAFT_VERSION = 3;
 
 type Answers = Record<string, FieldValue>;
 
@@ -54,7 +55,8 @@ function readDraft(): Draft {
       }
       if (question.allowOther && typeof saved.others?.[question.id] === "string") draft.others[question.id] = saved.others[question.id];
     }
-    if (Number.isInteger(saved.index) && saved.index >= 0) draft.index = saved.index;
+    // Older layouts used different step positions. Keep answers, restart at step one.
+    if (saved.version === DRAFT_VERSION && Number.isInteger(saved.index) && saved.index >= 0) draft.index = saved.index;
   } catch { /* A corrupt or unavailable draft must not block the form. */ }
   return draft;
 }
@@ -77,7 +79,7 @@ function IntakeWizardForm() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, others, index }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: DRAFT_VERSION, answers, others, index }));
     } catch { /* Storage may be full or blocked; the form still works. */ }
   }, [answers, others, index]);
 
@@ -184,6 +186,7 @@ function IntakeWizardForm() {
           <QuestionField
             key={q.id}
             question={q}
+            hidePrompt={current.title === q.prompt}
             value={answers[q.id]}
             otherValue={others[q.id] ?? ""}
             invalid={invalidIds.includes(q.id)}

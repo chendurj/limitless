@@ -17,7 +17,7 @@ test.afterEach(({ page }) => {
   expect(pageErrors.get(page) ?? [], 'No uncaught browser exceptions').toEqual([]);
 });
 async function seed(page: Page, answers = baseAnswers, index = 5, others = {}) {
-  await page.addInitScript(saved => localStorage.setItem('limitless_intake', JSON.stringify(saved)), { answers, others, index });
+  await page.addInitScript(saved => localStorage.setItem('limitless_intake', JSON.stringify(saved)), { version: 3, answers, others, index });
   await page.goto('/intake');
 }
 async function speech(page: Page, supported = true) {
@@ -66,8 +66,8 @@ async function api(page: Page, options: { delay?: number; followups?: unknown[] 
     if (path === '/api/intake') return route.fulfill({ json: { ...intakeResult, followups: options.followups ?? [] } });
     if (path.endsWith('/followups')) return route.fulfill({ json: intakeResult });
     if (path.startsWith('/api/profiles/')) return route.fulfill({ json: {} });
-    if (path.endsWith('/feedback')) return route.fulfill({ json: { replan: { changed: true, version: 2, message: 'Demo rest added.', changes: [{ type: 'rest_added', day_index: 0, reason: 'Demo extra break.' }] } } });
-    if (path.endsWith('/replan')) return route.fulfill({ json: { trip: { ...trip, version: 2 }, message: 'Demo plan restored.' } });
+    if (path.endsWith('/feedback')) return route.fulfill({ json: { replan: { changed: true, version: 3, message: 'Demo rest added.', changes: [{ type: 'rest_added', day_index: 0, reason: 'Demo extra break.' }] } } });
+    if (path.endsWith('/replan')) return route.fulfill({ json: { trip: { ...trip, version: 3 }, message: 'Demo plan restored.' } });
     if (path.includes('/items/')) {
       const item = trip.days.flatMap(day => day.items).find(item => path.endsWith(item.id))!;
       return route.fulfill({ json: { ...item, ...request.postDataJSON() } });
@@ -128,7 +128,7 @@ test('06 every visible question has unique choices and exactly one microphone ac
   await speech(page); await page.goto('/intake');
   const answers = { ...baseAnswers, needs: ['mobility_device', 'deaf_hoh', 'non_speaking'], party: 'family' };
   for (const [index, screen] of intakeScreens.entries()) {
-    await page.evaluate(saved => localStorage.setItem('limitless_intake', JSON.stringify(saved)), { answers, others: {}, index });
+    await page.evaluate(saved => localStorage.setItem('limitless_intake', JSON.stringify(saved)), { version: 3, answers, others: {}, index });
     await page.reload();
     await expect(page.getByRole('heading', { name: screen.title, exact: true })).toBeVisible();
     for (const question of screen.questions.filter(q => isVisible(q, answers))) {
@@ -148,12 +148,10 @@ test('07 saved questionnaire restores the selected step and answers on reload', 
   await page.goto('/intake');
   await field(page, 'needs').getByRole('checkbox').first().check();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
-  await field(page, 'equipment').getByRole('checkbox').first().check();
-  await field(page, 'walking').getByRole('radio').first().check();
+    await field(page, 'walking').getByRole('radio').first().check();
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Getting around', exact: true })).toBeVisible();
-  await expect(field(page, 'equipment').getByRole('checkbox').first()).toBeChecked();
-  await expect(field(page, 'walking').getByRole('radio').first()).toBeChecked();
+  await expect(page.getByRole('heading', { name: 'How much walking feels comfortable?', exact: true })).toBeVisible();
+    await expect(field(page, 'walking').getByRole('radio').first()).toBeChecked();
 });
 test('08 corrupt saved JSON does not break the questionnaire', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('limitless_intake', '{broken'));
@@ -180,20 +178,16 @@ test('11 Other-only answers and must-have Other text reach the intake API', asyn
   await page.getByRole('button', { name: 'Finish', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Plan my trip', exact: true })).toBeVisible();
   const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { other: string }>;
-  expect(answers.cuisines?.other).toBe('Demo gluten-free preference');
+  expect(answers).not.toHaveProperty('cuisines');
   expect(answers.requirements?.other).toBe('Demo extra requirement');
 });
-test('12 party size rejects zero and fractional numbers before advancing', async ({ page }) => {
-  await seed(page, { ...baseAnswers, party: 'family' }, 1);
-  await page.locator('#party_size').fill('0');
-  await page.getByRole('button', { name: 'Next', exact: true }).click();
-  await expect(page.getByRole('heading', { name: "Who's with you", exact: true })).toBeVisible();
-  await page.locator('#party_size').fill('1.5');
-  await page.getByRole('button', { name: 'Next', exact: true }).click();
-  await expect(page.getByRole('heading', { name: "Who's with you", exact: true })).toBeVisible();
+test('12 only one question is shown per step', async ({ page }) => {
+  await seed(page, { ...baseAnswers, needs: ['mobility_device', 'deaf_hoh', 'non_speaking'] }, 0);
+  await expect(page.locator('[data-question-id]')).toHaveCount(1);
+  await expect(page.getByText('Step 1 of 8', { exact: true })).toBeVisible();
 });
 test('13 must-have and nice-to-have selections remain mutually exclusive', async ({ page }) => {
-  await seed(page, baseAnswers, 2);
+  await seed(page, baseAnswers, 1);
   const group = page.getByRole('radiogroup', { name: 'Accessible restroom', exact: true });
   await group.getByRole('radio', { name: 'Must have', exact: true }).check();
   await group.getByRole('radio', { name: 'Nice to have', exact: true }).check();
@@ -202,12 +196,8 @@ test('13 must-have and nice-to-have selections remain mutually exclusive', async
   expect(saved.answers.requirements).toEqual({ must: [], nice: ['accessible_restroom'] });
   await expect(page.locator('#requirements-other')).toBeVisible();
 });
-test('14 switching microphones cancels the previous field and errors keep manual choices usable', async ({ page }) => {
+test('14 failed microphone input keeps manual choices usable', async ({ page }) => {
   await speech(page); await seed(page, { ...baseAnswers, needs: ['mobility_device'] }, 1);
-  await field(page, 'equipment').getByRole('button', { name: /^Speak answer:/ }).click();
-  await field(page, 'walking').getByRole('button', { name: /^Speak answer:/ }).click();
-  expect(await page.evaluate(() => (window as unknown as { recognitions: { aborted: boolean }[] }).recognitions.at(-2)!.aborted)).toBe(true);
-  await field(page, 'walking').getByRole('button', { name: 'Cancel voice answer', exact: true }).click();
   await page.evaluate(() => { (window as unknown as { denyMicrophone: boolean }).denyMicrophone = true; });
   await field(page, 'walking').getByRole('button', { name: /^Speak answer:/ }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Microphone access is off' })).toBeVisible();
@@ -282,7 +272,7 @@ test('21 warm local questionnaire navigation responds within one second', async 
   await page.goto('/intake'); await field(page, 'needs').getByRole('checkbox').first().check();
   const start = performance.now();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Getting around', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'How much walking feels comfortable?', exact: true })).toBeVisible();
   const ms = Math.round(performance.now() - start);
   testInfo.annotations.push({ type: 'timing', description: `Warm local questionnaire navigation: ${ms}ms` });
   expect(ms).toBeLessThan(1000);
@@ -368,4 +358,44 @@ test('26 cancelled permission prompts release a stream that arrives late', async
   await page.evaluate(() => (window as unknown as { resolveMicrophone: () => void }).resolveMicrophone());
   await expect.poll(() => page.evaluate(() => (window as unknown as { lateStopped: boolean }).lateStopped)).toBe(true);
   await expect(needs.getByRole('button', { name: /^Speak answer:/ })).toBeEnabled();
+});
+
+test('27 longest path has eight questions and keeps personal choices in the API', async ({ page }) => {
+  const server = await api(page);
+  await page.goto('/intake');
+  for (const index of [0, 3, 4]) await field(page, 'needs').getByRole('checkbox').nth(index).check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await field(page, 'walking').getByRole('radio').first().check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await field(page, 'communication_supports').getByRole('checkbox').nth(1).check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await page.getByRole('radiogroup', { name: 'Accessible restroom', exact: true }).getByRole('radio', { name: 'Must have', exact: true }).check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await field(page, 'interests').getByRole('checkbox').first().check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await field(page, 'avoid').getByRole('checkbox').first().check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await field(page, 'pace').getByRole('radio').first().check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(page.getByText('Step 8 of 8', { exact: true })).toBeVisible();
+  await field(page, 'transport').getByRole('radio').first().check();
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Plan my trip', exact: true })).toBeVisible();
+  const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { selected: string[] }>;
+  expect(Object.keys(answers)).toHaveLength(8);
+  expect(answers.requirements.selected).toEqual(['accessible_restroom']);
+  expect(answers.communication_supports.selected).toEqual(['asl_interpretation']);
+  expect(answers).not.toHaveProperty('standing');
+  expect(answers).not.toHaveProperty('companion_can_push');
+});
+
+test('28 old questionnaire drafts restart at step one and keep personal answers', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('limitless_intake', JSON.stringify({
+    answers: { needs: ['mobility_device'], walking: 'cannot_walk' }, others: {}, index: 1,
+  })));
+  await page.goto('/intake');
+  await expect(page.getByText('Step 1 of 7', { exact: true })).toBeVisible();
+  await expect(field(page, 'needs').getByRole('checkbox').first()).toBeChecked();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(field(page, 'walking').getByRole('radio').first()).toBeChecked();
 });
