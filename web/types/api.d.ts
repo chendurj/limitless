@@ -133,7 +133,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Replan */
+        /**
+         * Replan
+         * @description Apply a proposed version, or undo to an earlier version.
+         */
         post: operations["replan_api_trips__trip_id__replan_post"];
         delete?: never;
         options?: never;
@@ -206,11 +209,12 @@ export interface components {
             /** Summary */
             summary: string;
             /** Needs */
-            needs: ("mobility_device" | "limited_mobility" | "blind_low_vision" | "deaf_hoh" | "sensory_cognitive" | "temporary_injury" | "service_animal" | "other")[];
+            needs: ("mobility_device" | "limited_mobility" | "blind_low_vision" | "deaf_hoh" | "sensory_cognitive" | "temporary_injury" | "non_speaking" | "service_animal" | "other")[];
             mobility: components["schemas"]["Mobility"];
             vision: components["schemas"]["Vision"];
             hearing: components["schemas"]["Hearing"];
             sensory: components["schemas"]["SensoryCognitive"];
+            communication: components["schemas"]["Communication"];
             temporary: components["schemas"]["TemporaryInjury"];
             requirements: components["schemas"]["Requirements"];
             party: components["schemas"]["Party"];
@@ -238,6 +242,15 @@ export interface components {
             reason: string;
             /** Cited Fact Ids */
             cited_fact_ids: number[];
+        };
+        /** Communication */
+        Communication: {
+            /** Methods */
+            methods: ("sign_language" | "writing_or_typing" | "aac_device" | "gestures_pointing" | "companion_speaks" | "limited_speech" | "other")[];
+            /** Phone Calls */
+            phone_calls: ("yes" | "with_relay" | "no") | null;
+            /** Contact Preferences */
+            contact_preferences: ("text_sms" | "email" | "online_chat" | "in_person_written")[];
         };
         /** CreateTripRequest */
         CreateTripRequest: {
@@ -320,6 +333,10 @@ export interface components {
             restroom_ok: boolean | null;
             /** Entrance Ok */
             entrance_ok: boolean | null;
+            /** Captions Ok */
+            captions_ok: boolean | null;
+            /** Booking Phone Only */
+            booking_phone_only: boolean | null;
             /** Needs Met */
             needs_met: ("yes" | "partially" | "no") | null;
             /** Sentiment */
@@ -637,8 +654,8 @@ export interface components {
         };
         /** ReplanRequest */
         ReplanRequest: {
-            /** Reason */
-            reason?: string | null;
+            /** Apply Version */
+            apply_version: number;
         };
         /** ReplanResult */
         ReplanResult: {
@@ -655,9 +672,9 @@ export interface components {
         /** Requirements */
         Requirements: {
             /** Must Have */
-            must_have: ("step_free_entrance" | "accessible_restroom" | "accessible_parking" | "dropoff_zone" | "elevator" | "seating" | "mobility_rental" | "beach_wheelchair_or_mat" | "quiet_space" | "captions_or_asl" | "audio_description" | "braille_tactile" | "service_animal_ok")[];
+            must_have: ("step_free_entrance" | "accessible_restroom" | "accessible_parking" | "dropoff_zone" | "elevator" | "seating" | "mobility_rental" | "beach_wheelchair_or_mat" | "quiet_space" | "captions_or_asl" | "audio_description" | "braille_tactile" | "service_animal_ok" | "online_booking" | "text_contact")[];
             /** Nice To Have */
-            nice_to_have: ("step_free_entrance" | "accessible_restroom" | "accessible_parking" | "dropoff_zone" | "elevator" | "seating" | "mobility_rental" | "beach_wheelchair_or_mat" | "quiet_space" | "captions_or_asl" | "audio_description" | "braille_tactile" | "service_animal_ok")[];
+            nice_to_have: ("step_free_entrance" | "accessible_restroom" | "accessible_parking" | "dropoff_zone" | "elevator" | "seating" | "mobility_rental" | "beach_wheelchair_or_mat" | "quiet_space" | "captions_or_asl" | "audio_description" | "braille_tactile" | "service_animal_ok" | "online_booking" | "text_contact")[];
             /** Other */
             other: string[];
         };
