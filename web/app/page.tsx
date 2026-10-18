@@ -80,6 +80,14 @@ export default function Home() {
                 How it works
               </a>
             </div>
+            <p className="mt-4 text-sm">
+              <Link
+                href="/trips/demo"
+                className="text-primary underline underline-offset-4"
+              >
+                See a sample itinerary
+              </Link>
+            </p>
           </div>
 
           {/* Example stop card: shows the cited-fact badges that define the app. */}
