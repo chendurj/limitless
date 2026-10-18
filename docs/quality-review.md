@@ -1,6 +1,61 @@
 # App quality review — October 18, 2026
 
-## Result
+## Latest regression round
+
+After the full run, main received the simplified saved-trips page (`a83a0fc`). It merged cleanly. Four affected integration cases were rerun and passed: saved-trip navigation, manual save/reload, AI editing and rapid manual-save protection. Lint and TypeScript were also rerun successfully. These repeats are not counted as extra distinct tests below.
+
+**121 distinct tests passed:** 52 Chrome browser scenarios and 69 Node tests. No skipped tests, retries, flaky browser results or uncaught browser exceptions in the final run. ESLint, TypeScript and diff checks pass.
+
+| Area | Tests |
+|---|---:|
+| Browser journeys, text and voice input, saved trips, editing, booking, mobile and keyboard | 52 |
+| Chat endpoint validation, conversation handling and failures | 10 |
+| Existing questionnaire voice parsing and all 128 needs combinations | 15 |
+| Transcription endpoint validation and failures | 8 |
+| Venue link completeness, matching and evidence integrity | 10 |
+| Additional individually named voice edge cases | 26 |
+| **Total** | **121** |
+
+### Bugs reproduced and fixed
+
+- Natural voice matching could reverse preference meaning: “I hate beaches” selected beaches as an interest; “I enjoy crowds” selected crowds as something to avoid. Avoidance language is now accepted only in the relevant questions. Contradictory phrases require clarification and leave current selections unchanged. Positive interests, explicit numbered choices and “I prefer to avoid crowds” still work. Browser regression covers correcting the transcript by typing and applying it once.
+- Submitting a manual stop edit twice before React updated the button sent two PATCH requests. A synchronous in-flight guard now admits one update and resets after success or failure. The regression reproduced two requests before the fix and confirms one afterwards.
+
+### Journey coverage and limits
+
+Eight complete questionnaire journeys cover interests only, wheelchair use, limited walking, temporary injury, Deaf, non-speaking, combined mobility/hearing/communication/service-animal needs, and service-animal travel without assuming mobility needs. Each exercises different selected options, explicit must-haves, personal typed text, the six-to-eight-question limit and the exact API payload. Other browser checks cover corrupt drafts, hidden stale answers, duplicate options, cancellation, late microphone permissions, unsupported recording, retries, loading states, manual editing, AI editing, all preview days and external booking navigation.
+
+The final run includes live OpenAI chat and real Chrome getUserMedia/MediaRecorder audio capture sent through the live transcription endpoint. The audio is generated speech from a WAV fixture, not the user's physical microphone. Guest sessions and planning, saved-trip and editing API responses are mocked and labeled demo data; no real guest accounts or bookings are created. This round does not exercise the Python backend's real database/planner integration, physical microphones, every accent, Safari or assistive-technology combinations. It is broad regression coverage, not a claim that every possible edge case is tested.
+
+### Local configuration finding
+
+`web/.env.local` has a server chat/voice key, but no `NEXT_PUBLIC_SUPABASE_URL` or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. The ordinary local guest sign-in cannot work until the project’s public Supabase settings are configured. Tests use explicit dummy settings and intercepted auth responses; they do not establish that real local or deployed authentication works. No credentials were printed or committed.
+
+### Local timing samples
+
+- Warm questionnaire navigation: **54 ms**.
+- Live chat response: **2,022 ms**.
+- Stop recording to live transcript: **1,872 ms**.
+- Full 52-case browser run: **60.5 seconds**.
+
+These are single local development measurements, not production/load benchmarks.
+
+### Reproduce
+
+From `web/`, with Node 24, Chrome and a server API key configured in ignored `.env.local`:
+
+```sh
+npm run lint
+./node_modules/.bin/tsc --noEmit
+node --experimental-strip-types --test tests/chat.test.mjs tests/questionnaire-voice.test.mjs tests/transcribe.test.mjs tests/trip-evidence.test.mjs tests/voice-edge-cases.test.mjs
+NEXT_PUBLIC_SUPABASE_URL=https://limitless-test.supabase.co NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=test-only-key PLAYWRIGHT_CHANNEL=chrome LIVE_CHAT_TEST=1 VOICE_TEST_AUDIO=/absolute/path/option-one.wav npm run test:e2e
+```
+
+Use an isolated dev server started with the same dummy guest settings; stop an existing dev server before this browser command. The guest settings above are test placeholders, not credentials. The audio fixture says “Option one” followed by silence. Browser reports and screenshots remain in ignored `web/test-results/`.
+
+---
+
+## Earlier regression round (historical)
 
 **61 tests passed:** 26 browser scenarios, 8 chat endpoint tests, 19 questionnaire voice/parsing tests, and 8 transcription endpoint tests. The final browser run had no retries, skipped tests, flaky results, or uncaught browser exceptions. Full ESLint and TypeScript checks pass.
 
