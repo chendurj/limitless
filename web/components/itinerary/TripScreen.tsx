@@ -1,33 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { api, ApiError, type ItemOut, type TripOut } from "@/lib/api";
+import { useParams, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { api, DEMO_TRIPS, type ItemOut, type TripOut } from "@/lib/api";
+import { GuestGate } from "@/components/GuestGate";
 import { useAnnounce } from "@/components/LiveRegion";
 import { ItineraryView, type StatusChange } from "@/components/itinerary/ItineraryView";
 import { TellLimitless } from "@/components/itinerary/TellLimitless";
 import { Spinner } from "@/components/Spinner";
+import { ManualItineraryEditor } from "@/components/itinerary/ManualItineraryEditor";
 
 const errorText = (err: unknown, fallback: string) =>
-  err instanceof ApiError ? err.message : fallback;
+  err instanceof Error ? err.message : fallback;
 
 // Loads a trip from the API by the [id] route param and renders it, with
 // accessible loading and error states. Live mode: mark stops, Tell Limitless, Undo.
 export function TripScreen() {
   const params = useParams<{ id: string }>();
+  const search = useSearchParams();
   const tripId = typeof params.id === "string" ? params.id : "";
+  const sample = tripId === DEMO_TRIPS.ankle ? "ankle" : tripId === DEMO_TRIPS.deaf ? "deaf" : null;
+  if (sample) return <TripContent key={tripId} tripId={tripId} sample={sample} />;
+  const edit = search.get("edit");
+  return <GuestGate><TripContent key={`${tripId}-${edit}`} tripId={tripId} initialEdit={edit} /></GuestGate>;
+}
+
+function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?: "ankle" | "deaf"; initialEdit?: string | null }) {
   const announce = useAnnounce();
   const [trip, setTrip] = useState<TripOut | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busyItemId, setBusyItemId] = useState<string | null>(null);
   const [undoVersion, setUndoVersion] = useState<number | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [manual, setManual] = useState(initialEdit === "manual");
 
   useEffect(() => {
     let active = true;
     announce("Loading your trip.");
-    api
-      .getTrip(tripId)
+    (sample ? api.getSampleTrip(sample) : api.getTrip(tripId))
       .then((result) => {
         if (!active) return;
         setTrip(result);
@@ -41,7 +52,7 @@ export function TripScreen() {
     return () => {
       active = false;
     };
-  }, [tripId, announce]);
+  }, [tripId, sample, announce]);
 
   const replaceItem = (updated: ItemOut) =>
     setTrip((current) =>
@@ -93,7 +104,7 @@ export function TripScreen() {
         <h1 className="text-2xl font-bold tracking-tight">We couldn&rsquo;t load your trip</h1>
         <p className="mt-3 text-muted">{error}</p>
         <p className="mt-2 text-sm text-muted">
-          Make sure the API is running and your token is set in web/.env.local.
+          <Link href="/my-trips" className="text-primary underline">Return to My trips</Link> to view the itineraries saved to this guest profile.
         </p>
       </div>
     );
@@ -110,12 +121,15 @@ export function TripScreen() {
     );
   }
 
+  if (sample) return <ItineraryView trip={trip} actions={<p className="text-sm text-muted">This is a read-only sample. <Link href="/intake" className="text-primary underline">Plan your own trip</Link> to save and change an itinerary.</p>} />;
+
   return (
     <ItineraryView
       trip={trip}
       live={{ onStatus, busyItemId }}
       actions={
         <div className="space-y-4">
+          <Link href="/my-trips" className="text-sm font-semibold text-primary underline underline-offset-4">Back to My trips</Link>
           {notice && (
             <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent-soft px-4 py-3 text-sm">
               <span>{notice}</span>
@@ -130,7 +144,11 @@ export function TripScreen() {
               )}
             </div>
           )}
-          <TellLimitless trip={trip} onApplied={onApplied} />
+          <div className="flex flex-wrap gap-3">
+            <TellLimitless trip={trip} onApplied={onApplied} triggerLabel="Edit with AI" initiallyOpen={initialEdit === "ai"} />
+            <button type="button" aria-expanded={manual} aria-controls="manual-editor" onClick={() => setManual(value => !value)} className="inline-flex h-12 items-center justify-center rounded-lg border border-border px-5 font-semibold">{manual ? "Close manual editor" : "Edit manually"}</button>
+          </div>
+          {manual && <ManualItineraryEditor key={trip.version} trip={trip} onSaved={item => { replaceItem(item); setUndoVersion(null); setNotice("Your manual changes are saved."); }} />}
         </div>
       }
     />

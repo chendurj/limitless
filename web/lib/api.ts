@@ -1,4 +1,5 @@
 import type { components } from "@/types/api";
+import { guestAccessToken } from "./guest-auth";
 
 // Typed client for the Limitless API. One function for each route.
 // Types come from web/types/api.d.ts (scripts/gen-types.sh). Do not edit those by hand.
@@ -20,8 +21,6 @@ export type PlaceOut = S["PlaceOut"];
 export type Fact = S["Fact"];
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-// The demo token is visible in the browser by design. Rotate it after the event.
-const TOKEN = process.env.NEXT_PUBLIC_DEMO_BEARER_TOKEN ?? "";
 
 /** An API error. code is from the API error body, e.g. "VALIDATION_ERROR" or "LLM_UNAVAILABLE". */
 export class ApiError extends Error {
@@ -35,14 +34,16 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+async function request<T>(method: string, path: string, body?: unknown, publicSample = false): Promise<T> {
+  // Sample reads are explicitly public; personal requests never fall back to the demo token.
+  const token = publicSample ? null : await guestAccessToken();
   let res: Response;
   try {
     res = await fetch(`${BASE}${path}`, {
       method,
       headers: {
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
-        ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
@@ -60,6 +61,10 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 const id = encodeURIComponent;
 
 export const api = {
+  listProfiles: () => request<ProfileOut[]>("GET", "/api/profiles"),
+  listTrips: () => request<TripOut[]>("GET", "/api/trips"),
+  getSampleTrip: (persona: "ankle" | "deaf") =>
+    request<TripOut>("GET", `/api/trips/samples/${persona}`, undefined, true),
   /** Intake answers -> Accessibility DNA, a profile id and up to 3 follow-up questions. */
   intake: (body: IntakeRequest) => request<IntakeResponse>("POST", "/api/intake", body),
   /** Answers to the follow-up questions. One round only. */

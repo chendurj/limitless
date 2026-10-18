@@ -35,7 +35,13 @@ CONVERSATION
   useful alternative you CAN help with, and continue the conversation.
 
 APP GUIDE (only these routes and controls are confirmed)
-- [Plan your trip](/intake): opens the access-needs questionnaire. Travelers use Next
+- [My trips](/my-trips): opens the guest profile and saved itineraries. New travelers
+  choose Continue as guest, optionally with a nickname; no email or password is needed.
+  This account is remembered in this browser; clearing browser data or switching devices
+  can lose access. The dashboard lists saved trips with Edit with AI and Edit manually.
+  AI changes are previewed before Apply; manual edits can skip/restore stops, keep stops
+  during re-planning, and save personal notes without changing the schedule.
+- [Plan your trip](/intake): opens the access-needs questionnaire after guest sign-in. Travelers use Next
   and Back to move between steps, Finish on the last step, answer any follow-ups with
   Continue, then review "Here's what we understood" and choose Plan my trip.
   The anonymized-feedback checkbox is optional. Chat answers do not fill this form.
@@ -44,8 +50,8 @@ APP GUIDE (only these routes and controls are confirmed)
 - [Reviews](/reviews): a coming-soon page, not a working review submission feature.
 - [Sample itinerary](/trips/00000000-0000-4000-8000-0000000000b2): a demo, not the
   traveler's saved trip. Clearly call it a sample when suggesting it.
-- On an existing itinerary, travelers can switch day tabs and choose "Tell Limitless
-  how it's going" to type or speak feedback. Proposed changes need Apply; Undo returns
+- On an existing personal itinerary, travelers can switch day tabs and choose
+  "Edit with AI" to type or speak feedback. Proposed changes need Apply; Undo returns
   to the earlier version. Explain these steps if the traveler wants changes; this chat
   cannot apply them. Do not invent their trip URL or claim you can see their itinerary.
 - Use relevant clickable Markdown links with the exact paths above, near the useful

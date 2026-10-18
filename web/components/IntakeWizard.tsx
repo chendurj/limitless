@@ -11,8 +11,8 @@ import {
 import { useAnnounce } from "@/components/LiveRegion";
 import { QuestionField, type FieldValue } from "@/components/QuestionField";
 import { IntakeSubmit } from "@/components/IntakeSubmit";
+import { useGuest } from "@/components/GuestGate";
 
-const STORAGE_KEY = "limitless_intake";
 
 type Answers = Record<string, FieldValue>;
 
@@ -33,6 +33,8 @@ function isEmpty(value: FieldValue | undefined): boolean {
 }
 
 export function IntakeWizard() {
+  const guest = useGuest();
+  const storageKey = `limitless_intake_${guest.id}`;
   const announce = useAnnounce();
   const [answers, setAnswers] = useState<Answers>({});
   const [others, setOthers] = useState<Record<string, string>>({});
@@ -44,29 +46,35 @@ export function IntakeWizard() {
 
   // Restore a saved, unfinished session once on mount.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const saved = JSON.parse(raw);
-        if (saved.answers) setAnswers(saved.answers);
-        if (saved.others) setOthers(saved.others);
-        if (typeof saved.index === "number") setIndex(saved.index);
+    let active = true;
+    loaded.current = false;
+    queueMicrotask(() => {
+      if (!active) return;
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (raw) {
+          const saved = JSON.parse(raw);
+          if (saved.answers) setAnswers(saved.answers);
+          if (saved.others) setOthers(saved.others);
+          if (typeof saved.index === "number") setIndex(saved.index);
+        }
+      } catch {
+        // Ignore unavailable or corrupt storage; the wizard still works.
       }
-    } catch {
-      // Ignore unavailable or corrupt storage; the wizard still works.
-    }
-    loaded.current = true;
-  }, []);
+      loaded.current = true;
+    });
+    return () => { active = false; };
+  }, [storageKey]);
 
   // Persist after the initial load so we don't overwrite saved answers with {}.
   useEffect(() => {
     if (!loaded.current) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, others, index }));
+      localStorage.setItem(storageKey, JSON.stringify({ answers, others, index }));
     } catch {
       // Storage may be full or blocked; losing persistence is acceptable.
     }
-  }, [answers, others, index]);
+  }, [answers, others, index, storageKey]);
 
   const answerMap = useMemo(() => toAnswerMap(answers), [answers]);
   const screens = useMemo(() => visibleScreens(answerMap), [answerMap]);

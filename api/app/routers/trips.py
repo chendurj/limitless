@@ -1,7 +1,7 @@
 import uuid
 from collections.abc import Callable
 from datetime import date, datetime, timedelta
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -16,7 +16,7 @@ from app.db import (
     get_profile_store,
     get_trip_store,
 )
-from app.deps import current_user
+from app.deps import DEMO_USER_ID, current_user
 from app.llm.compose import compose
 from app.llm.feedback_parse import parse_feedback
 from app.models.api import (
@@ -72,6 +72,22 @@ def _trip_dates(body: CreateTripRequest, dna: AccessibilityDNA, today: date) -> 
     if start_date < today:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, "start_date is in the past")
     return start_date, body.nights or dna.trip.nights or DEFAULT_NIGHTS
+
+
+@router.get("", response_model=list[TripOut])
+def list_trips(user: User, trips: Trips) -> list[TripOut]:
+    return [TripOut.model_validate(plan) for plan in trips.list_for_user(user)]
+
+
+@router.get("/samples/{persona}", response_model=TripOut)
+def sample_trip(persona: Literal["ankle", "deaf"], trips: Trips) -> TripOut:
+    # Only these two seeded snapshots are public. All mutations still require ownership.
+    suffix = "b1" if persona == "ankle" else "b2"
+    trip_id = f"00000000-0000-4000-8000-0000000000{suffix}"
+    row = trips.get(DEMO_USER_ID, trip_id)
+    if row is None:
+        raise HTTPException(404, "Sample itinerary is unavailable.")
+    return TripOut.model_validate(row["plan"])
 
 
 @router.post("", response_model=TripOut)
@@ -157,6 +173,8 @@ def update_item(trip_id: str, item_id: str, body: ItemPatch, user: User, trips: 
         item.status = body.status
     if body.locked is not None:
         item.locked = body.locked
+    if body.user_note is not None:
+        item.user_note = body.user_note.strip()
     trips.save_plan(user, trip_id, row["version"], dumps(trip))
     return item
 

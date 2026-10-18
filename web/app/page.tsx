@@ -25,7 +25,7 @@ export default function Home() {
 
       <nav
         aria-label="Main"
-        className="relative z-10 flex w-full items-center justify-center gap-8 px-6 pt-6 text-sm font-medium"
+        className="relative z-10 flex w-full flex-wrap items-center justify-center gap-6 px-6 pt-6 text-sm font-medium"
       >
         <Link href="/how-it-works" className="text-zinc-200 hover:text-white">
           How it works
@@ -35,6 +35,9 @@ export default function Home() {
         </Link>
         <Link href="/features" className="text-zinc-200 hover:text-white">
           Features
+        </Link>
+        <Link href="/my-trips" className="rounded-full border border-teal-300/40 px-5 py-2 text-teal-300 transition-colors hover:bg-teal-300/10 hover:text-white">
+          My trips
         </Link>
       </nav>
 

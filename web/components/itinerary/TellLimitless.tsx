@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api, ApiError, type ReplanResult, type TripOut } from "@/lib/api";
 import { speak, useCanSpeak, useSpeechInput } from "@/lib/speech";
 import { useAnnounce } from "@/components/LiveRegion";
@@ -29,9 +29,13 @@ const secondary = `${button} border border-border text-foreground hover:bg-surfa
 export function TellLimitless({
   trip,
   onApplied,
+  initiallyOpen = false,
+  triggerLabel,
 }: {
   trip: TripOut;
   onApplied: (next: TripOut, undoVersion: number) => void;
+  initiallyOpen?: boolean;
+  triggerLabel?: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const textBox = useRef<HTMLTextAreaElement>(null);
@@ -48,6 +52,13 @@ export function TellLimitless({
     setUsedVoice(true);
   }, []);
   const mic = useSpeechInput(onHeard);
+
+  useEffect(() => {
+    if (initiallyOpen && !dialog.current?.open) {
+      dialog.current?.showModal();
+      textBox.current?.focus();
+    }
+  }, [initiallyOpen]);
 
   const open = () => {
     setPhase("compose");
@@ -108,7 +119,7 @@ export function TellLimitless({
   return (
     <>
       <button type="button" onClick={open} className={primary}>
-        Tell Limitless how it&rsquo;s going
+        {triggerLabel ?? <>Tell Limitless how it&rsquo;s going</>}
       </button>
 
       <dialog
