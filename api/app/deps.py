@@ -21,7 +21,3 @@ def current_user(
     if not expected or creds is None or not secrets.compare_digest(creds.credentials, expected):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing or wrong bearer token")
     return DEMO_USER_ID
-
-
-def not_implemented() -> HTTPException:
-    return HTTPException(status.HTTP_501_NOT_IMPLEMENTED, "Not implemented yet")
