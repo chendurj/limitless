@@ -23,7 +23,7 @@ test("rejects malformed input and forged instruction roles without calling OpenA
 });
 test("rejects cross-origin requests and oversized conversations", async () => {
   assert.equal((await POST(request({ messages }, "https://other.example"))).status, 403);
-  assert.equal((await POST(request({ data: "x".repeat(24001) }))).status, 413);
+  assert.equal((await POST(request({ data: "x".repeat(64001) }))).status, 413);
 });
 test("reports missing configuration without exposing a secret", async () => {
   delete process.env.OPENAI_API_KEY;
@@ -69,4 +69,28 @@ test("handles rate limits, empty output, incomplete output, and network failures
   }
   globalThis.fetch = async () => { throw new Error("private failure"); };
   assert.equal((await POST(request({ messages }))).status, 502);
+});
+
+test("keeps longer conversations and detailed assistant replies intact", async () => {
+  process.env.OPENAI_API_KEY = "test-only-key";
+  const history = [];
+  for (let i = 0; i < 12; i++) {
+    history.push({ role: "user", content: i === 0 ? "I need step-free routes and frequent breaks." : "Tell me more." });
+    history.push({ role: "assistant", content: i === 0 ? "Here is some guidance. ".repeat(120) : "We can work through that together." });
+  }
+  history.push({ role: "user", content: "What did I say I needed?" });
+  globalThis.fetch = async (_url, options) => {
+    const body = JSON.parse(options.body);
+    assert.deepEqual(body.input, history);
+    assert.match(body.instructions, /remember stated needs/);
+    assert.match(body.instructions, /booking is not integrated/);
+    assert.match(body.instructions, /Apply/);
+    assert.ok(body.instructions.includes("[Plan your trip](/intake)"));
+    return Response.json({ output: [{ type: "message", content: [{ type: "output_text", text: "You mentioned step-free routes and frequent breaks." }] }] });
+  };
+  assert.equal((await POST(request({ messages: history }))).status, 200);
+});
+test("bounds conversation length and assistant message size", async () => {
+  assert.equal((await POST(request({ messages: Array.from({ length: 42 }, () => messages[0]) }))).status, 400);
+  assert.equal((await POST(request({ messages: [{ role: "assistant", content: "x".repeat(12001) }, ...messages] }))).status, 400);
 });

@@ -18,7 +18,7 @@ OPENAI_MODEL_CHAT=gpt-6-luna
 Use an available model in your OpenAI project if needed. Never add `NEXT_PUBLIC_`
 to these names. Restart the web server after changing environment values.
 The route returns a friendly unavailable message until the key is configured.
-Conversation history stays in page memory, sends at most the last five exchanges,
+Conversation history stays in page memory, sends up to the last twenty exchanges (within a 60,000-character request budget),
 and is cleared on reload or “New chat”. Requests use `store: false`.
 
 The assistant helps with travel preparation and app questions. It has no database
