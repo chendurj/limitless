@@ -310,6 +310,11 @@ export interface components {
             confidence: "VERIFIED" | "COMMUNITY" | "INFERRED";
             /** Source */
             source: string;
+            /**
+             * Source Label
+             * @default
+             */
+            source_label: string;
             /** Source Url */
             source_url: string | null;
             /** Verified At */

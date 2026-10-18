@@ -361,6 +361,7 @@ def _fact_out(f: Fact) -> api.Fact:
         detail=f.detail,
         confidence=f.confidence,  # type: ignore[arg-type]
         source=f.source,
+        source_label=f.source_label,
         source_url=f.source_url,
         verified_at=f.verified_at.isoformat() if f.verified_at else None,
     )
