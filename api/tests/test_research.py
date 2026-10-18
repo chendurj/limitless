@@ -37,7 +37,9 @@ def test_demo_variety_is_stable_and_only_uses_known_values():
     assert first == demo_variety.values("demo-test-museum", "museum", None, "smooth")
     allowed = {
         "captions_asl", "booking_phone_only", "online_booking", "kiosk_or_app_ordering",
-        "text_contact", "terrain", "typical_walk_m",
+        "text_contact", "terrain", "typical_walk_m", "max_slope",
     }  # fmt: skip
     assert set(first) <= allowed
     assert demo_variety.values("demo-cafe", "cafe", None, None).get("captions_asl") is None
+    # Indoor places are flat or gently sloped.
+    assert first["max_slope"][0] in ("flat", "gentle")

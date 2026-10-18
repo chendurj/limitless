@@ -207,7 +207,9 @@ def evaluate(
 
     reasons = list(hard)
     if not hard and access_fit < MIN_ACCESS_FIT:
-        reasons.append("Multiple comfort issues: " + " ".join(e.reason for e, _ in soft))
+        # Name every problem, including the unknown must-haves, so the reason is complete.
+        problems = [e.reason for e, _ in soft] + list(unknown.values())
+        reasons.append("Too many problems together: " + " ".join(problems))
 
     # Verification: the mean trust of the facts that matter for this traveler. An unknown
     # value counts as 0. With no critical checks, use all the place's facts.
