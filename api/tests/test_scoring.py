@@ -186,9 +186,26 @@ def test_uneven_ground_costs_a_crutch_user_points(make_dna):
         preferences__avoid=[],
     )
     uneven = fact("terrain", "uneven", "COMMUNITY", "demo_data")
+    smooth = fact("terrain", "smooth", "COMMUNITY", "demo_data")
     result = run(CAFE, [STEP_FREE, RESTROOM, uneven], ankle)
     assert not result.excluded
-    assert result.accessibility_score == 84  # 1 - 0.2 x 0.8 (COMMUNITY)
+    assert result.access_fit == 0.84  # ranking: 1 - 0.2 x 0.8 (COMMUNITY)
+    assert (
+        result.accessibility_score
+        < run(CAFE, [STEP_FREE, RESTROOM, smooth], ankle).accessibility_score
+    )
+
+
+def test_displayed_score_varies_with_evidence(make_dna):
+    ankle = make_dna(needs=["temporary_injury"], mobility__equipment=["crutches"])
+    gentle = fact("max_slope", "gentle", "COMMUNITY", "demo_data")
+    flat = fact("max_slope", "flat", "COMMUNITY", "demo_data")
+    scores = [
+        run(MUSEUM, facts, ankle).accessibility_score
+        for facts in ([], [STEP_FREE], [STEP_FREE, gentle], [STEP_FREE, flat])
+    ]
+    assert scores == sorted(scores) and len(set(scores)) == 4  # more and better facts score higher
+    assert all(0 < s < 100 for s in scores[:3])
 
 
 def test_sand_needs_beach_equipment(maya):
@@ -437,7 +454,7 @@ def test_scores_for_the_traveler(deaf_non_speaking):
     strong = evaluate(MUSEUM, [official], deaf_non_speaking)
     weak = evaluate(MUSEUM, [demo], deaf_non_speaking)
     unknown = evaluate(MUSEUM, [], deaf_non_speaking)
-    assert strong.accessibility_score == 100
+    assert strong.accessibility_score > weak.accessibility_score  # a VERIFIED fact counts fully
     assert strong.verification_score > weak.verification_score > unknown.verification_score
     assert weak.verification_score <= 20  # demo data is never high
     assert unknown.verification_score == 0
