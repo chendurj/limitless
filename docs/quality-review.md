@@ -2,6 +2,8 @@
 
 ## Latest regression round
 
+After the full run, main received the simplified saved-trips page (`a83a0fc`). It merged cleanly. Four affected integration cases were rerun and passed: saved-trip navigation, manual save/reload, AI editing and rapid manual-save protection. Lint and TypeScript were also rerun successfully. These repeats are not counted as extra distinct tests below.
+
 **121 distinct tests passed:** 52 Chrome browser scenarios and 69 Node tests. No skipped tests, retries, flaky browser results or uncaught browser exceptions in the final run. ESLint, TypeScript and diff checks pass.
 
 | Area | Tests |
