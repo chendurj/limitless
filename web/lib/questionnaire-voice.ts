@@ -51,6 +51,46 @@ function choices(question: IntakeQuestion, text: string): string[] | null {
   return options.filter(option => matched.includes(option.value)).map(option => option.value);
 }
 
+// Second try, for natural speech like "I am deaf" or "I use a wheelchair": match words that
+// belong to only one option's label. Every other word must be a common filler word, and
+// "or" or a negation is refused, so nothing is guessed. The traveler still reviews the result.
+const FILLER = new Set(("i am a an the and plus of to my me with in on at for can use using have has had " +
+  "travel traveling it is be we our also please choose select option options really mostly usually " +
+  "like love enjoy want need prefer hate dislike avoid find get some something lot lots very bit am im").split(" "));
+const REFUSE = /\b(not|no|never|without|except|nor|neither|none|or)\b/;
+
+function stem(word: string) {
+  if (word.endsWith("ies")) return word.slice(0, -3) + "y";
+  if (/(ch|sh|ss|x)es$/.test(word)) return word.slice(0, -2);
+  if (word.endsWith("s") && !word.endsWith("ss")) return word.slice(0, -1);
+  return word;
+}
+
+function looseChoices(question: IntakeQuestion, text: string): string[] | null {
+  const options = (question.options ?? []).filter(option => !/^something else$/i.test(option.label));
+  let raw = ` ${words(text)} `;
+  const matched = new Set<string>();
+  // Whole labels first, so a label's own "or" ("Deaf or hard of hearing") is not refused.
+  for (const option of [...options].sort((a, b) => b.label.length - a.label.length)) {
+    const label = ` ${words(option.label)} `;
+    if (raw.includes(label)) { matched.add(option.value); raw = raw.replace(label, " "); }
+  }
+  if (REFUSE.test(raw)) return null;
+  const owners = new Map<string, Set<string>>(); // word -> the options whose label has it
+  for (const option of options) {
+    for (const word of words(option.label).split(" ").filter(w => w && !FILLER.has(w)).map(stem)) {
+      owners.set(word, (owners.get(word) ?? new Set()).add(option.value));
+    }
+  }
+  for (const word of raw.trim().split(/\s+/).filter(Boolean)) {
+    if (FILLER.has(word)) continue;
+    const owner = owners.get(stem(word));
+    if (owner?.size !== 1) return null; // an unknown or shared word: do not guess
+    matched.add([...owner][0]);
+  }
+  return matched.size ? options.filter(option => matched.has(option.value)).map(option => option.value) : null;
+}
+
 function dateAnswer(text: string): string | null {
   const clean = text.toLowerCase().replace(/[.,]/g, "").trim();
   let year: number, month: number, day: number;
@@ -112,7 +152,7 @@ export function parseVoiceAnswer(question: IntakeQuestion, transcript: string, c
     }
     return summaries.length ? { value: result, summary: summaries.join("; ") } : { error: "Please name a feature and its level." };
   }
-  const selected = choices(question, text);
+  const selected = choices(question, text) ?? looseChoices(question, text);
   if (!selected || (question.inputType === "single" && selected.length !== 1)) {
     return { error: question.inputType === "single" ? 'Please name one choice, like "option two". We won’t guess your answer.' : 'Please use the shown labels or say "option one and option three". We won’t guess your answer.' };
   }
