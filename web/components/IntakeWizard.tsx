@@ -3,15 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  intakeScreens,
   visibleScreens,
   isVisible,
   type AnswerMap,
-  type IntakeQuestion,
   type IntakeScreen,
 } from "@/lib/intakeQuestions";
 import { useAnnounce } from "@/components/LiveRegion";
 import { QuestionField, type FieldValue } from "@/components/QuestionField";
+import { IntakeSubmit } from "@/components/IntakeSubmit";
 
 const STORAGE_KEY = "limitless_intake";
 
@@ -31,25 +30,6 @@ function isEmpty(value: FieldValue | undefined): boolean {
   if (typeof value === "string") return value.trim() === "";
   if (Array.isArray(value)) return value.length === 0;
   return value.must.length === 0 && value.nice.length === 0;
-}
-
-// Turn a stored answer back into words for the recap screen.
-function readable(question: IntakeQuestion, value: FieldValue | undefined): string {
-  if (value == null) return "";
-  const labelOf = (v: string) =>
-    question.options?.find((o) => o.value === v)?.label ?? v;
-
-  if (typeof value === "object" && !Array.isArray(value)) {
-    const must = value.must.map(labelOf);
-    const nice = value.nice.map(labelOf);
-    return (
-      [must.length ? `Must: ${must.join(", ")}` : "", nice.length ? `Nice: ${nice.join(", ")}` : ""]
-        .filter(Boolean)
-        .join(" · ") || "None"
-    );
-  }
-  if (Array.isArray(value)) return value.map(labelOf).join(", ");
-  return labelOf(value);
 }
 
 export function IntakeWizard() {
@@ -139,66 +119,9 @@ export function IntakeWizard() {
     if (safeIndex > 0) setIndex(safeIndex - 1);
   };
 
-  const restart = () => {
-    setAnswers({});
-    setOthers({});
-    setIndex(0);
-    setDone(false);
-    setInvalidIds([]);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // No-op.
-    }
-  };
-
-  // --- Completion recap -----------------------------------------------------
+  // After the last step, hand the answers to the API submit + review flow.
   if (done) {
-    const answered = intakeScreens
-      .flatMap((s) => s.questions)
-      .filter((q) => !isEmpty(answers[q.id]));
-    return (
-      <div className="mx-auto w-full max-w-2xl px-6 py-12">
-        <h1
-          ref={headingRef}
-          tabIndex={-1}
-          className="text-2xl font-bold tracking-tight focus:outline-none"
-        >
-          Thanks — here&rsquo;s what we understood
-        </h1>
-        <p className="mt-2 text-muted">
-          You can go back and change anything. Next, we&rsquo;ll turn this into a
-          plan you can actually do.
-        </p>
-        <dl className="mt-8 divide-y divide-border rounded-xl border border-border bg-surface">
-          {answered.map((q) => (
-            <div key={q.id} className="px-4 py-3">
-              <dt className="text-sm text-muted">{q.prompt}</dt>
-              <dd className="mt-1 text-sm font-semibold">
-                {readable(q, answers[q.id])}
-                {others[q.id] ? `, ${others[q.id]}` : ""}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <button
-            type="button"
-            onClick={goBack}
-            className="inline-flex h-12 items-center rounded-lg border border-border px-5 font-semibold text-foreground transition-colors hover:bg-surface-muted"
-          >
-            Back
-          </button>
-          <button
-            type="button"
-            onClick={restart}
-            className="inline-flex h-12 items-center rounded-lg border border-border px-5 font-semibold text-foreground transition-colors hover:bg-surface-muted"
-          >
-            Start over
-          </button>
-        </div>
-      </div>
-    );
+    return <IntakeSubmit answers={answers} others={others} onBack={() => setDone(false)} />;
   }
 
   if (!current) return null;
