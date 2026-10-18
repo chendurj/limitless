@@ -264,6 +264,60 @@
    "url": "https://buonaforchettasd.com/"
   },
   {
+   "location_id": "sd-116",
+   "place": "Officine Buona Forchetta",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order pickup or delivery online.",
+   "quote": "ORDER PICK-UP & DELIVERY",
+   "url": "https://buonaforchettasd.com/location/liberty-station/"
+  },
+  {
+   "location_id": "sd-116",
+   "place": "Officine Buona Forchetta",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online through OpenTable.",
+   "quote": "BOOK YOUR TABLE",
+   "url": "https://buonaforchettasd.com/location/liberty-station/"
+  },
+  {
+   "location_id": "sd-116",
+   "place": "Officine Buona Forchetta",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "You can contact the restaurant by email.",
+   "quote": "info@buonaforchettasd.com",
+   "url": "https://buonaforchettasd.com/location/liberty-station/"
+  },
+  {
+   "location_id": "sd-117",
+   "place": "Osteria Panevino",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online for pickup.",
+   "quote": "Order Online",
+   "url": "https://www.osteriapanevino.com/"
+  },
+  {
+   "location_id": "sd-117",
+   "place": "Osteria Panevino",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online through OpenTable.",
+   "quote": "To make a reservation please use",
+   "url": "https://www.osteriapanevino.com/reservations/"
+  },
+  {
+   "location_id": "sd-117",
+   "place": "Osteria Panevino",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "You can contact the restaurant by email.",
+   "quote": "Email: info@osteriapanevino.com",
+   "url": "https://www.osteriapanevino.com/accessibility/"
+  },
+  {
    "location_id": "sd-118",
    "place": "Il Fornaio Coronado",
    "attribute": "kiosk_or_app_ordering",
@@ -289,6 +343,33 @@
    "detail": "Order takeout online.",
    "quote": "ORDER TAKEOUT -> https://www.toasttab.com/piatti-la-jolla",
    "url": "https://lajolla.piatti.com/"
+  },
+  {
+   "location_id": "sd-120",
+   "place": "Garage Buona Forchetta",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order pickup or delivery online.",
+   "quote": "ORDER PICK-UP & DELIVERY",
+   "url": "https://buonaforchettasd.com/location/coronado/"
+  },
+  {
+   "location_id": "sd-120",
+   "place": "Garage Buona Forchetta",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online through OpenTable.",
+   "quote": "BOOK YOUR TABLE",
+   "url": "https://buonaforchettasd.com/location/coronado/"
+  },
+  {
+   "location_id": "sd-120",
+   "place": "Garage Buona Forchetta",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "You can contact the restaurant by email.",
+   "quote": "info@buonaforchettasd.com",
+   "url": "https://buonaforchettasd.com/location/coronado/"
   },
   {
    "location_id": "sd-121",
@@ -354,6 +435,33 @@
    "url": "https://dtf.com/en-us/locations/san-diego"
   },
   {
+   "location_id": "sd-136",
+   "place": "Shan Xi Magic Kitchen",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online for pickup.",
+   "quote": "Online Order Now",
+   "url": "https://www.shanximagickitchen.com/"
+  },
+  {
+   "location_id": "sd-143",
+   "place": "Curryosity",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online.",
+   "quote": "Order Online",
+   "url": "https://www.curryositysd.com/"
+  },
+  {
+   "location_id": "sd-143",
+   "place": "Curryosity",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online.",
+   "quote": "Book A Table",
+   "url": "https://www.curryositysd.com/"
+  },
+  {
    "location_id": "sd-152",
    "place": "Point Loma Seafoods",
    "attribute": "text_contact",
@@ -390,6 +498,24 @@
    "url": "https://www.islandprime.com/"
   },
   {
+   "location_id": "sd-162",
+   "place": "Sipz Vegetarian Fusion",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online.",
+   "quote": "ORDER ONLINE NOW",
+   "url": "https://www.sipz.com/contact-us"
+  },
+  {
+   "location_id": "sd-162",
+   "place": "Sipz Vegetarian Fusion",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "You can contact the restaurant by email.",
+   "quote": "Sipzcafe@yahoo.com",
+   "url": "https://www.sipz.com/contact-us"
+  },
+  {
    "location_id": "sd-163",
    "place": "Plant Power Fast Food",
    "attribute": "kiosk_or_app_ordering",
@@ -399,6 +525,33 @@
    "url": "https://www.plantpowerfastfood.com/"
   },
   {
+   "location_id": "sd-164",
+   "place": "Donna Jean",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order online.",
+   "quote": "Order Online",
+   "url": "https://donnajeanrestaurant.com/"
+  },
+  {
+   "location_id": "sd-164",
+   "place": "Donna Jean",
+   "attribute": "online_booking",
+   "value": "yes",
+   "detail": "Book a table online through Resy.",
+   "quote": "Reserve a table",
+   "url": "https://donnajeanrestaurant.com/"
+  },
+  {
+   "location_id": "sd-164",
+   "place": "Donna Jean",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "You can contact the restaurant by email.",
+   "quote": "donnajeansd@gmail.com",
+   "url": "https://donnajeanrestaurant.com/"
+  },
+  {
    "location_id": "sd-165",
    "place": "Kindred",
    "attribute": "online_booking",
@@ -406,6 +559,33 @@
    "detail": "Mostly walk-in; some tables can be booked online.",
    "quote": "KINDRED offers primarily walk-in seating and some reservations (page embeds OpenTable widget rid=293692)",
    "url": "https://barkindred.com/pages/reservations"
+  },
+  {
+   "location_id": "sd-169",
+   "place": "Trilogy Sanctuary Cafe",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order takeout online.",
+   "quote": "Start Online TAKEOUT Order",
+   "url": "https://www.trilogysanctuary.com/cafe/"
+  },
+  {
+   "location_id": "sd-169",
+   "place": "Trilogy Sanctuary Cafe",
+   "attribute": "online_booking",
+   "value": "no",
+   "detail": "The cafe does not take reservations.",
+   "quote": "no reservations",
+   "url": "https://www.trilogysanctuary.com/cafe/"
+  },
+  {
+   "location_id": "sd-169",
+   "place": "Trilogy Sanctuary Cafe",
+   "attribute": "text_contact",
+   "value": "yes",
+   "detail": "You can contact the cafe by email.",
+   "quote": "info@trilogysanctuary.com",
+   "url": "https://www.trilogysanctuary.com/cafe/"
   },
   {
    "location_id": "sd-170",
@@ -451,6 +631,15 @@
    "detail": "Email the cafe.",
    "quote": "hello@holymatchasd.com",
    "url": "https://www.holymatchasd.com/"
+  },
+  {
+   "location_id": "sd-178",
+   "place": "Parfait Paris Gaslamp",
+   "attribute": "kiosk_or_app_ordering",
+   "value": "yes",
+   "detail": "Order pickup or delivery online.",
+   "quote": "Order Pickup or Delivery",
+   "url": "https://parfaitparis.com/"
   },
   {
    "location_id": "sd-179",
