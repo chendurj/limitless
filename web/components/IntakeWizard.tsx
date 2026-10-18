@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import Link from "next/link";
 import {
   intakeScreens,
+  previousTripNotes,
   visibleScreens,
   isVisible,
   type AnswerMap,
@@ -14,7 +15,7 @@ import { QuestionField, type FieldValue } from "@/components/QuestionField";
 import { IntakeSubmit } from "@/components/IntakeSubmit";
 import { useGuest } from "@/components/GuestGate";
 
-const DRAFT_VERSION = 3;
+const DRAFT_VERSION = 4;
 
 type Answers = Record<string, FieldValue>;
 
@@ -54,6 +55,10 @@ function readDraft(storageKey: string): Draft {
         draft.answers[question.id] = { must, nice };
       }
       if (question.allowOther && typeof saved.others?.[question.id] === "string") draft.others[question.id] = saved.others[question.id];
+    }
+    if (saved.version !== DRAFT_VERSION) {
+      const notes = previousTripNotes(saved.answers ?? {});
+      if (notes) draft.others.requirements = [draft.others.requirements, notes].filter(Boolean).join(" ");
     }
     // Older layouts used different step positions. Keep answers, restart at step one.
     if (saved.version === DRAFT_VERSION && Number.isInteger(saved.index) && saved.index >= 0) draft.index = saved.index;
@@ -118,6 +123,11 @@ function IntakeWizardForm({ storageKey }: { storageKey: string }) {
     );
     const missing = questionsOn(current).filter(q => {
       const value = answers[q.id];
+      if (q.inputType === "date" && typeof value === "string" && value.trim()) {
+        const date = new Date(value);
+        const today = new Date().toLocaleDateString("en-CA");
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value || value < today) return true;
+      }
       if (q.inputType === "number" && typeof value === "string" && value.trim()) {
         const n = Number(value);
         if (!Number.isSafeInteger(n) || n < (q.id === "party_size" ? 1 : 0)) return true;

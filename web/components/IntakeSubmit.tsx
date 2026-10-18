@@ -135,7 +135,8 @@ export function IntakeSubmit({
     announce("Building your trip. This can take up to a minute.", "assertive");
     try {
       await api.updateProfile(profileId, { consent_aggregate: consent });
-      const trip = await api.createTrip({ profile_id: profileId });
+      const startDate = typeof answers.start_date === "string" && answers.start_date.trim() ? answers.start_date : undefined;
+      const trip = await api.createTrip({ profile_id: profileId, ...(startDate ? { start_date: startDate } : {}) });
       router.push(`/trips/${trip.id}`);
     } catch (err) {
       fail(err);

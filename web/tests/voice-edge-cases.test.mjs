@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { intakeScreens } from '../lib/intakeQuestions.ts';
+import { questionCatalog, intakeScreens } from '../lib/intakeQuestions.ts';
 import { parseVoiceAnswer } from '../lib/questionnaire-voice.ts';
 const questions = intakeScreens.flatMap(screen => screen.questions);
 const cases = [
@@ -33,7 +33,7 @@ const cases = [
 ];
 for (const [id, speech, expected] of cases) {
   test(`voice edge: ${id}: ${speech.length > 60 ? 'oversized input' : speech}`, () => {
-    const parsed = parseVoiceAnswer(questions.find(q => q.id === id), speech);
+    const parsed = parseVoiceAnswer((questions.find(q => q.id === id) ?? questionCatalog.flatMap(screen => screen.questions).find(q => q.id === id)), speech);
     if (expected === null) assert.ok('error' in parsed, JSON.stringify(parsed));
     else assert.deepEqual(parsed.value, expected);
   });

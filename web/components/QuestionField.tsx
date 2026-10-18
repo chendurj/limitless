@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { IntakeQuestion } from "@/lib/intakeQuestions";
 import { QuestionVoiceInput } from "@/components/QuestionVoiceInput";
 
@@ -32,6 +32,14 @@ export function QuestionField({
   onChange,
   onOtherChange,
 }: Props) {
+  const [expanded, setExpanded] = useState(false);
+  const selectedValues = Array.isArray(value) ? value : typeof value === "object" && value ? [...value.must, ...value.nice] : [value];
+  const optionRows = (question.options ?? []).map((option, index) => ({ option, index })).filter(({ option, index }) => expanded || index < (question.initialOptions ?? Infinity) || selectedValues.includes(option.value));
+  const moreOptions = question.initialOptions && (question.options?.length ?? 0) > question.initialOptions ? (
+    <button type="button" aria-expanded={expanded} onClick={() => setExpanded(previous => !previous)} className="mt-3 min-h-11 text-sm font-semibold text-primary underline underline-offset-4">
+      {expanded ? "Fewer options" : "More options"}
+    </button>
+  ) : null;
   const helpId = question.help ? `${question.id}-help` : undefined;
   const errorId = invalid ? `${question.id}-error` : undefined;
   const describedBy = [helpId, errorId].filter(Boolean).join(" ") || undefined;
@@ -44,7 +52,7 @@ export function QuestionField({
 
   const error = invalid ? (
     <p id={errorId} role="alert" className="mt-3 text-sm font-medium text-danger">
-      {question.inputType === "number" ? `Enter a whole number of ${question.id === "party_size" ? 1 : 0} or more.` : "Please answer this to continue."}
+      {question.inputType === "date" ? "Choose today or a future date, or leave it blank." : question.inputType === "number" ? `Enter a whole number of ${question.id === "party_size" ? 1 : 0} or more.` : "Please answer this to continue."}
     </p>
   ) : null;
 
@@ -59,7 +67,7 @@ export function QuestionField({
     const current = typeof value === "string" ? value : "";
     control = (
       <div>
-        <label htmlFor={question.id} className="block text-lg font-semibold">
+        <label htmlFor={question.id} className={hidePrompt ? "sr-only" : "block text-lg font-semibold"}>
           {question.prompt}
         </label>
         {help}
@@ -98,7 +106,7 @@ export function QuestionField({
         <legend className={hidePrompt ? "sr-only" : "text-lg font-semibold"}>{question.prompt}</legend>
         {help}
         <ul className="mt-4 space-y-2">
-          {question.options?.map((opt, index) => {
+          {optionRows.map(({ option: opt, index }) => {
             const level = mn.must.includes(opt.value)
               ? "must"
               : mn.nice.includes(opt.value)
@@ -137,6 +145,7 @@ export function QuestionField({
             );
           })}
         </ul>
+        {moreOptions}
       </fieldset>
     );
   }
@@ -167,7 +176,7 @@ export function QuestionField({
         <legend className={hidePrompt ? "sr-only" : "text-lg font-semibold"}>{question.prompt}</legend>
         {help}
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          {question.options?.map((opt, index) => (
+          {optionRows.map(({ option: opt, index }) => (
             <label key={opt.value} className={chip}>
               <input
                 type={isMulti ? "checkbox" : "radio"}
@@ -181,7 +190,7 @@ export function QuestionField({
             </label>
           ))}
         </div>
-
+        {moreOptions}
       </fieldset>
     );
   }
@@ -195,7 +204,7 @@ export function QuestionField({
               htmlFor={`${question.id}-other`}
               className="block text-sm font-medium text-muted"
             >
-              Something else
+              {question.id === "requirements" ? "Other needs or things to avoid" : "Something else"}
             </label>
             <input
               id={`${question.id}-other`}
