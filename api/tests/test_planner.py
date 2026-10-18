@@ -385,3 +385,18 @@ def test_output_model_rejects_unknown_ids():
     with pytest.raises(ValueError):
         model.model_validate(bad)
     assert issubclass(model, BaseModel)
+
+
+def test_long_visit_drops_a_late_lunch(ankle):  # noqa: F811
+    long_visit = place(
+        "long", "Test Long Museum", "museum", "balboa_park", 32.732, -117.150, 300, 1
+    )
+    places = [long_visit] + [p for p in PLACES if p.category == "restaurant"]
+    facts = {p.id: facts_for(p.id) for p in places}
+    t = build_trip(open_day(ankle), places, facts, start_date=START, nights=1, today=TODAY)
+    for day in t.days:
+        assert any(i.kind == "visit" for i in day.items)
+        for i in day.items:
+            if i.kind == "meal":
+                start = datetime.fromisoformat(i.start)
+                assert (start.hour, start.minute) <= (13, 30) or start.hour >= 17, i.title

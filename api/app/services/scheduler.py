@@ -209,9 +209,27 @@ def lay_out(
         )
         visits = [p for p in picks if p.cand.kind == "visit"]
         if not over or len(visits) <= 1:
+            late = [t.pick for t in items if _misses_window(t, day)]
+            if late:  # the last visit stays, so drop the meals that miss their window
+                picks = [p for p in picks if all(p is not m for m in late)]
+                continue
             return items, round(energy, 1)  # never drop the last visit of a day
         drop = unknown if len(unknown) > UNKNOWN_CRITICAL_PER_DAY else visits
         picks = [p for p in picks if p is not min(drop, key=lambda p: p.cand.ev.score)]
+
+
+def _is_lunch(pick: Pick) -> bool:
+    return pick.slot == "lunch" or (
+        pick.cand.kind == "meal" and pick.slot not in ("dinner", "evening")
+    )
+
+
+def _misses_window(t: Timed, day: date) -> bool:
+    if t.pick is None or t.kind != "meal":
+        return False
+    if _is_lunch(t.pick):
+        return t.start > _at(day, LUNCH[1])
+    return t.pick.slot == "dinner" and t.start > _at(day, DINNER[1])
 
 
 def _order(picks: list[Pick], dna: AccessibilityDNA, hot: bool) -> list[Pick]:
@@ -271,9 +289,7 @@ def _try(
             travel_total += leg - buffer  # road time between stops; not the hotel leg or the buffer
         start = t + timedelta(minutes=leg)
         kind = "meal" if pick.cand.kind in ("meal", "snack") else "visit"
-        if pick.slot == "lunch" or (
-            pick.cand.kind == "meal" and pick.slot not in ("dinner", "evening")
-        ):
+        if _is_lunch(pick):
             start = max(start, _at(day, LUNCH[0]))
             if start > _at(day, LUNCH[1]):
                 ok = False

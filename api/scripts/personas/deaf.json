@@ -1,0 +1,129 @@
+{
+  "raw_answers": {
+    "needs": {
+      "selected": [
+        "deaf_hoh",
+        "non_speaking"
+      ]
+    },
+    "hearing": {
+      "selected": [
+        "captions",
+        "asl_interpretation"
+      ]
+    },
+    "communication": {
+      "selected": [
+        "sign_language",
+        "writing_or_typing"
+      ],
+      "freeform": "I use ASL and type on my phone. I can't do phone calls, text or email only."
+    },
+    "must_have": {
+      "selected": [
+        "captions_or_asl"
+      ]
+    },
+    "interests": {
+      "selected": [
+        "museums_art",
+        "history",
+        "zoos_aquariums"
+      ]
+    },
+    "trip": {
+      "freeform": "Nov 20 to Nov 23, staying in Old Town, taking the trolley. Moderate pace, about $150 a day."
+    }
+  },
+  "consent_aggregate": true,
+  "dna": {
+    "schema_version": "1.0",
+    "summary": "You use ASL and typing to communicate, and need captions or ASL interpretation. You’d like a moderate-paced visit to museums, historical sites, and zoos or aquariums.",
+    "needs": [
+      "deaf_hoh",
+      "non_speaking"
+    ],
+    "mobility": {
+      "equipment": [],
+      "walking": null,
+      "standing": null,
+      "slope_tolerance": null,
+      "surfaces_to_avoid": [],
+      "stairs_tolerance": null,
+      "rest_interval": null
+    },
+    "vision": {
+      "level": null,
+      "nav_aids": [],
+      "supports": [],
+      "without_sighted_companion": null
+    },
+    "hearing": {
+      "supports": [
+        "captions",
+        "asl_interpretation"
+      ],
+      "advance_booking": null
+    },
+    "sensory": {
+      "reduce": [],
+      "supports": []
+    },
+    "communication": {
+      "methods": [
+        "sign_language",
+        "writing_or_typing"
+      ],
+      "phone_calls": "no",
+      "contact_preferences": [
+        "text_sms",
+        "email"
+      ]
+    },
+    "temporary": {
+      "expected_duration": null
+    },
+    "requirements": {
+      "must_have": [
+        "captions_or_asl"
+      ],
+      "nice_to_have": [],
+      "other": []
+    },
+    "party": {
+      "travel_with": null,
+      "size": null,
+      "children_ages": [],
+      "companion_assist": null,
+      "notes": null
+    },
+    "trip": {
+      "destination": "San Diego",
+      "start_date": "2026-11-20",
+      "nights": 3,
+      "lodging_area": "Old Town",
+      "transport": "transit",
+      "needs_accessible_vehicle": null,
+      "needs_rental_equipment": null
+    },
+    "preferences": {
+      "interests": [
+        "museums_art",
+        "history",
+        "zoos_aquariums"
+      ],
+      "cuisines": [],
+      "avoid": [],
+      "pace": "moderate",
+      "budget_per_day_usd": 150,
+      "day_start": null,
+      "day_end": null
+    },
+    "missing_fields": [
+      "hearing.advance_booking"
+    ],
+    "assumptions": [
+      "I interpreted Nov 20 to Nov 23 as a three-night trip, ending on Nov 23, 2026."
+    ]
+  }
+}
