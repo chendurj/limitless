@@ -6,10 +6,12 @@ import type { FieldValue } from "@/components/QuestionField";
 import { parseVoiceAnswer, voiceAnswerHelp } from "@/lib/questionnaire-voice";
 import { useSpeechInput } from "@/lib/speech";
 
-export function QuestionVoiceInput({ question, value, onChange }: {
+export function QuestionVoiceInput({ question, value, onChange, onOther }: {
   question: IntakeQuestion;
   value: FieldValue | undefined;
   onChange: (value: FieldValue) => void;
+  /** For questions with "Something else": put words that match no option there. */
+  onOther?: (text: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -41,6 +43,9 @@ export function QuestionVoiceInput({ question, value, onChange }: {
             if (!("value" in parsed)) return;
             mic.cancel(); onChange(parsed.value); setApplied(true);
           }} className="min-h-11 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50">Use this answer</button>
+          {onOther && transcript.trim() && !("value" in parsed) && <button type="button" disabled={mic.listening || applied} onClick={() => {
+            mic.cancel(); onOther(transcript.trim()); setApplied(true);
+          }} className="min-h-11 rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary disabled:opacity-50">Use as &ldquo;Something else&rdquo;</button>}
           <button type="button" onClick={() => { mic.cancel(); setOpen(false); setTranscript(""); setApplied(false); }} className="min-h-11 rounded-lg border border-border px-4 py-2 text-sm">Cancel voice answer</button>
         </div>
       </div>}

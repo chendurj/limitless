@@ -193,11 +193,6 @@ export function QuestionField({
               onChange={(e) => onOtherChange(e.target.value)}
               className="mt-1 w-full max-w-sm rounded-lg border border-border bg-surface px-4 py-2 text-base"
             />
-            <QuestionVoiceInput
-              question={{ ...question, id: `${question.id}-other`, prompt: `Something else for: ${question.prompt}`, inputType: "text", options: undefined }}
-              value={otherValue}
-              onChange={answer => onOtherChange(String(answer))}
-            />
           </div>
         )}
       </fieldset>
@@ -208,7 +203,13 @@ export function QuestionField({
     <div data-question-id={question.id}>
       {control}
       {error}
-      <QuestionVoiceInput question={question} value={value} onChange={onChange} />
+      {/* One microphone per question. Words that match no option can go to "Something else". */}
+      <QuestionVoiceInput
+        question={question}
+        value={value}
+        onChange={onChange}
+        onOther={question.allowOther ? onOtherChange : undefined}
+      />
     </div>
   );
 }
