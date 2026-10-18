@@ -123,6 +123,10 @@ def build_trip(
     day_outs = []
     for day in days:
         timed, energy = lay_out(day.picks, day.date, dna, limits, here, hot=is_hot(day.weather))
+        # The layout can drop a visit (energy) or a meal (time window). Check the result.
+        stops = [t for t in timed if t.pick is not None]
+        if len(stops) < 3 and _add_light_stop(day, days, dna, snacks, force=True):
+            timed, energy = lay_out(day.picks, day.date, dna, limits, here, hot=is_hot(day.weather))
         day_outs.append(
             api.DayOut(
                 day_index=day.index,
@@ -335,24 +339,31 @@ def _fill_meals(day: DayDraft, days: list[DayDraft], dna: AccessibilityDNA) -> N
 
 
 def _add_light_stop(
-    day: DayDraft, days: list[DayDraft], dna: AccessibilityDNA, snacks: list[Candidate]
-) -> None:
+    day: DayDraft,
+    days: list[DayDraft],
+    dna: AccessibilityDNA,
+    snacks: list[Candidate],
+    force: bool = False,
+) -> bool:
     """At least 3 stops a day: an activity, a meal, and one more.
 
     The third stop is a cafe, dessert shop or quiet rest stop, never a second activity:
     a seated stop uses no energy, so the day stays inside the traveler's energy budget.
-    Nearby places come first. If none is left, the day keeps fewer stops.
+    Nearby places come first. If none is left, the day keeps fewer stops. force=True is the
+    second check after the layout, which may have dropped a visit or a meal.
     """
     assert day.picks is not None
     visits = sum(1 for p in day.picks if p.cand.kind == "visit")
-    if visits >= 2 or any(p.cand.kind == "snack" for p in day.picks):
-        return
+    if any(p.cand.kind == "snack" for p in day.picks) or (visits >= 2 and not force):
+        return False
     taken = {p.cand.place.id for d in days if d.picks for p in d.picks}
     pool = [c for c in [*day.snacks, *snacks] if c.place.id not in taken]
     local = [c for c in pool if nearby(c.place.neighborhood, day.clusters)]
     pick = (local or pool or [None])[0]
-    if pick is not None:
-        day.picks.append(_pick(pick, "afternoon", dna))
+    if pick is None:
+        return False
+    day.picks.append(_pick(pick, "afternoon", dna))
+    return True
 
 
 def _mode(dna: AccessibilityDNA) -> str:
