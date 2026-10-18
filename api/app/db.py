@@ -322,3 +322,23 @@ class PgFeedbackStore:
 
 def get_feedback_store() -> FeedbackStore:
     return PgFeedbackStore()
+
+
+# --- app reviews -----------------------------------------------------------------------------
+
+
+class ReviewStore(Protocol):
+    def create(self, rating: int, body: str, context: str) -> None: ...
+
+
+class PgReviewStore:
+    def create(self, rating: int, body: str, context: str) -> None:
+        with pool().connection() as conn:
+            conn.execute(
+                "insert into app_reviews (rating, body, context) values (%s, %s, %s)",
+                [rating, body, context],
+            )
+
+
+def get_review_store() -> ReviewStore:
+    return PgReviewStore()

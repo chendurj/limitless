@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ReviewForm } from "@/components/ReviewForm";
 
 export const metadata: Metadata = {
   title: "Reviews | Limitless",
@@ -99,6 +100,22 @@ export default function ReviewsPage() {
           </li>
         ))}
       </ul>
+
+      <section
+        aria-labelledby="write-review-heading"
+        className="mt-14 border-t border-border pt-10"
+      >
+        <h2
+          id="write-review-heading"
+          className="text-2xl font-bold tracking-tight"
+        >
+          Drop an anonymous review
+        </h2>
+        <p className="mt-2 text-muted">
+          Tell us how Limitless worked for you. No name or account needed.
+        </p>
+        <ReviewForm />
+      </section>
 
       <Link
         href="/intake"

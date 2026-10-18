@@ -8,7 +8,7 @@ from app import errors
 from app.config import get_settings
 from app.db import close_pool
 from app.models.api import HealthOut
-from app.routers import intake, places, trips
+from app.routers import intake, places, reviews, trips
 
 VERSION = "0.1.0"
 
@@ -31,7 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in (intake.router, trips.router, places.router):
+for router in (intake.router, trips.router, places.router, reviews.router):
     app.include_router(router, prefix="/api")
 
 

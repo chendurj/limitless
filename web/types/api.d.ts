@@ -178,6 +178,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Review */
+        post: operations["create_review_api_reviews_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -712,6 +729,31 @@ export interface components {
             /** Other */
             other: string[];
         };
+        /** ReviewAccepted */
+        ReviewAccepted: {
+            /**
+             * Status
+             * @constant
+             */
+            status: "received";
+        };
+        /** ReviewIn */
+        ReviewIn: {
+            /** Rating */
+            rating: number;
+            /** Body */
+            body: string;
+            /**
+             * Context
+             * @default
+             */
+            context: string;
+            /**
+             * Website
+             * @default
+             */
+            website: string;
+        };
         /** SensoryCognitive */
         SensoryCognitive: {
             /** Reduce */
@@ -1192,6 +1234,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlaceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_review_api_reviews_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewAccepted"];
                 };
             };
             /** @description Validation Error */

@@ -18,6 +18,7 @@ export type FeedbackResponse = S["FeedbackResponse"];
 export type ReplanResult = S["ReplanResult"];
 export type PlaceOut = S["PlaceOut"];
 export type Fact = S["Fact"];
+export type ReviewIn = S["ReviewIn"];
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 // The demo token is visible in the browser by design. Rotate it after the event.
@@ -35,7 +36,11 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+async function request<T>(
+  method: string,
+  path: string,
+  body?: unknown,
+): Promise<T> {
   let res: Response;
   try {
     res = await fetch(`${BASE}${path}`, {
@@ -47,12 +52,20 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    throw new ApiError(0, "NETWORK", "We could not reach the server. Check that the API is running.");
+    throw new ApiError(
+      0,
+      "NETWORK",
+      "We could not reach the server. Check that the API is running.",
+    );
   }
   if (!res.ok) {
     const data = await res.json().catch(() => null);
     const error = data?.error ?? {};
-    throw new ApiError(res.status, error.code ?? "HTTP_" + res.status, error.message ?? res.statusText);
+    throw new ApiError(
+      res.status,
+      error.code ?? "HTTP_" + res.status,
+      error.message ?? res.statusText,
+    );
   }
   return res.json() as Promise<T>;
 }
@@ -61,16 +74,23 @@ const id = encodeURIComponent;
 
 export const api = {
   /** Intake answers -> Accessibility DNA, a profile id and up to 3 follow-up questions. */
-  intake: (body: IntakeRequest) => request<IntakeResponse>("POST", "/api/intake", body),
+  intake: (body: IntakeRequest) =>
+    request<IntakeResponse>("POST", "/api/intake", body),
   /** Answers to the follow-up questions. One round only. */
   followups: (profileId: string, body: FollowupAnswers) =>
-    request<IntakeResponse>("POST", `/api/intake/${id(profileId)}/followups`, body),
-  getProfile: (profileId: string) => request<ProfileOut>("GET", `/api/profiles/${id(profileId)}`),
+    request<IntakeResponse>(
+      "POST",
+      `/api/intake/${id(profileId)}/followups`,
+      body,
+    ),
+  getProfile: (profileId: string) =>
+    request<ProfileOut>("GET", `/api/profiles/${id(profileId)}`),
   updateProfile: (profileId: string, body: ProfilePatch) =>
     request<ProfileOut>("PATCH", `/api/profiles/${id(profileId)}`, body),
 
   /** Makes the itinerary. With the AI composer this can take up to about 45 s. */
-  createTrip: (body: CreateTripRequest) => request<TripOut>("POST", "/api/trips", body),
+  createTrip: (body: CreateTripRequest) =>
+    request<TripOut>("POST", "/api/trips", body),
   /** The current version, or an earlier or proposed version. */
   getTrip: (tripId: string, version?: number) =>
     request<TripOut>(
@@ -79,22 +99,39 @@ export const api = {
     ),
   /** For example { status: "done" } or { locked: true }. */
   updateItem: (tripId: string, itemId: string, body: ItemPatch) =>
-    request<ItemOut>("PATCH", `/api/trips/${id(tripId)}/items/${id(itemId)}`, body),
+    request<ItemOut>(
+      "PATCH",
+      `/api/trips/${id(tripId)}/items/${id(itemId)}`,
+      body,
+    ),
 
   /** Feedback -> a proposed version. It does not change the trip until applyVersion. */
   feedback: (tripId: string, body: FeedbackRequest) =>
-    request<FeedbackResponse>("POST", `/api/trips/${id(tripId)}/feedback`, body),
+    request<FeedbackResponse>(
+      "POST",
+      `/api/trips/${id(tripId)}/feedback`,
+      body,
+    ),
   /** Apply a proposed version, or undo: give an earlier version number. */
   applyVersion: (tripId: string, version: number) =>
-    request<ReplanResult>("POST", `/api/trips/${id(tripId)}/replan`, { apply_version: version }),
+    request<ReplanResult>("POST", `/api/trips/${id(tripId)}/replan`, {
+      apply_version: version,
+    }),
 
   listPlaces: (filter: { category?: string; neighborhood?: string } = {}) => {
     const query = new URLSearchParams(
-      Object.entries(filter).filter((entry): entry is [string, string] => Boolean(entry[1])),
+      Object.entries(filter).filter((entry): entry is [string, string] =>
+        Boolean(entry[1]),
+      ),
     ).toString();
     return request<PlaceOut[]>("GET", `/api/places${query ? `?${query}` : ""}`);
   },
-  getPlace: (placeId: string) => request<PlaceOut>("GET", `/api/places/${id(placeId)}`),
+  getPlace: (placeId: string) =>
+    request<PlaceOut>("GET", `/api/places/${id(placeId)}`),
+
+  /** An anonymous review of the app. It is stored for the team and shown only after approval. */
+  createReview: (body: ReviewIn) =>
+    request<{ status: "received" }>("POST", "/api/reviews", body),
 };
 
 /** The two demo trips made by scripts.demo_reset. Their ids do not change. */

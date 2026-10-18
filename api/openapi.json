@@ -611,6 +611,47 @@
         }
       }
     },
+    "/api/reviews": {
+      "post": {
+        "tags": [
+          "reviews"
+        ],
+        "summary": "Create Review",
+        "operationId": "create_review_api_reviews_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewAccepted"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -2650,6 +2691,55 @@
           "other"
         ],
         "title": "Requirements"
+      },
+      "ReviewAccepted": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "received",
+            "title": "Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "ReviewAccepted"
+      },
+      "ReviewIn": {
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Rating"
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Body"
+          },
+          "context": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Context",
+            "default": ""
+          },
+          "website": {
+            "type": "string",
+            "title": "Website",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rating",
+          "body"
+        ],
+        "title": "ReviewIn"
       },
       "SensoryCognitive": {
         "properties": {

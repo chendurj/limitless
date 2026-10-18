@@ -305,3 +305,17 @@ class FeedbackResponse(Model):
 class HealthOut(Model):
     status: Literal["ok"]
     version: str
+
+
+# --- App reviews --------------------------------------------------------------------
+
+
+class ReviewIn(Model):
+    rating: int = Field(ge=1, le=5)
+    body: str = Field(min_length=1, max_length=1000)
+    context: str = Field(default="", max_length=100)  # e.g. "Wheelchair user"; optional
+    website: str = ""  # a hidden field; people leave it empty, spam bots fill it
+
+
+class ReviewAccepted(Model):
+    status: Literal["received"]
