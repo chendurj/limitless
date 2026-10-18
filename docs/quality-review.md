@@ -1,6 +1,16 @@
 # App quality review — October 18, 2026
 
-## Latest regression round
+## Calendar and shorter demo update
+
+The active intake now has **5–7 questions**, including an optional start-date calendar. Separate avoidances and transport screens are removed from the demo. Additional barriers can be entered under access needs; old explicitly selected avoidances and transport are preserved as editable notes during draft migration. Unanswered fields remain unknown.
+
+Access features and interests initially show six options; walking shows four. More options remains available on request, and any previously selected extra stays visible even when the list is collapsed or reloaded. No selected must-have is discarded. Older draft step numbers reset for the new layout.
+
+The chosen date is validated against past/invalid dates and sent directly to trip creation, as well as intake, rather than relying on model extraction alone. Blank dates remain optional.
+
+Validation: **53 Chrome browser scenarios and 40 questionnaire/voice tests passed**; two live API cases were skipped in this update. Lint, TypeScript and diff checks pass. New browser regressions verify short lists, selected-extra persistence, legacy note preservation and calendar-to-trip date propagation. All 128 needs combinations stay between five and seven questions. Guest and planning responses use the same test-only mocks described below.
+
+## Previous full regression round
 
 After the full run, main received the simplified saved-trips page (`a83a0fc`). It merged cleanly. Four affected integration cases were rerun and passed: saved-trip navigation, manual save/reload, AI editing and rapid manual-save protection. Lint and TypeScript were also rerun successfully. These repeats are not counted as extra distinct tests below.
 

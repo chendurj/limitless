@@ -28,7 +28,7 @@ test.afterEach(({ page }) => {
   expect(pageErrors.get(page) ?? [], 'No uncaught browser exceptions').toEqual([]);
 });
 async function seed(page: Page, answers = baseAnswers, index = 5, others = {}) {
-  await page.addInitScript(saved => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify(saved)), { version: 3, answers, others, index });
+  await page.addInitScript(saved => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify(saved)), { version: 4, answers, others, index });
   await page.goto('/intake');
 }
 async function speech(page: Page, supported = true) {
@@ -80,8 +80,8 @@ async function api(page: Page, options: { delay?: number; followups?: unknown[] 
     if (path === '/api/profiles' && request.method() === 'GET') return route.fulfill({ json: [] });
     if (path.endsWith('/followups')) return route.fulfill({ json: intakeResult });
     if (path.startsWith('/api/profiles/')) return route.fulfill({ json: {} });
-    if (path.endsWith('/feedback')) return route.fulfill({ json: { replan: { changed: true, version: 3, message: 'Demo rest added.', changes: [{ type: 'rest_added', day_index: 0, reason: 'Demo extra break.' }] } } });
-    if (path.endsWith('/replan')) return route.fulfill({ json: { trip: { ...trip, version: 3 }, message: 'Demo plan restored.' } });
+    if (path.endsWith('/feedback')) return route.fulfill({ json: { replan: { changed: true, version: 4, message: 'Demo rest added.', changes: [{ type: 'rest_added', day_index: 0, reason: 'Demo extra break.' }] } } });
+    if (path.endsWith('/replan')) return route.fulfill({ json: { trip: { ...trip, version: 4 }, message: 'Demo plan restored.' } });
     if (path.includes('/items/')) {
       const item = currentTrip.days.flatMap(day => day.items).find(item => path.endsWith(item.id))!;
       Object.assign(item, request.postDataJSON());
@@ -143,9 +143,11 @@ test('06 every visible question has unique choices and exactly one microphone ac
   await speech(page); await page.goto('/intake');
   const answers = { ...baseAnswers, needs: ['mobility_device', 'deaf_hoh', 'non_speaking'], party: 'family' };
   for (const [index, screen] of intakeScreens.entries()) {
-    await page.evaluate(saved => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify(saved)), { version: 3, answers, others: {}, index });
+    await page.evaluate(saved => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify(saved)), { version: 4, answers, others: {}, index });
     await page.reload();
     await expect(page.getByRole('heading', { name: screen.title, exact: true })).toBeVisible();
+    const more = page.getByRole("button", { name: "More options", exact: true });
+    if (await more.count()) await more.click();
     for (const question of screen.questions.filter(q => isVisible(q, answers))) {
       const values = question.options?.map(option => option.value) ?? [];
       const labels = question.options?.map(option => option.label.toLowerCase()) ?? [];
@@ -199,7 +201,7 @@ test('11 Other-only answers and must-have Other text reach the intake API', asyn
 test('12 only one question is shown per step', async ({ page }) => {
   await seed(page, { ...baseAnswers, needs: ['mobility_device', 'deaf_hoh', 'non_speaking'] }, 0);
   await expect(page.locator('[data-question-id]')).toHaveCount(1);
-  await expect(page.getByText('Step 1 of 8', { exact: true })).toBeVisible();
+  await expect(page.getByText('Step 1 of 7', { exact: true })).toBeVisible();
 });
 test('13 must-have and nice-to-have selections remain mutually exclusive', async ({ page }) => {
   await seed(page, baseAnswers, 1);
@@ -375,7 +377,7 @@ test('26 cancelled permission prompts release a stream that arrives late', async
   await expect(needs.getByRole('button', { name: /^Speak answer:/ })).toBeEnabled();
 });
 
-test('27 longest path has eight questions and keeps personal choices in the API', async ({ page }) => {
+test('27 longest path has seven questions and keeps personal choices in the API', async ({ page }) => {
   const server = await api(page);
   await page.goto('/intake');
   for (const index of [0, 3, 4]) await field(page, 'needs').getByRole('checkbox').nth(index).check();
@@ -388,16 +390,14 @@ test('27 longest path has eight questions and keeps personal choices in the API'
   await page.getByRole('button', { name: 'Next', exact: true }).click();
   await field(page, 'interests').getByRole('checkbox').first().check();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
-  await field(page, 'avoid').getByRole('checkbox').first().check();
-  await page.getByRole('button', { name: 'Next', exact: true }).click();
   await field(page, 'pace').getByRole('radio').first().check();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
-  await expect(page.getByText('Step 8 of 8', { exact: true })).toBeVisible();
-  await field(page, 'transport').getByRole('radio').first().check();
+  await expect(page.getByText('Step 7 of 7', { exact: true })).toBeVisible();
+  await page.locator('#start_date').fill('2030-10-22');
   await page.getByRole('button', { name: 'Finish', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Plan my trip', exact: true })).toBeVisible();
   const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { selected: string[] }>;
-  expect(Object.keys(answers)).toHaveLength(8);
+  expect(Object.keys(answers)).toHaveLength(7);
   expect(answers.requirements.selected).toEqual(['accessible_restroom']);
   expect(answers.communication_supports.selected).toEqual(['asl_interpretation']);
   expect(answers).not.toHaveProperty('standing');
@@ -409,7 +409,7 @@ test('28 old questionnaire drafts restart at step one and keep personal answers'
     answers: { needs: ['mobility_device'], walking: 'cannot_walk' }, others: {}, index: 1,
   })));
   await page.goto('/intake');
-  await expect(page.getByText('Step 1 of 7', { exact: true })).toBeVisible();
+  await expect(page.getByText('Step 1 of 6', { exact: true })).toBeVisible();
   await expect(field(page, 'needs').getByRole('checkbox').first()).toBeChecked();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
   await expect(field(page, 'walking').getByRole('radio').first()).toBeChecked();
@@ -486,9 +486,14 @@ for (const [caseIndex, scenario] of pathCases.entries()) {
     for (const [index, screen] of screens.entries()) {
       const q = screen.questions[0];
       await expect(page.locator('[data-question-id]')).toHaveCount(1);
-      const options = q.options!;
+      const options = q.options ?? [];
+      const more = page.getByRole('button', { name: 'More options', exact: true });
+      if (await more.count()) await more.click();
       const group = field(page, q.id);
-      if (q.inputType === 'must-nice') {
+      if (q.inputType === 'date') {
+        await page.locator('#start_date').fill('2030-10-22');
+        expected[q.id] = [];
+      } else if (q.inputType === 'must-nice') {
         const option = options[caseIndex % options.length];
         await group.getByRole('radiogroup', { name: option.label, exact: true }).getByRole('radio', { name: 'Must have', exact: true }).check();
         expected[q.id] = [option.value];
@@ -503,6 +508,7 @@ for (const [caseIndex, scenario] of pathCases.entries()) {
     await expect(page.getByRole('button', { name: 'Plan my trip', exact: true })).toBeVisible();
     const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { selected: string[]; other: string }>;
     for (const [id, values] of Object.entries(expected)) expect(answers[id].selected).toEqual(values);
+    expect((answers.start_date as unknown as { freeform: string }).freeform).toBe('2030-10-22');
     expect(answers.interests.other).toBe(`Demo personal preference ${caseIndex}: quiet lunch & café <nearby>.`);
     expect(answers).not.toHaveProperty('equipment');
     if (!scenario.needs.some(need => ['mobility_device', 'limited_mobility', 'temporary_injury'].includes(need))) expect(answers).not.toHaveProperty('walking');
@@ -519,12 +525,13 @@ test('voice review refuses a reversed preference and typed correction applies on
   await interests.getByRole('button', { name: /^Stop microphone:/ }).click();
   await expect(page.locator('#voice-interests')).toHaveValue('I hate beaches');
   await expect(interests.getByRole('button', { name: 'Use this answer', exact: true })).toBeDisabled();
-  await expect(interests.getByRole('checkbox').nth(3)).toBeChecked();
+  await expect(interests.getByRole('checkbox', { name: /History$/ })).toBeChecked();
   await expect(interests.getByRole('checkbox').first()).not.toBeChecked();
   await page.locator('#voice-interests').fill('I love beaches');
   await interests.getByRole('button', { name: 'Use this answer', exact: true }).click();
   await expect(interests.getByRole('checkbox').first()).toBeChecked();
-  await expect(interests.getByRole('checkbox').nth(3)).not.toBeChecked();
+  await interests.getByRole('button', { name: 'More options', exact: true }).click();
+  await expect(interests.getByRole('checkbox', { name: /History$/ })).not.toBeChecked();
   await expect(interests.getByRole('button', { name: 'Use this answer', exact: true })).toBeDisabled();
 });
 
@@ -535,4 +542,47 @@ test('unsupported voice recording keeps normal questionnaire choices available',
   await field(page, 'needs').getByRole('checkbox').first().check();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
   await expect(field(page, 'walking')).toBeVisible();
+});
+
+test('demo access list is short and selected extras remain visible', async ({ page }) => {
+  await page.goto('/intake');
+  await page.evaluate(answers => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify({ version: 4, answers, others: {}, index: 1 })), baseAnswers);
+  await page.reload();
+  const requirements = field(page, 'requirements');
+  await expect(requirements.getByRole('radiogroup')).toHaveCount(6);
+  await requirements.getByRole('button', { name: 'More options', exact: true }).click();
+  await expect(requirements.getByRole('radiogroup')).toHaveCount(10);
+  const rental = requirements.getByRole('radiogroup', { name: 'Wheelchair or scooter rental', exact: true });
+  await rental.getByRole('radio', { name: 'Must have', exact: true }).check();
+  await requirements.getByRole('button', { name: 'Fewer options', exact: true }).click();
+  await expect(rental.getByRole('radio', { name: 'Must have', exact: true })).toBeChecked();
+  await page.reload();
+  await expect(rental.getByRole('radio', { name: 'Must have', exact: true })).toBeChecked();
+});
+
+test('calendar rejects past dates and passes the chosen date directly into trip creation', async ({ page }) => {
+  const server = await api(page);
+  await seed(page, { ...baseAnswers, start_date: '2020-01-01' } as typeof baseAnswers);
+  await expect(page.locator('#start_date')).toHaveAttribute('type', 'date');
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  await expect(page.locator('#start_date-error')).toBeVisible();
+  await page.locator('#start_date').fill('2030-10-22');
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  await page.getByRole('button', { name: 'Plan my trip', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Your San Diego trip', exact: true })).toBeVisible();
+  expect(server.bodies['POST /api/trips'][0].start_date).toBe('2030-10-22');
+  const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { freeform: string }>;
+  expect(answers.start_date.freeform).toBe('2030-10-22');
+});
+
+test('older avoidances and transport remain editable notes in the shorter demo', async ({ page }) => {
+  await page.goto('/intake');
+  await page.evaluate(() => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify({
+    version: 3, answers: { needs: ['other'], avoid: ['crowds', 'hills'], transport: 'transit' }, others: { requirements: 'Demo: need extra space.' }, index: 5,
+  })));
+  await page.reload();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(page.locator('#requirements-other')).toHaveValue('Demo: need extra space. Please avoid: Crowds, Hills. Getting around: Public transit.');
+  await page.reload();
+  await expect(page.locator('#requirements-other')).toHaveValue('Demo: need extra space. Please avoid: Crowds, Hills. Getting around: Public transit.');
 });

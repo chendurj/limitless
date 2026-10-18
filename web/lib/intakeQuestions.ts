@@ -55,6 +55,8 @@ export type IntakeQuestion = {
   /** Dotted path into the Accessibility DNA, e.g. "mobility.slope_tolerance". */
   targetField: string;
   optional?: boolean;
+  /** Keep the first view short; selected extras remain visible. */
+  initialOptions?: number;
   /** Show a free-text "Something else" field alongside the options. */
   allowOther?: boolean;
   /** Offer voice entry (we always let the user review the text before saving). */
@@ -115,7 +117,7 @@ const DEAF_OR_NONSPEAKING: ShowCondition[] = [
 // Source definitions: the short active flow below selects only eight questions.
 // ----------------------------------------------------------------------------
 
-const questionCatalog: IntakeScreen[] = [
+export const questionCatalog: IntakeScreen[] = [
   // 1 — Accessibility needs (spine) ------------------------------------------
   {
     id: "needs",
@@ -532,7 +534,7 @@ const questionCatalog: IntakeScreen[] = [
   },
 ];
 
-// Six core questions, with at most two relevant follow-ups. One question per step.
+// Five demo questions plus up to two relevant access follow-ups, including a calendar.
 function question(id: string): IntakeQuestion {
   const found = questionCatalog.flatMap(screen => screen.questions).find(q => q.id === id);
   if (!found) throw new Error(`Missing intake question: ${id}`);
@@ -553,16 +555,25 @@ const communicationSupports: IntakeQuestion = {
     { value: "companion_speaks", label: "Someone speaks for me" },
   ],
 };
+function firstOptions(id: string, values: string[]): IntakeOption[] {
+  const options = question(id).options!;
+  return [...values.map(value => options.find(option => option.value === value)!), ...options.filter(option => !values.includes(option.value))];
+}
 const shortQuestions: IntakeQuestion[] = [
   { ...question("needs"), help: "Choose what applies. We only ask follow-ups relevant to you." },
-  { ...question("walking"), prompt: "How much walking feels comfortable?", help: "Choose what works on a typical day. We will not assume what assistance or equipment you have.", allowOther: true },
+  { ...question("walking"), prompt: "How much walking feels comfortable?", initialOptions: 4, help: "Choose what works on a typical day. We will not assume what assistance or equipment you have.", allowOther: true },
   communicationSupports,
-  { ...question("requirements"), prompt: "What access features do you need?", help: "Only mark Must have when it is essential. Add exact needs below, such as a transfer arrangement or a particular communication support." },
-  { ...question("interests"), prompt: "What would make this trip special?", allowOther: true, help: "Pick your interests, or tell us about your ideal day below." },
-  { ...question("avoid"), prompt: "What would make your day difficult?", allowOther: true, help: "Include any limits we should plan around, such as slopes, standing, noise or heat." },
+  { ...question("requirements"), prompt: "What do you need for a comfortable day?", initialOptions: 6, options: firstOptions("requirements", ["step_free_entrance", "accessible_restroom", "seating", "captions_or_asl", "accessible_parking", "elevator"]), help: "Mark what is essential. Below, add anything else you need or want to avoid." },
+  { ...question("interests"), prompt: "What would make this trip special?", initialOptions: 6, options: firstOptions("interests", ["beaches", "zoos_aquariums", "museums_art", "nature", "food", "theme_parks"]), allowOther: true, help: "Pick your interests, or tell us about your ideal day below." },
   question("pace"),
-  question("transport"),
+  { ...question("start_date"), prompt: "When would you like to go?", help: "Choose a start date, or leave it blank if you are still deciding." },
 ];
+export function previousTripNotes(answers: AnswerMap): string {
+  const avoid = question("avoid").options!.filter(option => Array.isArray(answers.avoid) && answers.avoid.includes(option.value)).map(option => option.label);
+  const transport = question("transport").options!.find(option => option.value === answers.transport)?.label;
+  return [avoid.length ? `Please avoid: ${avoid.join(", ")}.` : "", transport ? `Getting around: ${transport}.` : ""].filter(Boolean).join(" ");
+}
+
 export const intakeScreens: IntakeScreen[] = shortQuestions.map(q => ({
   id: q.id, title: q.prompt, questions: [q],
 }));

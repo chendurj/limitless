@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { intakeScreens, deferredScreens, visibleScreens, isVisible } from '../lib/intakeQuestions.ts';
+import { questionCatalog, intakeScreens, deferredScreens, visibleScreens, isVisible } from '../lib/intakeQuestions.ts';
 import { parseVoiceAnswer } from '../lib/questionnaire-voice.ts';
 const questions = [...intakeScreens, ...deferredScreens].flatMap(screen => screen.questions);
-const q = id => questions.find(question => question.id === id);
+const q = id => questions.find(question => question.id === id) ?? questionCatalog.flatMap(screen => screen.questions).find(question => question.id === id);
 
 for (const screen of [...intakeScreens, ...deferredScreens]) {
   test(`every question on "${screen.title}" accepts a reviewed voice answer`, () => {
@@ -20,18 +20,18 @@ for (const screen of [...intakeScreens, ...deferredScreens]) {
   });
 }
 
-test('every combination stays within eight actual questions and one per step', () => {
+test('every combination stays within seven actual questions and one per step', () => {
   const needs = ['mobility_device', 'limited_mobility', 'temporary_injury', 'deaf_hoh', 'non_speaking', 'service_animal', 'other'];
   for (let mask = 0; mask < 128; mask++) {
     const answers = { needs: needs.filter((_, i) => mask & (1 << i)) };
     const screens = visibleScreens(answers);
-    assert.ok(screens.length >= 6 && screens.length <= 8);
+    assert.ok(screens.length >= 5 && screens.length <= 7);
     assert.ok(screens.every(screen => screen.questions.filter(q => isVisible(q, answers)).length === 1));
   }
 });
 test('explicit must-haves and preferences remain separate', () => {
   const current = { must: ['step_free_entrance'], nice: ['accessible_restroom'] };
-  const parsed = parseVoiceAnswer(q('requirements'), 'option two must have, option five nice to have', current);
+  const parsed = parseVoiceAnswer(q('requirements'), 'option two must have, option six nice to have', current);
   assert.deepEqual(parsed.value, { must: ['step_free_entrance', 'accessible_restroom'], nice: ['elevator'] });
   assert.ok('error' in parseVoiceAnswer(q('requirements'), 'accessible restroom'));
 });
