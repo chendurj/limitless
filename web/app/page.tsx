@@ -66,7 +66,7 @@ export default function Home() {
           playsInline
           poster="/logo-bg-poster.jpg"
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-md motion-reduce:hidden"
+          className="pointer-events-none absolute inset-0 h-full w-full scale-125 object-cover blur-2xl motion-reduce:hidden"
         >
           <source src="/logo-bg.mp4" type="video/mp4" />
         </video>
@@ -78,7 +78,7 @@ export default function Home() {
 
         <div className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-4xl font-bold tracking-tight text-teal-300 sm:text-5xl">
+            <p className="bg-gradient-to-r from-teal-300 to-sky-400 bg-clip-text text-5xl font-extrabold tracking-tight text-transparent drop-shadow-[0_0_25px_rgba(45,212,191,0.45)] sm:text-6xl">
               Limitless
             </p>
             <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
