@@ -36,9 +36,9 @@ Auth and uses the verified user ID for every profile, trip, and feedback query.
 Existing database RLS remains deny-by-default for direct browser access; there
 are no schema changes to apply. Private API responses are never cached.
 
-My trips opens a separate dashboard with search, upcoming/past filters, trip
-counts, and the guest's 50 most recent itineraries. The guest profile sits in a
-collapsed settings panel. Each trip offers **Open itinerary**, **Edit with AI**,
+My trips opens a simple list of the guest's 50 most recent itineraries, with a
+**Plan a trip** button. The guest profile sits in a collapsed settings panel.
+Each trip offers **Open itinerary**, **Edit with AI**,
 and **Edit manually**. AI edits are previewed before Apply and support Undo.
 Manual edits can skip/restore stops, set whether a stop is kept during re-planning,
 and save a personal note (up to 500 characters). Personal notes are not
