@@ -112,7 +112,7 @@ def dumps(model: Any) -> Any:
 PLACE_SQL = """
 select id::text, slug, name, category, subcategories, interest_tags, neighborhood, lat, lng,
        address, google_place_id, website, accessibility_url, data_tier, indoor, est_visit_min,
-       exertion_level, meal_slot
+       exertion_level, meal_slot, research_summary, research_sources
 from places where is_active
 """
 FACT_SQL = """
@@ -157,6 +157,8 @@ class PgPlaceStore:
                         "website",
                         "accessibility_url",
                         "data_tier",
+                        "research_summary",
+                        "research_sources",
                     )
                 },
             )

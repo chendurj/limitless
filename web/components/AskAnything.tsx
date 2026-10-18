@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 type Message = { role: "user" | "assistant"; content: string };
-const suggestions = ["How does Limitless work?", "Help me describe my access needs", "What should I check before a trip?"];
 
 export function AskAnything() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -12,7 +11,7 @@ export function AskAnything() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const busy = useRef(false);
-  const input = useRef<HTMLTextAreaElement>(null);
+  const input = useRef<HTMLInputElement>(null);
 
   async function send(text: string) {
     if (busy.current || !text.trim()) return;
@@ -41,33 +40,37 @@ export function AskAnything() {
   }
 
   return (
-    <section id="ask-anything" aria-labelledby="ask-heading" className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-      <p className="text-sm font-semibold text-primary">Your AI travel assistant · 24/7</p>
-      <h2 id="ask-heading" className="mt-2 text-2xl font-bold">Ask me anything</h2>
-      <p className="mt-2 text-sm text-muted">A little help before your next adventure. Ask about planning, access needs, or how Limitless works.</p>
-      <div role="log" aria-label="Conversation with Limitless" aria-live="polite" aria-relevant="additions" className="mt-5 max-h-80 space-y-4 overflow-y-auto">
-        {messages.map((message, index) => (
-          <div key={index} className={`rounded-xl p-3 text-sm ${message.role === "user" ? "ml-5 bg-accent-soft" : "mr-5 bg-surface-muted"}`}>
-            <p className="mb-1 font-semibold">{message.role === "user" ? "You" : "Limitless"}</p>
-            <p className="whitespace-pre-wrap">{message.content}</p>
-          </div>
-        ))}
-      </div>
-      {!messages.length && <div className="mt-4 flex flex-wrap gap-2">
-        {suggestions.map(text => <button key={text} type="button" disabled={pending} onClick={() => void send(text)} className="rounded-lg border border-border px-3 py-2 text-left text-sm hover:bg-accent-soft disabled:opacity-50">{text}</button>)}
-      </div>}
-      <p role="status" className="mt-3 text-sm text-muted">{pending ? "Limitless is thinking…" : ""}</p>
-      {error && <p role="alert" className="mt-2 text-sm text-red-700 dark:text-red-300">{error}</p>}
-      <form className="mt-3" onSubmit={event => { event.preventDefault(); void send(question); }}>
-        <label htmlFor="assistant-question" className="text-sm font-semibold">Your question</label>
-        <textarea ref={input} id="assistant-question" value={question} onChange={event => setQuestion(event.target.value)} maxLength={2000} rows={3} readOnly={pending} required placeholder="How can I plan a day with fewer stairs?" aria-describedby="chat-privacy" className="mt-2 w-full resize-y rounded-lg border border-border bg-background p-3 text-base" />
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <button type="submit" disabled={pending || !question.trim()} className="rounded-lg bg-primary px-5 py-3 font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{pending ? "Sending…" : "Ask Limitless"}</button>
-          {!!messages.length && <button type="button" disabled={pending} onClick={() => { setMessages([]); setQuestion(""); setError(""); input.current?.focus(); }} className="text-sm text-primary underline underline-offset-4 disabled:opacity-50">New chat</button>}
-        </div>
+    <section id="ask-anything" aria-label="Ask Limitless" className="mt-4 w-full max-w-md text-left">
+      <form className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2" onSubmit={event => { event.preventDefault(); void send(question); }}>
+        <label htmlFor="assistant-question" className="sr-only">Ask anything</label>
+        <input ref={input} id="assistant-question" type="text" value={question} onChange={event => setQuestion(event.target.value)} maxLength={2000} readOnly={pending} required placeholder="Ask anything…" aria-describedby="chat-privacy" className="h-9 min-w-0 flex-1 bg-transparent text-white placeholder:text-zinc-400" />
+        <button type="submit" disabled={pending || !question.trim()} aria-label={pending ? "Sending question" : "Ask Limitless"} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-zinc-200 transition-colors hover:bg-white/10 disabled:opacity-40">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3.4 20.4 21 12 3.4 3.6 3 10l12 2-12 2 .4 6.4Z" />
+          </svg>
+        </button>
       </form>
-      <p id="chat-privacy" className="mt-4 text-xs text-muted">Messages are sent to OpenAI to answer you. Chat stays in this page until you leave. Avoid sharing sensitive information. AI can make mistakes; venue access details need sourced verification.</p>
-      <Link href="/intake" className="mt-3 inline-block text-sm font-semibold text-primary underline underline-offset-4">Plan your trip with sourced accessibility facts →</Link>
+      <p id="chat-privacy" className="mt-2 text-center text-xs text-zinc-400">24/7 AI assistant · Questions are sent to OpenAI.</p>
+      {(messages.length > 0 || pending || error) && (
+        <div className="mt-4 rounded-2xl border border-white/15 bg-[#070b10]/90 p-4 text-sm text-zinc-200 shadow-xl">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="font-semibold text-teal-300">Limitless assistant</p>
+            <button type="button" disabled={pending} onClick={() => { setMessages([]); setQuestion(""); setError(""); input.current?.focus(); }} className="text-xs text-zinc-300 underline underline-offset-4 disabled:opacity-40">New chat</button>
+          </div>
+          <div role="log" aria-label="Conversation with Limitless" aria-live="polite" aria-relevant="additions" className="max-h-64 space-y-3 overflow-y-auto">
+            {messages.map((message, index) => (
+              <div key={index} className={`rounded-xl p-3 ${message.role === "user" ? "ml-4 bg-white/10" : "mr-4 bg-teal-300/5"}`}>
+                <p className="mb-1 text-xs font-semibold text-teal-200">{message.role === "user" ? "You" : "Limitless"}</p>
+                <p className="whitespace-pre-wrap">{message.content}</p>
+              </div>
+            ))}
+          </div>
+          <p role="status" className="text-zinc-400">{pending ? "Limitless is thinking…" : ""}</p>
+          {error && <p role="alert" className="mt-2 text-rose-200">{error}</p>}
+          <p className="mt-3 text-xs text-zinc-400">Chat stays on this page until you leave. Avoid sensitive details. AI can make mistakes; venue access needs sourced verification.</p>
+          <Link href="/intake" className="mt-3 inline-block text-xs font-semibold text-teal-300 underline underline-offset-4">Plan your trip with sourced accessibility facts →</Link>
+        </div>
+      )}
     </section>
   );
 }

@@ -390,6 +390,8 @@ def place_out(place: Place, facts: list[Fact]) -> api.PlaceOut:
         facts=[_fact_out(f) for f in facts],
         photos=[],
         rating=place.rating,
+        research_summary=meta.get("research_summary"),
+        research_sources=meta.get("research_sources") or [],
     )
 
 

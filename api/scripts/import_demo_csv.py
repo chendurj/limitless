@@ -7,6 +7,7 @@ Rules:
   shows the label "demo data, not verified" on these facts.
 - "unknown" and "not_applicable" values are skipped, so the app shows them as unknown.
 - Safe to run again: it deletes the earlier demo places (slug starts with "demo-") first.
+- Then it adds the team's research (scripts.import_research), so the research is not lost.
 """
 
 import csv
@@ -16,6 +17,7 @@ from pathlib import Path
 import psycopg
 
 from app.config import get_settings
+from scripts import import_research
 
 CSV = Path(__file__).resolve().parents[2] / "data" / "demo-san-diego-locations-200.csv"
 SOURCE, CONFIDENCE = "demo_data", "COMMUNITY"
@@ -129,8 +131,10 @@ def main(dry_run: bool) -> None:
                        values (%s,%s,%s,%s,%s,%s)""",
                     [place_id, attribute, value, detail, CONFIDENCE, SOURCE],
                 )
+        researched, official = import_research.apply(conn)
         total = conn.execute("select count(*) from places").fetchone()[0]
     print(f"deleted {deleted} old demo places; places in the database now: {total}")
+    print(f"research: {researched} places updated, {official} official facts added")
 
 
 if __name__ == "__main__":

@@ -39,13 +39,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           >
             {children}
           </main>
-          <footer className="border-t border-border px-6 py-8 text-sm text-muted">
+          <footer className="border-t border-border px-6 py-6 text-sm text-muted">
             <div className="mx-auto w-full max-w-5xl">
-              <p className="font-semibold text-foreground">Limitless</p>
-              <p className="mt-1 max-w-2xl">
-                Accessibility details come from cited sources and can change.
-                Always confirm critical needs with the venue before you go.
-              </p>
+              <p>&copy; 2026 Limitless. All rights reserved.</p>
             </div>
           </footer>
         </LiveRegionProvider>

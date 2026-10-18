@@ -1,11 +1,12 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { components } from "@/types/api";
-import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 
 type TripOut = components["schemas"]["TripOut"];
 type DayOut = components["schemas"]["DayOut"];
 type ItemOut = components["schemas"]["ItemOut"];
-type Fact = components["schemas"]["Fact"];
+type PlaceOut = components["schemas"]["PlaceOut"];
 
 // Times and dates are shown in San Diego time regardless of where this renders.
 const fmtTime = (iso: string) =>
@@ -42,31 +43,6 @@ const kindLabel: Record<ItemOut["kind"], string> = {
   rest: "Rest",
 };
 
-function FactRow({ fact }: { fact: Fact }) {
-  // Show source_label (e.g. "demo data, not verified"), not the raw source.
-  return (
-    <li className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-      <ConfidenceBadge level={fact.confidence} />
-      <span>{fact.detail}</span>
-      <span className="text-muted">
-        {fact.source_url ? (
-          <a
-            href={fact.source_url}
-            target="_blank"
-            rel="noreferrer"
-            className="underline underline-offset-2"
-          >
-            {fact.source_label}
-          </a>
-        ) : (
-          fact.source_label
-        )}
-        {fact.verified_at ? ` · checked ${fact.verified_at}` : ""}
-      </span>
-    </li>
-  );
-}
-
 function Score({ label, value }: { label: string; value: number }) {
   const low = value < 50;
   return (
@@ -97,7 +73,8 @@ function Scores({ item }: { item: ItemOut }) {
 }
 
 function StatusControls({ item, live }: { item: ItemOut; live: Live }) {
-  if (!item.place || item.status === "done" || item.status === "skipped") return null;
+  if (!item.place || item.status === "done" || item.status === "skipped")
+    return null;
   const busy = live.busyItemId === item.id;
   const action =
     item.status === "in_progress"
@@ -116,12 +93,43 @@ function StatusControls({ item, live }: { item: ItemOut; live: Live }) {
   );
 }
 
+// The team's research from official pages. It is shown as written, with its links.
+function Research({ place }: { place: PlaceOut }) {
+  return (
+    <details className="mt-3 rounded-lg border border-border px-3 py-2 text-sm">
+      <summary className="cursor-pointer font-medium">
+        What official sources say
+      </summary>
+      <p className="mt-2">{place.research_summary}</p>
+      <ul className="mt-2 space-y-1">
+        {place.research_sources.map((source) => (
+          <li key={source.url}>
+            <a
+              href={source.url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary underline underline-offset-4"
+            >
+              {source.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 text-xs text-muted">
+        Team research from official pages. No one visited or phoned the place.
+      </p>
+    </details>
+  );
+}
+
 function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
   const status = statusLabel[item.status];
   return (
     <li
       className={`rounded-xl border bg-surface p-5 ${
-        item.status === "in_progress" ? "border-primary border-2" : "border-border"
+        item.status === "in_progress"
+          ? "border-primary border-2"
+          : "border-border"
       } ${item.status === "done" ? "opacity-75" : ""}`}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -150,14 +158,6 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
       <Scores item={item} />
       {item.rationale && <p className="mt-3 text-sm">{item.rationale}</p>}
 
-      {item.place && item.place.facts.length > 0 && (
-        <ul className="mt-4 space-y-2">
-          {item.place.facts.map((fact) => (
-            <FactRow key={fact.fact_id} fact={fact} />
-          ))}
-        </ul>
-      )}
-
       {item.warnings.length > 0 && (
         <ul className="mt-3 space-y-1">
           {item.warnings.map((warning, i) => (
@@ -181,17 +181,21 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
         </p>
       ))}
 
-      {item.place?.accessibility_url && (
-        <p className="mt-3 text-sm">
-          <a
-            href={item.place.accessibility_url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-primary underline underline-offset-4"
-          >
-            Venue accessibility page
-          </a>
-        </p>
+      {item.place?.research_summary ? (
+        <Research place={item.place} />
+      ) : (
+        item.place?.accessibility_url && (
+          <p className="mt-3 text-sm">
+            <a
+              href={item.place.accessibility_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary underline underline-offset-4"
+            >
+              Venue accessibility page
+            </a>
+          </p>
+        )
       )}
 
       {live && <StatusControls item={item} live={live} />}
@@ -202,7 +206,12 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
 function DaySection({ day, live }: { day: DayOut; live?: Live }) {
   const headingId = `day-${day.day_index}-heading`;
   return (
-    <section id={`day-${day.day_index}`} aria-labelledby={headingId} className="scroll-mt-6">
+    <section
+      id={`day-${day.day_index}`}
+      role="tabpanel"
+      aria-labelledby={`day-${day.day_index}-tab`}
+      tabIndex={-1}
+    >
       <h2 id={headingId} className="text-xl font-bold">
         Day {day.day_index + 1} · {fmtDate(day.date)}
       </h2>
@@ -210,8 +219,8 @@ function DaySection({ day, live }: { day: DayOut; live?: Live }) {
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
         {day.weather && (
           <span>
-            {Math.round(day.weather.tmax_f)}°F · {day.weather.precip_prob}% rain ·
-            UV {day.weather.uv_max}
+            {Math.round(day.weather.tmax_f)}°F · {day.weather.precip_prob}% rain
+            · UV {day.weather.uv_max}
             {day.weather.advisory ? ` · ${day.weather.advisory}` : ""}
           </span>
         )}
@@ -225,6 +234,80 @@ function DaySection({ day, live }: { day: DayOut; live?: Live }) {
         ))}
       </ol>
     </section>
+  );
+}
+
+// Today in San Diego, as YYYY-MM-DD.
+const todayInSanDiego = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+
+// One day at a time. The tabs follow the WAI-ARIA tabs pattern: arrow keys, Home and End
+// move between days, and only the selected tab is in the Tab order.
+function DayTabs({ days, live }: { days: DayOut[]; live?: Live }) {
+  const [selected, setSelected] = useState(() =>
+    Math.max(
+      0,
+      days.findIndex((day) => day.date === todayInSanDiego()),
+    ),
+  );
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const index = Math.min(selected, days.length - 1);
+  const day = days[index];
+
+  const select = (next: number) => {
+    setSelected(next);
+    tabs.current[next]?.focus();
+  };
+  const onKeyDown = (event: KeyboardEvent) => {
+    const last = days.length - 1;
+    const next = {
+      ArrowRight: index === last ? 0 : index + 1,
+      ArrowLeft: index === 0 ? last : index - 1,
+      Home: 0,
+      End: last,
+    }[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    select(next);
+  };
+
+  if (!day) return null;
+  return (
+    <>
+      <div
+        role="tablist"
+        aria-label="Trip days"
+        onKeyDown={onKeyDown}
+        className="mt-6 flex flex-wrap gap-2"
+      >
+        {days.map((d, i) => (
+          <button
+            key={d.day_index}
+            ref={(el) => {
+              tabs.current[i] = el;
+            }}
+            id={`day-${d.day_index}-tab`}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-controls={`day-${d.day_index}`}
+            tabIndex={i === index ? 0 : -1}
+            onClick={() => setSelected(i)}
+            className={`rounded-lg border px-3 py-1.5 text-sm font-medium ${
+              i === index
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-surface hover:bg-surface-muted"
+            }`}
+          >
+            Day {d.day_index + 1}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-8">
+        <DaySection key={day.day_index} day={day} live={live} />
+      </div>
+    </>
   );
 }
 
@@ -247,42 +330,38 @@ export function ItineraryView({
       <h1 className="text-3xl font-bold tracking-tight">Your San Diego trip</h1>
       <p className="mt-3 text-muted">{trip.profile_summary}</p>
       <p className="mt-2 text-sm text-muted">
-        {trip.nights} nights · {trip.travelers} travelers · from {trip.start_date}
+        {trip.nights} nights · {trip.travelers} travelers · from{" "}
+        {trip.start_date}
       </p>
       <p className="mt-3 text-sm text-muted">
-        <strong className="font-semibold text-foreground">Accessibility Score</strong>: how well a
-        place fits your needs.{" "}
-        <strong className="font-semibold text-foreground">Verification Score</strong>: how much we
-        trust the facts behind it. Demo data scores low until a person checks it.
+        <strong className="font-semibold text-foreground">
+          Accessibility Score
+        </strong>
+        : how well a place fits your needs.{" "}
+        <strong className="font-semibold text-foreground">
+          Verification Score
+        </strong>
+        : how much we trust the facts behind it. Demo data scores low until a
+        person checks it.
       </p>
       {actions && <div className="mt-6">{actions}</div>}
 
-      <nav aria-label="Jump to a day" className="mt-6 flex flex-wrap gap-2">
-        {trip.days.map((day) => (
-          <a
-            key={day.day_index}
-            href={`#day-${day.day_index}`}
-            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium hover:bg-surface-muted"
-          >
-            Day {day.day_index + 1}
-          </a>
-        ))}
-      </nav>
-
-      <div className="mt-8 space-y-12">
-        {trip.days.map((day) => (
-          <DaySection key={day.day_index} day={day} live={live} />
-        ))}
-      </div>
+      <DayTabs days={trip.days} live={live} />
 
       {trip.excluded.length > 0 && (
-        <section aria-labelledby="skipped-heading" className="mt-12 border-t border-border pt-8">
+        <section
+          aria-labelledby="skipped-heading"
+          className="mt-12 border-t border-border pt-8"
+        >
           <h2 id="skipped-heading" className="text-xl font-bold">
             Places we skipped, and why
           </h2>
           <ul className="mt-4 space-y-3">
             {trip.excluded.map((place) => (
-              <li key={place.place_id} className="rounded-xl border border-border bg-surface p-4">
+              <li
+                key={place.place_id}
+                className="rounded-xl border border-border bg-surface p-4"
+              >
                 <p className="font-semibold">{place.name}</p>
                 <ul className="mt-1 list-disc pl-5 text-sm text-muted">
                   {place.reasons.map((reason, i) => (
