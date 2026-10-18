@@ -356,6 +356,8 @@ export interface components {
             tip: string | null;
             /** User Ack */
             user_ack: string;
+            /** Other Places */
+            other_places: components["schemas"]["PlaceReport"][];
         };
         /** FeedbackRequest */
         FeedbackRequest: {
@@ -602,6 +604,22 @@ export interface components {
              * @enum {string}
              */
             review_status: "pending" | "confirmed" | "rejected";
+        };
+        /**
+         * PlaceReport
+         * @description Facts about one more place that the traveler named in the same message.
+         */
+        PlaceReport: {
+            /** Place Ref */
+            place_ref: string;
+            /** Restroom Ok */
+            restroom_ok: boolean | null;
+            /** Entrance Ok */
+            entrance_ok: boolean | null;
+            /** Captions Ok */
+            captions_ok: boolean | null;
+            /** Booking Phone Only */
+            booking_phone_only: boolean | null;
         };
         /** Preferences */
         Preferences: {

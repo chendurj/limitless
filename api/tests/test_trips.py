@@ -193,8 +193,11 @@ class Parser:
         self.place_name = None
 
     def __call__(self, transcript, places, summary, now):
-        ref = next((p["id"] for p in places if p["name"] == self.place_name), "none")
-        return parsed_feedback(place_ref=ref, **self.fields)
+        refs = {p["name"]: p["id"] for p in places}
+        fields = dict(self.fields)
+        for other in fields.get("other_places", []):
+            other["place_ref"] = refs.get(other["place_ref"], other["place_ref"])  # name -> p-id
+        return parsed_feedback(place_ref=refs.get(self.place_name, "none"), **fields)
 
 
 PARSER = Parser()
@@ -219,6 +222,7 @@ def parsed_feedback(**fields):
         "summary": "A traveler reported a problem.",
         "tip": None,
         "user_ack": "Thanks, I heard you.",
+        "other_places": [],
     }
     return FeedbackParsed(**{**base, **fields})
 
@@ -309,3 +313,34 @@ def test_no_captions_report_removes_that_museum(make_dna):
     assert "art" not in [i.place.id for d in fixed.trip.days for i in d.items if i.place]
     change = next(c for c in fixed.changes if c.old_item_id == museum.id)
     assert change.type in ("replaced", "removed") and "captions" in change.reason
+
+
+def test_feedback_about_two_places(api, monkeypatch):
+    import app.routers.trips as routes
+
+    client, profile_id, _, _ = api
+    trip = client.post(
+        "/api/trips", json={"profile_id": profile_id, "nights": 1}, headers=AUTH
+    ).json()
+    stops = [i for d in trip["days"] for i in d["items"] if i["place"]]
+    first, second = stops[0], stops[1]
+    seen = {}
+
+    def spy(dna, parsed, place_id, old, others=()):
+        seen.update(place_id=place_id, others=others)
+        return real(dna, parsed, place_id, old, others)
+
+    real = routes.apply_feedback
+    monkeypatch.setattr(routes, "apply_feedback", spy)
+    PARSER.place_name = first["title"]
+    other = {"restroom_ok": None, "entrance_ok": None, "captions_ok": None}
+    response = send(client, trip, captions_ok=False, other_places=[
+        {"place_ref": second["title"], "booking_phone_only": True, **other},
+        {"place_ref": first["title"], "booking_phone_only": True, **other},  # the main place again
+        {"place_ref": "p99", "booking_phone_only": True, **other},  # not in the trip
+    ])  # fmt: skip
+    assert response.status_code == 200, response.text
+    assert seen["place_id"] == first["place"]["id"]
+    assert [(pid, r.booking_phone_only) for pid, r in seen["others"]] == [
+        (second["place"]["id"], True)
+    ]

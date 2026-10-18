@@ -233,6 +233,16 @@ class FeedbackRequest(Model):
     consent_aggregate: bool | None = None  # default: the profile consent
 
 
+class PlaceReport(Model):
+    """Facts about one more place that the traveler named in the same message."""
+
+    place_ref: str  # a trip place id, not the main place_ref
+    restroom_ok: bool | None
+    entrance_ok: bool | None
+    captions_ok: bool | None
+    booking_phone_only: bool | None
+
+
 class FeedbackParsed(Model):
     place_ref: str  # a trip place id, or "none"
     wheelchair_difficulty: Level | None
@@ -251,6 +261,7 @@ class FeedbackParsed(Model):
     summary: str  # third person, no names
     tip: str | None
     user_ack: str  # one sentence: what we heard
+    other_places: list[PlaceReport]  # other named places with their own facts; usually empty
 
 
 class ChangeOut(Model):
