@@ -8,16 +8,27 @@ const tripUrl = `/trips/${trip.id}`;
 const intakeResult = { profile_id: 'demo-profile', dna: { summary: 'Demo access needs for testing.' }, followups: [], assumptions: [] };
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const pageErrors = new WeakMap<Page, string[]>();
-test.beforeEach(({ page }) => {
+test.beforeEach(async ({ page }) => {
   const errors: string[] = [];
   pageErrors.set(page, errors);
   page.on('pageerror', error => errors.push(error.message));
+  // Test-only guest session: no real Supabase accounts or user data are touched.
+  const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!projectUrl) throw new Error('Set NEXT_PUBLIC_SUPABASE_URL for the guest flow tests.');
+  const user = { id: '00000000-0000-4000-8000-0000000000e1', aud: 'authenticated', role: 'authenticated', is_anonymous: true, app_metadata: {}, user_metadata: { display_name: 'Demo traveler' }, created_at: '2026-10-18T00:00:00Z' };
+  await page.addInitScript(({ projectUrl, user }) => {
+    const key = `sb-${new URL(projectUrl).hostname.split('.')[0]}-auth-token`;
+    const expires_at = Math.floor(Date.now() / 1000) + 3600;
+    const access_token = `${btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))}.${btoa(JSON.stringify({ sub: user.id, exp: expires_at, role: 'authenticated' }))}.test-only-signature`;
+    localStorage.setItem(key, JSON.stringify({ access_token, refresh_token: 'test-only-refresh', expires_at, expires_in: 3600, token_type: 'bearer', user }));
+  }, { projectUrl, user });
+  await page.route('**/auth/v1/**', route => route.fulfill({ json: user }));
 });
 test.afterEach(({ page }) => {
   expect(pageErrors.get(page) ?? [], 'No uncaught browser exceptions').toEqual([]);
 });
 async function seed(page: Page, answers = baseAnswers, index = 5, others = {}) {
-  await page.addInitScript(saved => localStorage.setItem('limitless_intake', JSON.stringify(saved)), { version: 3, answers, others, index });
+  await page.addInitScript(saved => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify(saved)), { version: 3, answers, others, index });
   await page.goto('/intake');
 }
 async function speech(page: Page, supported = true) {
@@ -54,6 +65,7 @@ async function emit(page: Page, text: string) {
   }, text);
 }
 async function api(page: Page, options: { delay?: number; followups?: unknown[] } = {}) {
+  const currentTrip = structuredClone(trip);
   const counts: Record<string, number> = {};
   const bodies: Record<string, Record<string, unknown>[]> = {};
   await page.route('**/api/**', async route => {
@@ -64,15 +76,18 @@ async function api(page: Page, options: { delay?: number; followups?: unknown[] 
     if (request.postData()) (bodies[key] ??= []).push(request.postDataJSON());
     if (options.delay) await delay(options.delay);
     if (path === '/api/intake') return route.fulfill({ json: { ...intakeResult, followups: options.followups ?? [] } });
+    if (path === '/api/trips' && request.method() === 'GET') return route.fulfill({ json: [currentTrip] });
+    if (path === '/api/profiles' && request.method() === 'GET') return route.fulfill({ json: [] });
     if (path.endsWith('/followups')) return route.fulfill({ json: intakeResult });
     if (path.startsWith('/api/profiles/')) return route.fulfill({ json: {} });
     if (path.endsWith('/feedback')) return route.fulfill({ json: { replan: { changed: true, version: 3, message: 'Demo rest added.', changes: [{ type: 'rest_added', day_index: 0, reason: 'Demo extra break.' }] } } });
     if (path.endsWith('/replan')) return route.fulfill({ json: { trip: { ...trip, version: 3 }, message: 'Demo plan restored.' } });
     if (path.includes('/items/')) {
-      const item = trip.days.flatMap(day => day.items).find(item => path.endsWith(item.id))!;
-      return route.fulfill({ json: { ...item, ...request.postDataJSON() } });
+      const item = currentTrip.days.flatMap(day => day.items).find(item => path.endsWith(item.id))!;
+      Object.assign(item, request.postDataJSON());
+      return route.fulfill({ json: item });
     }
-    if (path.startsWith('/api/trips')) return route.fulfill({ json: trip });
+    if (path.startsWith('/api/trips')) return route.fulfill({ json: currentTrip });
     return route.fulfill({ status: 404, json: { error: { message: 'Test endpoint not found.' } } });
   });
   return { counts, bodies };
@@ -128,7 +143,7 @@ test('06 every visible question has unique choices and exactly one microphone ac
   await speech(page); await page.goto('/intake');
   const answers = { ...baseAnswers, needs: ['mobility_device', 'deaf_hoh', 'non_speaking'], party: 'family' };
   for (const [index, screen] of intakeScreens.entries()) {
-    await page.evaluate(saved => localStorage.setItem('limitless_intake', JSON.stringify(saved)), { version: 3, answers, others: {}, index });
+    await page.evaluate(saved => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify(saved)), { version: 3, answers, others: {}, index });
     await page.reload();
     await expect(page.getByRole('heading', { name: screen.title, exact: true })).toBeVisible();
     for (const question of screen.questions.filter(q => isVisible(q, answers))) {
@@ -154,12 +169,12 @@ test('07 saved questionnaire restores the selected step and answers on reload', 
     await expect(field(page, 'walking').getByRole('radio').first()).toBeChecked();
 });
 test('08 corrupt saved JSON does not break the questionnaire', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('limitless_intake', '{broken'));
+  await page.addInitScript(() => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', '{broken'));
   await page.goto('/intake');
   await expect(page.getByRole('heading', { name: 'What should we plan around?', exact: true })).toBeVisible();
 });
 test('09 malformed saved answer shapes and step numbers are discarded safely', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('limitless_intake', JSON.stringify({ answers: { needs: { bad: true } }, others: 42, index: -100 })));
+  await page.addInitScript(() => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify({ answers: { needs: { bad: true } }, others: 42, index: -100 })));
   await page.goto('/intake');
   await expect(page.getByRole('heading', { name: 'What should we plan around?', exact: true })).toBeVisible();
   await expect(field(page, 'needs').getByRole('checkbox', { checked: true })).toHaveCount(0);
@@ -192,7 +207,7 @@ test('13 must-have and nice-to-have selections remain mutually exclusive', async
   await group.getByRole('radio', { name: 'Must have', exact: true }).check();
   await group.getByRole('radio', { name: 'Nice to have', exact: true }).check();
   await expect(group.getByRole('radio', { checked: true })).toHaveCount(1);
-  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('limitless_intake')!));
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('limitless_intake_00000000-0000-4000-8000-0000000000e1')!));
   expect(saved.answers.requirements).toEqual({ must: [], nice: ['accessible_restroom'] });
   await expect(page.locator('#requirements-other')).toBeVisible();
 });
@@ -246,7 +261,7 @@ test('18 rapid itinerary status clicks create one update request', async ({ page
 });
 test('19 feedback applies once, and repeated Undo clicks create only one restoration', async ({ page }) => {
   const server = await api(page, { delay: 200 }); await page.goto(tripUrl);
-  await page.getByRole('button', { name: /Tell Limitless how/ }).click();
+  await page.getByRole('button', { name: 'Edit with AI', exact: true }).click();
   await page.locator('#tell-text').fill('Demo: I need a break.');
   await page.getByRole('button', { name: 'Send', exact: true }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
   await page.getByRole('button', { name: 'Apply', exact: true }).click();
@@ -258,11 +273,11 @@ test('19 feedback applies once, and repeated Undo clicks create only one restora
 });
 test('20 cancelling in-flight feedback does not overwrite the next conversation', async ({ page }) => {
   await api(page, { delay: 500 }); await page.goto(tripUrl);
-  await page.getByRole('button', { name: /Tell Limitless how/ }).click();
+  await page.getByRole('button', { name: 'Edit with AI', exact: true }).click();
   await page.locator('#tell-text').fill('Demo old feedback.');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
-  await page.getByRole('button', { name: /Tell Limitless how/ }).click();
+  await page.getByRole('button', { name: 'Edit with AI', exact: true }).click();
   await page.locator('#tell-text').fill('Demo new feedback.');
   await delay(700);
   await expect(page.locator('#tell-text')).toHaveValue('Demo new feedback.');
@@ -390,7 +405,7 @@ test('27 longest path has eight questions and keeps personal choices in the API'
 });
 
 test('28 old questionnaire drafts restart at step one and keep personal answers', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('limitless_intake', JSON.stringify({
+  await page.addInitScript(() => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify({
     answers: { needs: ['mobility_device'], walking: 'cannot_walk' }, others: {}, index: 1,
   })));
   await page.goto('/intake');
@@ -398,4 +413,47 @@ test('28 old questionnaire drafts restart at step one and keep personal answers'
   await expect(field(page, 'needs').getByRole('checkbox').first()).toBeChecked();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
   await expect(field(page, 'walking').getByRole('radio').first()).toBeChecked();
+});
+
+test('29 top navigation opens the separate dashboard with saved trip actions', async ({ page }) => {
+  await api(page);
+  await page.goto('/');
+  await page.getByRole('link', { name: 'My trips', exact: true }).click();
+  await expect(page).toHaveURL(/\/my-trips$/);
+  await expect(page.getByRole('heading', { name: 'My trips.', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open itinerary', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Edit with AI', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Edit manually', exact: true })).toBeVisible();
+  await page.getByRole('searchbox', { name: 'Search saved itineraries' }).fill('no matching trip');
+  await expect(page.getByRole('status').filter({ hasText: 'No trips match' })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test('30 manual edits save and restore after a page reload', async ({ page }) => {
+  const server = await api(page);
+  await page.goto('/my-trips');
+  await page.getByRole('link', { name: 'Edit manually', exact: true }).click();
+  const form = page.locator('#manual-editor form').first();
+  await form.getByRole('combobox', { name: 'Stop status' }).selectOption('skipped');
+  await form.getByRole('textbox', { name: 'Personal note' }).fill('Demo reminder: bring a camera.');
+  await form.getByRole('checkbox', { name: 'Keep this stop during AI re-planning' }).check();
+  await form.getByRole('button', { name: 'Save stop', exact: true }).click();
+  await expect(page.locator('#manual-editor').getByRole('status')).toContainText('is saved.');
+  await page.reload();
+  await expect(form.getByRole('combobox', { name: 'Stop status' })).toHaveValue('skipped');
+  await expect(form.getByRole('textbox', { name: 'Personal note' })).toHaveValue('Demo reminder: bring a camera.');
+  await expect(form.getByRole('checkbox')).toBeChecked();
+  await form.getByRole('combobox').selectOption('planned');
+  await form.getByRole('button', { name: 'Save stop', exact: true }).click();
+  await expect(page.locator('#manual-editor').getByRole('status')).toContainText('is saved.');
+  expect(Object.entries(server.counts).filter(([key]) => key.startsWith('PATCH /api/trips/')).reduce((n, [, count]) => n + count, 0)).toBe(2);
+});
+
+test('31 edit with AI opens the saved itinerary feedback dialog', async ({ page }) => {
+  await api(page);
+  await page.goto('/my-trips');
+  await page.getByRole('link', { name: 'Edit with AI', exact: true }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.locator('#tell-text')).toBeFocused();
 });

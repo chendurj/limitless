@@ -13,6 +13,7 @@
     "test:transcribe": "node --experimental-strip-types --test tests/transcribe.test.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0"

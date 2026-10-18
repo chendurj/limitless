@@ -160,7 +160,7 @@ class Repair:
 
 
 def _locked(item: api.ItemOut) -> bool:
-    return item.locked or item.status in ("done", "in_progress")
+    return item.locked or item.status in ("done", "in_progress", "skipped")
 
 
 def _slot(item: api.ItemOut, kind: str) -> str:
@@ -241,8 +241,12 @@ def repair(
         if kept:
             last = kept[-1]
             start_at = datetime.fromisoformat(last.end)
-            spent = sum(cands[i.place.id].energy for i in kept if i.place and i.place.id in cands)
-            loc = next((i.place for i in reversed(kept) if i.place), None)
+            spent = sum(
+                cands[i.place.id].energy
+                for i in kept
+                if i.place and i.place.id in cands and i.status != "skipped"
+            )
+            loc = next((i.place for i in reversed(kept) if i.place and i.status != "skipped"), None)
             here = (loc.lat, loc.lng) if loc else None
         extra: list[api.ItemOut] = []
         if rest_idx is not None:
@@ -271,7 +275,10 @@ def repair(
                                              reason=f"{pick.cand.place.name}: a lighter day to save your energy.",
                                              cited_fact_ids=[]))  # fmt: skip
         new_items = kept + extra + [_item_out(t, 0, _mode(dna), limits.energy) for t in timed]
+        notes = {i.place.id: i.user_note for i in items if i.place and i.user_note}
         for item in new_items:
+            if item.place and item.place.id in notes:
+                item.user_note = notes[item.place.id]
             if item.place and item.place.id in replaced:
                 replaced[item.place.id].new_item_id = item.id
         for seq, item in enumerate(new_items):

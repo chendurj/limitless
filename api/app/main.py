@@ -1,7 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import errors
@@ -33,6 +33,14 @@ app.add_middleware(
 
 for router in (intake.router, trips.router, places.router):
     app.include_router(router, prefix="/api")
+
+
+@app.middleware("http")
+async def private_responses(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith(("/api/intake", "/api/profiles", "/api/trips")):
+        response.headers["Cache-Control"] = "private, no-store"
+    return response
 
 
 @app.get("/health", response_model=HealthOut)

@@ -3,7 +3,14 @@ from pathlib import Path
 
 import pytest
 
+from app.config import get_settings
 from app.models.dna import AccessibilityDNA
+
+
+@pytest.fixture(autouse=True)
+def legacy_demo_auth_for_existing_tests(monkeypatch):
+    # Legacy fixtures explicitly opt in; the application default is guest-only.
+    monkeypatch.setattr(get_settings(), "allow_demo_auth", True)
 
 FIXTURE = Path(__file__).parent / "fixtures" / "dna_maya.json"
 

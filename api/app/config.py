@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     supabase_secret_key: str = ""
     database_url: str = ""
     demo_bearer_token: str = ""
+    allow_demo_auth: bool = False
     mapillary_access_token: str = ""
     perceptron_api_key: str = ""
 

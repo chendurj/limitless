@@ -7,7 +7,7 @@ import { Spinner } from "@/components/Spinner";
 
 type Message = { role: "user" | "assistant"; content: string };
 const allowedPaths = new Set([
-  "/intake", "/features", "/how-it-works", "/reviews",
+  "/intake", "/features", "/how-it-works", "/reviews", "/my-trips",
   "/trips/00000000-0000-4000-8000-0000000000b2",
 ]);
 const starters = ["Help me plan my first trip", "How do I change my itinerary?", "What can you help me with?"];

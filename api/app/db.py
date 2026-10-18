@@ -1,6 +1,7 @@
 """Postgres access through the Supabase session pooler (DATABASE_URL in api/.env).
 
-Every query filters by user_id. RLS blocks the public key; this server is the only client.
+Personal-data queries filter by the verified user_id. RLS blocks direct browser data
+access; only the server reads the two seeded sample trips through a public endpoint.
 """
 
 import json
@@ -35,6 +36,7 @@ def close_pool() -> None:
 
 
 class ProfileStore(Protocol):
+    def list_for_user(self, user_id: uuid.UUID) -> list[dict[str, Any]]: ...
     def create(self, user_id: uuid.UUID, row: dict[str, Any]) -> dict[str, Any]: ...
     def get(self, user_id: uuid.UUID, profile_id: str) -> dict[str, Any] | None: ...
     def update(
@@ -59,6 +61,14 @@ def _valid_uuid(value: str) -> bool:
 
 
 class PgProfileStore:
+    def list_for_user(self, user_id: uuid.UUID) -> list[dict[str, Any]]:
+        with pool().connection() as conn:
+            return conn.execute(
+                f"select {PROFILE_COLUMNS} from profiles where user_id = %s "
+                "order by created_at desc, id desc limit 20",
+                [user_id],
+            ).fetchall()
+
     def create(self, user_id: uuid.UUID, row: dict[str, Any]) -> dict[str, Any]:
         columns = ["user_id", *row]
         params = [user_id, *(_value(c, v) for c, v in row.items())]
@@ -189,6 +199,7 @@ def get_place_store() -> PlaceStore:
 
 
 class TripStore(Protocol):
+    def list_for_user(self, user_id: uuid.UUID) -> list[dict[str, Any]]: ...
     def create(self, user_id: uuid.UUID, row: dict[str, Any], plan: dict[str, Any]) -> None: ...
     def get(
         self, user_id: uuid.UUID, trip_id: str, version: int | None = None
@@ -208,6 +219,16 @@ class TripStore(Protocol):
 
 
 class PgTripStore:
+    def list_for_user(self, user_id: uuid.UUID) -> list[dict[str, Any]]:
+        with pool().connection() as conn:
+            rows = conn.execute(
+                """select v.plan from trips t join trip_versions v
+                   on v.trip_id = t.id and v.version = t.current_version
+                   where t.user_id = %s order by t.created_at desc, t.id desc limit 50""",
+                [user_id],
+            ).fetchall()
+        return [row["plan"] for row in rows]
+
     def create(self, user_id: uuid.UUID, row: dict[str, Any], plan: dict[str, Any]) -> None:
         columns = ["user_id", *row]
         values = [user_id, *(Jsonb(v) if isinstance(v, (dict, list)) else v for v in row.values())]

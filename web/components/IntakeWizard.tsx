@@ -12,8 +12,8 @@ import {
 import { useAnnounce } from "@/components/LiveRegion";
 import { QuestionField, type FieldValue } from "@/components/QuestionField";
 import { IntakeSubmit } from "@/components/IntakeSubmit";
+import { useGuest } from "@/components/GuestGate";
 
-const STORAGE_KEY = "limitless_intake";
 const DRAFT_VERSION = 3;
 
 type Answers = Record<string, FieldValue>;
@@ -37,10 +37,10 @@ function isEmpty(value: FieldValue | undefined): boolean {
 type Draft = { answers: Answers; others: Record<string, string>; index: number };
 const noSubscribe = () => () => {};
 
-function readDraft(): Draft {
+function readDraft(storageKey: string): Draft {
   const draft: Draft = { answers: {}, others: {}, index: 0 };
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
     if (!saved || typeof saved !== "object") return draft;
     for (const question of intakeScreens.flatMap(screen => screen.questions)) {
       const value = saved.answers?.[question.id];
@@ -62,15 +62,17 @@ function readDraft(): Draft {
 }
 
 export function IntakeWizard() {
+  const guest = useGuest();
+  const storageKey = `limitless_intake_${guest.id}`;
   // Mount the stateful form only after hydration. Its lazy initializer can read
   // browser storage before the first persistence effect, including in Strict Mode.
   const ready = useSyncExternalStore(noSubscribe, () => true, () => false);
-  return ready ? <IntakeWizardForm /> : <p role="status" className="px-6 py-12">Loading your questions…</p>;
+  return ready ? <IntakeWizardForm key={storageKey} storageKey={storageKey} /> : <p role="status" className="px-6 py-12">Loading your questions…</p>;
 }
 
-function IntakeWizardForm() {
+function IntakeWizardForm({ storageKey }: { storageKey: string }) {
   const announce = useAnnounce();
-  const [draft] = useState(readDraft);
+  const [draft] = useState(() => readDraft(storageKey));
   const [answers, setAnswers] = useState<Answers>(draft.answers);
   const [others, setOthers] = useState<Record<string, string>>(draft.others);
   const [index, setIndex] = useState(draft.index);
@@ -79,9 +81,9 @@ function IntakeWizardForm() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: DRAFT_VERSION, answers, others, index }));
+      localStorage.setItem(storageKey, JSON.stringify({ version: DRAFT_VERSION, answers, others, index }));
     } catch { /* Storage may be full or blocked; the form still works. */ }
-  }, [answers, others, index]);
+  }, [answers, others, index, storageKey]);
 
   const answerMap = useMemo(() => toAnswerMap(answers), [answers]);
   const screens = useMemo(() => visibleScreens(answerMap), [answerMap]);
