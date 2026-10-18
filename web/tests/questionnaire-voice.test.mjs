@@ -72,3 +72,11 @@ test("negations and unclear words are never guessed", () => {
   assert.ok("error" in parseVoiceAnswer(q("pace"), "relaxed or busy"));
   assert.ok("value" in parseVoiceAnswer(q("pace"), "something relaxed please"));
 });
+
+test("a single-choice answer can use natural speech around the option", () => {
+  const busy = parseVoiceAnswer(q("pace"), "I am a very busy person. I like to go on a lot of places.");
+  assert.equal(busy.value, "busy");
+  assert.ok("error" in parseVoiceAnswer(q("pace"), "I am not a busy person"));
+  assert.ok("error" in parseVoiceAnswer(q("pace"), "relaxed or busy, I am not sure"));
+  assert.ok("error" in parseVoiceAnswer(q("pace"), "I like to travel with my family"));
+});
