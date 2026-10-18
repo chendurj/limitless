@@ -500,57 +500,6 @@
         }
       }
     },
-    "/api/trips/{trip_id}/rental-links": {
-      "get": {
-        "tags": [
-          "trips"
-        ],
-        "summary": "Rental Links",
-        "operationId": "rental_links_api_trips__trip_id__rental_links_get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "trip_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Trip Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RentalLink"
-                  },
-                  "title": "Response Rental Links Api Trips  Trip Id  Rental Links Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/places": {
       "get": {
         "tags": [

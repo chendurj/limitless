@@ -16,7 +16,7 @@ from app.db import (
     get_profile_store,
     get_trip_store,
 )
-from app.deps import current_user, not_implemented
+from app.deps import current_user
 from app.llm.compose import compose
 from app.llm.feedback_parse import parse_feedback
 from app.models.api import (
@@ -25,7 +25,6 @@ from app.models.api import (
     FeedbackResponse,
     ItemOut,
     ItemPatch,
-    RentalLink,
     ReplanRequest,
     ReplanResult,
     TripOut,
@@ -292,8 +291,3 @@ def replan(trip_id: str, body: ReplanRequest, user: User, trips: Trips) -> Repla
         message="Your earlier plan is back." if undo else "Your plan is updated.",
         trip=trip,
     )
-
-
-@router.get("/{trip_id}/rental-links", response_model=list[RentalLink])
-def rental_links(trip_id: str, user: User) -> list[RentalLink]:
-    raise not_implemented()
