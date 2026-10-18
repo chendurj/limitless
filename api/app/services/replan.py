@@ -11,6 +11,7 @@ Deterministic and fast (no LLM). The result is a proposed version; the traveler 
 5. Diff the old and new plan, and write a short message that can be read aloud.
 """
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from typing import Any
@@ -72,7 +73,11 @@ def _down(value: str | None, scale: list[str], default: str) -> str:
 
 
 def apply_feedback(
-    dna: AccessibilityDNA, parsed: api.FeedbackParsed, place_id: str | None, old: Overrides
+    dna: AccessibilityDNA,
+    parsed: api.FeedbackParsed,
+    place_id: str | None,
+    old: Overrides,
+    others: Sequence[tuple[str, api.PlaceReport]] = (),  # (place id, report): other named places
 ) -> tuple[AccessibilityDNA, Overrides, list[str]]:
     """Return the new trip DNA, the new overrides, and plain reasons for the message."""
     data = dna.model_dump()
@@ -102,36 +107,37 @@ def apply_feedback(
     new_dna = AccessibilityDNA.model_validate(data)
 
     facts = list(old.facts)
-    if place_id:
+    reports = [(place_id, parsed)] if place_id else []
+    for pid, report in [*reports, *others]:
         detail = "A traveler on this trip reported"
         for flag, attribute, value, text in (
             (
-                parsed.restroom_ok is False,
+                report.restroom_ok is False,
                 "restroom_accessible",
                 "no",
                 "the accessible restroom did not work for them",
             ),
             (
-                parsed.entrance_ok is False,
+                report.entrance_ok is False,
                 "entrance_step_free",
                 "no",
                 "the entrance did not work for them",
             ),
             (
-                parsed.captions_ok is False,
+                report.captions_ok is False,
                 "captions_asl",
                 "no",
                 "no captions or ASL were available",
             ),
             (
-                parsed.booking_phone_only is True,
+                report.booking_phone_only is True,
                 "booking_phone_only",
                 "yes",
                 "booking needed a phone call",
             ),
         ):
             if flag:
-                facts.append({"place_id": place_id, "attribute": attribute, "value": value,
+                facts.append({"place_id": pid, "attribute": attribute, "value": value,
                               "detail": f"{detail} that {text}."})  # fmt: skip
                 reasons.append(text)
     return new_dna, Overrides(dna=new_dna.model_dump(mode="json"), facts=facts), reasons

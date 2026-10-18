@@ -1258,6 +1258,13 @@
           "user_ack": {
             "type": "string",
             "title": "User Ack"
+          },
+          "other_places": {
+            "items": {
+              "$ref": "#/components/schemas/PlaceReport"
+            },
+            "type": "array",
+            "title": "Other Places"
           }
         },
         "additionalProperties": false,
@@ -1279,7 +1286,8 @@
           "wants_to_skip_rest_of_today",
           "summary",
           "tip",
-          "user_ack"
+          "user_ack",
+          "other_places"
         ],
         "title": "FeedbackParsed"
       },
@@ -2181,6 +2189,69 @@
           "review_status"
         ],
         "title": "PlacePhoto"
+      },
+      "PlaceReport": {
+        "properties": {
+          "place_ref": {
+            "type": "string",
+            "title": "Place Ref"
+          },
+          "restroom_ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Restroom Ok"
+          },
+          "entrance_ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entrance Ok"
+          },
+          "captions_ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Captions Ok"
+          },
+          "booking_phone_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booking Phone Only"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "place_ref",
+          "restroom_ok",
+          "entrance_ok",
+          "captions_ok",
+          "booking_phone_only"
+        ],
+        "title": "PlaceReport",
+        "description": "Facts about one more place that the traveler named in the same message."
       },
       "Preferences": {
         "properties": {

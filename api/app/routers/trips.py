@@ -212,7 +212,12 @@ def send_feedback(
 
     target = _feedback_target(trip, parsed.place_ref, short, body.item_id)
     place_id = target.place.id if target and target.place else None
-    new_dna, overrides, reasons = apply_feedback(dna, parsed, place_id, old)
+    others = [
+        (short[r.place_ref].place.id, r)
+        for r in parsed.other_places[:3]
+        if r.place_ref in short and short[r.place_ref].place and short[r.place_ref] is not target
+    ]
+    new_dna, overrides, reasons = apply_feedback(dna, parsed, place_id, old, others)
     from_day = next(
         (d.day_index for d in trip.days if target and any(i.id == target.id for i in d.items)),
         next((d.day_index for d in trip.days if any(i.status == "planned" for i in d.items)), 0),
