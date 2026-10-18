@@ -50,7 +50,7 @@ export function AskAnything() {
           </svg>
         </button>
       </form>
-      <p id="chat-privacy" className="mt-2 text-center text-xs text-zinc-400">24/7 AI assistant · Questions are sent to OpenAI.</p>
+      <p id="chat-privacy" className="mt-2 text-center text-xs text-zinc-400">24/7 AI assistant</p>
       {(messages.length > 0 || pending || error) && (
         <div className="mt-4 rounded-2xl border border-white/15 bg-[#070b10]/90 p-4 text-sm text-zinc-200 shadow-xl">
           <div className="mb-3 flex items-center justify-between gap-3">
