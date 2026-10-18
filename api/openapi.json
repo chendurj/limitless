@@ -1040,6 +1040,11 @@
             "type": "string",
             "title": "Source"
           },
+          "source_label": {
+            "type": "string",
+            "title": "Source Label",
+            "default": ""
+          },
           "source_url": {
             "anyOf": [
               {

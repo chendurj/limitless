@@ -93,6 +93,7 @@ class Fact(Model):
     detail: str
     confidence: Confidence
     source: str
+    source_label: str = ""  # text to show, e.g. "demo data, not verified"
     source_url: str | None
     verified_at: str | None  # ISO date
 
