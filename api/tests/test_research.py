@@ -26,3 +26,16 @@ def test_place_card_shows_the_research():
     assert out.research_summary == "Test summary."
     assert out.research_sources[0].url == "https://example.test/access"
     assert out.data_tier == "B"
+
+
+def test_demo_variety_is_stable_and_only_uses_known_values():
+    from scripts import demo_variety
+
+    first = demo_variety.values("demo-test-museum", "museum", None, "smooth")
+    assert first == demo_variety.values("demo-test-museum", "museum", None, "smooth")
+    allowed = {
+        "captions_asl", "booking_phone_only", "online_booking", "kiosk_or_app_ordering",
+        "text_contact", "terrain", "typical_walk_m",
+    }  # fmt: skip
+    assert set(first) <= allowed
+    assert demo_variety.values("demo-cafe", "cafe", None, None).get("captions_asl") is None
