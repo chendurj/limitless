@@ -95,8 +95,26 @@ export default function Home() {
           className="absolute inset-0 bg-[#070b10]/70"
         />
 
-        <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center px-6 py-24 text-center sm:py-28">
-          <h1 className="text-6xl font-extrabold tracking-tight sm:text-8xl">
+        <nav
+          aria-label="Main"
+          className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-center gap-8 px-6 pt-6 text-sm font-medium"
+        >
+          <a href="#what-it-does" className="text-zinc-200 hover:text-white">
+            How it works
+          </a>
+          <Link href="/reviews" className="text-zinc-200 hover:text-white">
+            Reviews
+          </Link>
+          <a href="#what-it-does" className="text-zinc-200 hover:text-white">
+            Features
+          </a>
+        </nav>
+
+        <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center px-6 pb-24 pt-14 text-center sm:pb-28 sm:pt-16">
+          <h1
+            className="font-extrabold leading-none tracking-tight"
+            style={{ fontSize: "clamp(3.5rem, 12vw, 11rem)" }}
+          >
             <span className="bg-gradient-to-r from-teal-200 via-teal-300 to-sky-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(45,212,191,0.4)]">
               limitless.
             </span>
@@ -136,10 +154,7 @@ export default function Home() {
             </button>
           </form>
 
-          <p className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
-            <a href="#what-it-does" className="text-teal-300 underline underline-offset-4">
-              How it works
-            </a>
+          <p className="mt-6 text-sm">
             <Link
               href={`/trips/${DEMO_TRIPS.deaf}`}
               className="text-teal-300 underline underline-offset-4"
