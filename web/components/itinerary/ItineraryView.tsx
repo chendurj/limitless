@@ -67,10 +67,15 @@ function Scores({ item }: { item: ItemOut }) {
   const verified = item.verification_score;
   if (access == null && verified == null) return null;
   return (
-    <p className="mt-3 flex flex-wrap gap-2">
-      {access != null && <Score label="Accessibility" value={access} />}
-      {verified != null && <Score label="Verification" value={verified} />}
-    </p>
+    <div className="mt-3 flex flex-col gap-1">
+      <p className="flex flex-wrap gap-2">
+        {access != null && <Score label="Accessibility" value={access} />}
+        {verified != null && <Score label="Verification" value={verified} />}
+      </p>
+      {verified != null && item.verification_note && (
+        <p className="text-xs text-muted">{item.verification_note}</p>
+      )}
+    </div>
   );
 }
 

@@ -459,3 +459,31 @@ def test_scores_for_the_traveler(deaf_non_speaking):
     assert weak.verification_score <= 20  # demo data is never high
     assert unknown.verification_score == 0
     assert unknown.accessibility_score < strong.accessibility_score  # unknown captions cost fit
+
+
+def test_agreeing_sources_raise_verification(deaf_non_speaking):
+    official = fact("captions_asl", "yes", "COMMUNITY", "official")  # trust 0.8
+    demo = fact("captions_asl", "yes", "COMMUNITY", "demo_data")  # trust 0.2
+    alone = evaluate(MUSEUM, [official], deaf_non_speaking, today=TODAY)
+    both = evaluate(MUSEUM, [official, demo], deaf_non_speaking, today=TODAY)
+    assert alone.verification_score == 80
+    assert both.verification_score == 84  # 1 - (1 - 0.8) x (1 - 0.2)
+
+
+def test_unknown_extras_do_not_lower_verification(deaf_non_speaking):
+    restaurant = Place("r", "Test Trattoria", "restaurant", 75, subcategories=("italian",))
+    phone_only = fact("booking_phone_only", "yes", "COMMUNITY", "demo_data")
+    result = evaluate(restaurant, [phone_only], deaf_non_speaking, today=TODAY)
+    # Online booking, text contact and kiosk ordering are unknown extras: left out.
+    assert result.verification_score == 20
+    assert result.verification_note == "Demo data, not checked yet"
+
+
+def test_verification_note_names_official_checks(deaf_non_speaking):
+    verified = fact("captions_asl", "yes")  # VERIFIED, official
+    result = evaluate(MUSEUM, [verified], deaf_non_speaking, today=TODAY)
+    assert result.verification_score == 100
+    assert result.verification_note == "All checks from official pages"
+    unknown = evaluate(MUSEUM, [], deaf_non_speaking, today=TODAY)
+    assert unknown.verification_score == 0
+    assert "unknown" in unknown.verification_note

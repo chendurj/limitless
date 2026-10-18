@@ -26,6 +26,22 @@ from app.config import get_settings
 
 RESEARCH = Path(__file__).resolve().parents[2] / "data" / "locations-research.json"
 CSV = Path(__file__).resolve().parents[2] / "data" / "demo-san-diego-locations-200.csv"
+# Facts a team member (or a research agent, reviewed by a team member) read on an official
+# page, each with the exact quote and the URL. Used for places with or without research.
+VERIFIED = Path(__file__).resolve().parents[2] / "data" / "verified-facts.json"
+ATTRIBUTES = {
+    "entrance_step_free", "restroom_accessible", "parking_accessible", "dropoff_zone", "elevator",
+    "stairs", "terrain", "max_slope", "typical_walk_m", "seating", "shade", "wheelchair_rental",
+    "ecv_rental", "beach_wheelchair", "beach_mat", "captions_asl", "assistive_listening",
+    "audio_description", "braille_tactile", "service_animal_ok", "quiet_space", "sensory_kit",
+    "online_booking", "booking_phone_only", "text_contact", "kiosk_or_app_ordering", "status",
+    "edge_hazard", "ada_accessible",
+}  # fmt: skip
+# An official value removes demo values that contradict it.
+CONFLICTS = {
+    ("online_booking", "yes"): "booking_phone_only",
+    ("booking_phone_only", "yes"): "online_booking",
+}
 
 # location_id -> [(attribute, value, detail, index of the source in "sources", confidence)]
 # Copied by hand from the research summaries, which quote the official pages.
@@ -238,7 +254,43 @@ def apply(conn: psycopg.Connection) -> tuple[int, int]:
                 ],
             )
             facts += 1
+    facts += _apply_verified(cur, slug_of)
     return updated, facts
+
+
+def _apply_verified(cur, slug_of: dict[str, str]) -> int:
+    if not VERIFIED.exists():
+        return 0
+    data = json.loads(VERIFIED.read_text())
+    checked_on = date.fromisoformat(data["checked_on"])
+    added = 0
+    for fact in data["facts"]:
+        if fact["attribute"] not in ATTRIBUTES or not fact.get("url", "").startswith("https://"):
+            continue
+        row = cur.execute(
+            "select id from places where slug = %s", [slug_of.get(fact["location_id"])]
+        ).fetchone()
+        if row is None:
+            continue
+        cur.execute(
+            "delete from place_accessibility where place_id = %s and attribute = %s",
+            [row[0], fact["attribute"]],
+        )
+        conflict = CONFLICTS.get((fact["attribute"], fact["value"]))
+        if conflict:
+            cur.execute(
+                """delete from place_accessibility
+                   where place_id = %s and attribute = %s and source = 'demo_data'""",
+                [row[0], conflict],
+            )
+        cur.execute(
+            """insert into place_accessibility (place_id, attribute, value, detail, confidence,
+                   source, source_url, verified_at)
+               values (%s, %s, %s, %s, 'VERIFIED', 'official', %s, %s)""",
+            [row[0], fact["attribute"], fact["value"], fact["detail"], fact["url"], checked_on],
+        )
+        added += 1
+    return added
 
 
 def main(dry_run: bool) -> None:

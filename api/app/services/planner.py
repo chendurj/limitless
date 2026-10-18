@@ -437,4 +437,5 @@ def _item_out(t: Timed, seq: int, mode: str, energy_budget: float | None = None)
         insights=[],
         accessibility_score=pick.cand.ev.accessibility_score if pick else None,
         verification_score=pick.cand.ev.verification_score if pick else None,
+        verification_note=pick.cand.ev.verification_note if pick else None,
     )
