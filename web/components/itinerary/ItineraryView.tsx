@@ -67,6 +67,35 @@ function FactRow({ fact }: { fact: Fact }) {
   );
 }
 
+function Score({ label, value }: { label: string; value: number }) {
+  const low = value < 50;
+  return (
+    <span
+      className={`inline-flex items-baseline gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold ${
+        low
+          ? "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+          : "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
+      }`}
+    >
+      {label}
+      <span className="text-sm">{value}</span>
+      <span className="font-normal">/100</span>
+    </span>
+  );
+}
+
+function Scores({ item }: { item: ItemOut }) {
+  const access = item.accessibility_score;
+  const verified = item.verification_score;
+  if (access == null && verified == null) return null;
+  return (
+    <p className="mt-3 flex flex-wrap gap-2">
+      {access != null && <Score label="Accessibility" value={access} />}
+      {verified != null && <Score label="Verification" value={verified} />}
+    </p>
+  );
+}
+
 function StatusControls({ item, live }: { item: ItemOut; live: Live }) {
   if (!item.place || item.status === "done" || item.status === "skipped") return null;
   const busy = live.busyItemId === item.id;
@@ -118,6 +147,7 @@ function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
           {item.travel.estimated ? " (estimated)" : ""}
         </p>
       )}
+      <Scores item={item} />
       {item.rationale && <p className="mt-3 text-sm">{item.rationale}</p>}
 
       {item.place && item.place.facts.length > 0 && (
@@ -218,6 +248,12 @@ export function ItineraryView({
       <p className="mt-3 text-muted">{trip.profile_summary}</p>
       <p className="mt-2 text-sm text-muted">
         {trip.nights} nights · {trip.travelers} travelers · from {trip.start_date}
+      </p>
+      <p className="mt-3 text-sm text-muted">
+        <strong className="font-semibold text-foreground">Accessibility Score</strong>: how well a
+        place fits your needs.{" "}
+        <strong className="font-semibold text-foreground">Verification Score</strong>: how much we
+        trust the facts behind it. Demo data scores low until a person checks it.
       </p>
       {actions && <div className="mt-6">{actions}</div>}
 

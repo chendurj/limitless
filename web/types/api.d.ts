@@ -503,6 +503,10 @@ export interface components {
             warnings: string[];
             /** Insights */
             insights: components["schemas"]["Insight"][];
+            /** Accessibility Score */
+            accessibility_score?: number | null;
+            /** Verification Score */
+            verification_score?: number | null;
         };
         /** ItemPatch */
         ItemPatch: {
