@@ -562,12 +562,12 @@ function firstOptions(id: string, values: string[]): IntakeOption[] {
   return [...values.map(value => options.find(option => option.value === value)!), ...options.filter(option => !values.includes(option.value))];
 }
 const shortQuestions: IntakeQuestion[] = [
-  { ...question("needs"), help: "Choose what applies. We only ask follow-ups relevant to you." },
+  { ...question("needs"), allowOther: true, help: "Choose what applies. We only ask follow-ups relevant to you." },
   { ...question("walking"), prompt: "How much walking feels comfortable?", initialOptions: 4, help: "Choose what works on a typical day. We will not assume what assistance or equipment you have.", allowOther: true },
   communicationSupports,
   { ...question("requirements"), prompt: "What do you need for a comfortable day?", initialOptions: 6, options: firstOptions("requirements", ["step_free_entrance", "accessible_restroom", "seating", "captions_or_asl", "accessible_parking", "elevator"]), help: "Mark what is essential. Below, add anything else you need or want to avoid." },
   { ...question("interests"), prompt: "What would make this trip special?", initialOptions: 6, options: firstOptions("interests", ["beaches", "zoos_aquariums", "museums_art", "nature", "food", "theme_parks"]), allowOther: true, help: "Pick your interests, or tell us about your ideal day below." },
-  question("pace"),
+  { ...question("pace"), allowOther: true },
   { ...question("start_date"), prompt: "When is your trip?", dateRange: true, help: "Choose your start and return dates. Demo trips support 1–7 nights. You can leave both blank if you are still deciding." },
 ];
 export function previousTripNotes(answers: AnswerMap): string {
