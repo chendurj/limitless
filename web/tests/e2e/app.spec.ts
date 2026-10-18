@@ -156,7 +156,7 @@ test('06 every visible question has unique choices and exactly one microphone ac
       expect(new Set(values).size).toBe(values.length);
       expect(new Set(labels).size).toBe(labels.length);
       const container = field(page, question.id);
-      await expect(container.getByRole('button', { name: /^Speak answer:/ })).toHaveCount(1);
+      await expect(container.getByRole('button', { name: /^Speak answer:/ })).toHaveCount(question.dateRange ? 2 : 1);
       if (question.options) {
         await expect(container.locator('input[type="radio"], input[type="checkbox"]')).toHaveCount(question.options.length * (question.inputType === 'must-nice' ? 3 : 1));
       }
@@ -396,10 +396,11 @@ test('27 longest path has seven questions and keeps personal choices in the API'
   await page.getByRole('button', { name: 'Next', exact: true }).click();
   await expect(page.getByText('Step 7 of 7', { exact: true })).toBeVisible();
   await page.locator('#start_date').fill('2030-10-22');
+  await page.locator('#end_date').fill('2030-10-25');
   await page.getByRole('button', { name: 'Finish', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Plan my trip', exact: true })).toBeVisible();
   const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { selected: string[] }>;
-  expect(Object.keys(answers)).toHaveLength(7);
+  expect(Object.keys(answers)).toHaveLength(9);
   expect(answers.requirements.selected).toEqual(['accessible_restroom']);
   expect(answers.communication_supports.selected).toEqual(['asl_interpretation']);
   expect(answers).not.toHaveProperty('standing');
@@ -494,6 +495,7 @@ for (const [caseIndex, scenario] of pathCases.entries()) {
       const group = field(page, q.id);
       if (q.inputType === 'date') {
         await page.locator('#start_date').fill('2030-10-22');
+  await page.locator('#end_date').fill('2030-10-25');
         expected[q.id] = [];
       } else if (q.inputType === 'must-nice') {
         const option = options[caseIndex % options.length];
@@ -548,6 +550,7 @@ test('unsupported voice recording keeps normal questionnaire choices available',
 
 test('demo access list is short and selected extras remain visible', async ({ page }) => {
   await page.goto('/intake');
+  await page.waitForFunction(() => localStorage.getItem('limitless_intake_00000000-0000-4000-8000-0000000000e1') !== null);
   await page.evaluate(answers => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify({ version: 4, answers, others: {}, index: 1 })), baseAnswers);
   await page.reload();
   const requirements = field(page, 'requirements');
@@ -569,16 +572,60 @@ test('calendar rejects past dates and passes the chosen date directly into trip 
   await page.getByRole('button', { name: 'Finish', exact: true }).click();
   await expect(page.locator('#start_date-error')).toBeVisible();
   await page.locator('#start_date').fill('2030-10-22');
+  await page.locator('#end_date').fill('2030-10-25');
   await page.getByRole('button', { name: 'Finish', exact: true }).click();
   await page.getByRole('button', { name: 'Plan my trip', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Your San Diego trip', exact: true })).toBeVisible();
   expect(server.bodies['POST /api/trips'][0].start_date).toBe('2030-10-22');
+  expect(server.bodies['POST /api/trips'][0].nights).toBe(3);
   const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { freeform: string }>;
   expect(answers.start_date.freeform).toBe('2030-10-22');
+  expect(answers.end_date.freeform).toBe('2030-10-25');
+  expect(answers.nights.freeform).toBe('3');
+});
+
+
+test('calendar requires a complete ordered range and keeps both dates on reload', async ({ page }) => {
+  await page.goto('/intake');
+  await page.waitForFunction(() => localStorage.getItem('limitless_intake_00000000-0000-4000-8000-0000000000e1') !== null);
+  await page.evaluate(answers => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify({ version: 4, answers, others: {}, index: 4 })), baseAnswers);
+  await page.reload();
+  await page.getByLabel('Start date', { exact: true }).fill('2030-10-22');
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  await expect(page.getByRole('alert').filter({ hasText: 'Choose both dates' })).toBeVisible();
+  await page.getByLabel('End date (return)', { exact: true }).fill('2030-10-21');
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  await expect(page.getByRole('alert').filter({ hasText: 'End date must be after' })).toBeVisible();
+  await page.getByLabel('End date (return)', { exact: true }).fill('2030-10-25');
+  await page.reload();
+  await expect(page.getByLabel('Start date', { exact: true })).toHaveValue('2030-10-22');
+  await expect(page.getByLabel('End date (return)', { exact: true })).toHaveValue('2030-10-25');
+});
+
+test('end date accepts reviewed voice input without adding a question', async ({ page }) => {
+  const server = await api(page);
+  await speech(page);
+  await seed(page);
+  await page.getByLabel('Start date', { exact: true }).fill('2030-10-22');
+  await expect(page.getByRole('button', { name: 'Speak answer: Start date', exact: true })).toHaveText('Speak start date');
+  await expect(page.getByRole('button', { name: 'Speak answer: End date', exact: true })).toHaveText('Speak end date');
+  await page.getByRole('button', { name: 'Speak answer: End date', exact: true }).click();
+  await emit(page, 'October 25, 2030');
+  await page.getByRole('button', { name: 'Stop microphone: End date', exact: true }).click();
+  await expect(page.locator('#voice-end_date')).toHaveValue('October 25, 2030');
+  await page.getByRole('button', { name: 'Use this answer', exact: true }).click();
+  await expect(page.getByLabel('End date (return)', { exact: true })).toHaveValue('2030-10-25');
+  await expect(page.locator('[data-question-id]')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Plan my trip', exact: true })).toBeVisible();
+  const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { freeform: string }>;
+  expect(answers.end_date.freeform).toBe('2030-10-25');
+  expect(answers.nights.freeform).toBe('3');
 });
 
 test('older avoidances and transport remain editable notes in the shorter demo', async ({ page }) => {
   await page.goto('/intake');
+  await page.waitForFunction(() => localStorage.getItem('limitless_intake_00000000-0000-4000-8000-0000000000e1') !== null);
   await page.evaluate(() => localStorage.setItem('limitless_intake_00000000-0000-4000-8000-0000000000e1', JSON.stringify({
     version: 3, answers: { needs: ['other'], avoid: ['crowds', 'hills'], transport: 'transit' }, others: { requirements: 'Demo: need extra space.' }, index: 5,
   })));
