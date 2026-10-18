@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { api, type TripOut } from "@/lib/api";
 import { getSupabase } from "@/lib/guest-auth";
@@ -20,6 +20,25 @@ export function SavedTrips() {
   const [attempt, setAttempt] = useState(0);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const deleteBusy = useRef(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  async function deleteTrip(tripId: string) {
+    if (deleteBusy.current) return;
+    deleteBusy.current = true;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await api.deleteTrip(tripId);
+      setTrips(current => current.filter(trip => trip.id !== tripId));
+      setConfirmDelete(null);
+      setNotice("Trip deleted.");
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : "Could not delete the trip. Try again.");
+    } finally { deleteBusy.current = false; setDeleting(false); }
+  }
   const displayName = typeof user.user_metadata.display_name === "string"
     ? user.user_metadata.display_name : "Traveler";
 
@@ -81,13 +100,25 @@ export function SavedTrips() {
                 <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-4 text-sm">
                   <Link href={`/trips/${trip.id}?edit=ai`} className="font-medium text-primary underline underline-offset-4">Edit with AI</Link>
                   <Link href={`/trips/${trip.id}?edit=manual`} className="font-medium text-muted underline underline-offset-4">Edit manually</Link>
+                  <button type="button" onClick={() => { setConfirmDelete(trip.id); setDeleteError(""); }} disabled={deleting} className="font-medium text-danger underline underline-offset-4 sm:ml-auto">Delete trip</button>
                 </div>
+                {confirmDelete === trip.id && (
+                  <div role="group" aria-label="Confirm trip deletion" className="mt-4 rounded-lg border border-border p-4">
+                    <p className="text-sm">Delete this trip? This can’t be undone.</p>
+                    {deleteError && <p role="alert" className="mt-2 text-sm text-danger">{deleteError}</p>}
+                    <div className="mt-3 flex gap-4 text-sm">
+                      <button type="button" disabled={deleting} onClick={() => void deleteTrip(trip.id)} className="rounded-lg bg-danger px-4 py-2 font-semibold text-white disabled:opacity-50">{deleting ? "Deleting…" : "Delete"}</button>
+                      <button type="button" disabled={deleting} onClick={() => setConfirmDelete(null)} className="rounded-lg border border-border px-4 py-2">Cancel</button>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
         )}
         {trips.length === 50 && <p className="mt-4 text-xs text-muted">Your 50 most recent trips.</p>}
       </section>
+      <p role="status" className="mt-3 text-sm text-muted">{notice === "Trip deleted." ? notice : ""}</p>
 
       <details className="mt-8 border-t border-border pt-5 text-sm">
         <summary className="cursor-pointer text-muted">Guest profile</summary>

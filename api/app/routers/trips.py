@@ -162,6 +162,13 @@ def get_trip(trip_id: str, user: User, trips: Trips, version: int | None = None)
     return TripOut.model_validate(_owned_trip(trips, user, trip_id, version)["plan"])
 
 
+@router.delete("/{trip_id}")
+def delete_trip(trip_id: str, user: User, trips: Trips) -> dict[str, bool]:
+    if not trips.delete(user, trip_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Trip not found")
+    return {"deleted": True}
+
+
 @router.patch("/{trip_id}/items/{item_id}", response_model=ItemOut)
 def update_item(trip_id: str, item_id: str, body: ItemPatch, user: User, trips: Trips) -> ItemOut:
     row = _owned_trip(trips, user, trip_id)
@@ -256,6 +263,15 @@ def send_feedback(
         from_day,
         target.id if target and parsed.needs_rest_now else None,
         before=before,
+        regenerate=parsed.regenerate,
+        replace_places={
+            short[ref].place.id
+            for ref in parsed.replace_place_refs
+            if ref in short and short[ref].place
+        },
+        requested_interests=parsed.requested_interests,
+        requested_avoid=parsed.requested_avoid,
+        stop_today=parsed.wants_to_skip_rest_of_today,
     )
     version = row["current_version"]
     if fixed.changes:

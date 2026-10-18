@@ -138,7 +138,6 @@ function TripContent({ tripId, sample, initialEdit }: { tripId: string; sample?:
       live={{ onStatus, busyItemId }}
       actions={
         <div className="space-y-4">
-          <Link href="/my-trips" className="text-sm font-semibold text-primary underline underline-offset-4">Back to My trips</Link>
           {notice && (
             <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent-soft px-4 py-3 text-sm">
               <span>{notice}</span>

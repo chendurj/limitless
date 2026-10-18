@@ -84,6 +84,19 @@ def apply_feedback(
     m, prefs = data["mobility"], data["preferences"]
     reasons: list[str] = []
     avoid = set(prefs["avoid"])
+    if parsed.requested_interests:
+        prefs["interests"] = list(dict.fromkeys(parsed.requested_interests))
+        reasons.append("you asked for different activities")
+    avoid.update(parsed.requested_avoid)
+    if "long_distances" in parsed.requested_avoid:
+        if m["walking"] is None or m["walking"] in WALKS[4:] or m["walking"] == "varies":
+            m["walking"] = "5_to_15_min"
+        prefs["pace"] = "relaxed"
+        m["rest_interval"] = "30_min"
+        reasons.append("you asked for less walking")
+    if parsed.requested_pace:
+        prefs["pace"] = parsed.requested_pace
+        reasons.append("you asked for a different pace")
     if "high" in (parsed.terrain_difficulty, parsed.wheelchair_difficulty):
         m["slope_tolerance"] = _down(m["slope_tolerance"], SLOPES, "moderate")
         if m["walking"] in WALKS[3:]:
@@ -180,6 +193,11 @@ def repair(
     rest_now_after: str | None,
     today: date | None = None,
     before: dict[str, float] | None = None,
+    regenerate: bool = False,
+    replace_places: set[str] | None = None,
+    requested_interests: list[str] | None = None,
+    requested_avoid: list[str] | None = None,
+    stop_today: bool = False,
 ) -> Repair:
     """Repair days from from_day on. rest_now_after: item id after which to add a rest now.
 
@@ -199,7 +217,7 @@ def repair(
     new_days = []
 
     for day in trip.days:
-        if day.day_index < from_day:
+        if day.day_index < from_day or (stop_today and day.day_index > from_day):
             new_days.append(day)
             continue
         items = list(day.items)
@@ -212,13 +230,52 @@ def repair(
         picks: list[Pick] = []
         replaced: dict[str, api.ChangeOut] = {}  # new place id -> its change
         for item in tail:
+            if stop_today and day.day_index == from_day:
+                changes.append(
+                    api.ChangeOut(
+                        type="removed",
+                        day_index=day.day_index,
+                        old_item_id=item.id,
+                        reason=f"{item.title}: You asked to stop for today.",
+                        cited_fact_ids=[],
+                    )
+                )
+                continue
             if item.place is None or item.place.id not in cands:
                 continue  # rests are made again by the scheduler
             cand = cands[item.place.id]
             worse = cand.ev.access_fit < before.get(cand.place.id, 1.0)
-            if cand.ev.excluded or (worse and cand.ev.access_fit < MIN_ACCESS_FIT):
-                why = (cand.ev.reasons or cand.ev.warnings or ["It no longer fits your needs."])[0]
-                new = _replacement(cand, cands, in_trip, hood)
+            unsafe = cand.ev.excluded or (worse and cand.ev.access_fit < MIN_ACCESS_FIT)
+            requested = (
+                cand.place.id in (replace_places or set())
+                or (
+                    cand.kind != "meal"
+                    and (
+                        regenerate
+                        or bool(
+                            requested_interests
+                            and not set(requested_interests).intersection(cand.place.interest_tags)
+                        )
+                    )
+                )
+                or bool(requested_avoid and worse)
+            )
+            if unsafe or requested:
+                why = (
+                    (cand.ev.reasons or cand.ev.warnings or ["It no longer fits your needs."])[0]
+                    if unsafe
+                    else "You asked for a different stop."
+                )
+                new = _replacement(
+                    cand,
+                    cands,
+                    in_trip,
+                    hood,
+                    requested_interests,
+                    cand.ev.access_fit
+                    if requested_avoid and not unsafe and not regenerate and not requested_interests
+                    else None,
+                )
                 if new:
                     in_trip.add(new.place.id)
                     picks.append(_pick(new, _slot(item, new.kind), dna))
@@ -227,10 +284,11 @@ def repair(
                                            cited_fact_ids=cand.ev.fact_ids)  # fmt: skip
                     replaced[new.place.id] = change
                     changes.append(change)
-                else:
+                elif unsafe:
                     changes.append(api.ChangeOut(type="removed", day_index=day.day_index, old_item_id=item.id,
                                                  reason=f"{item.title}: {why}", cited_fact_ids=cand.ev.fact_ids))  # fmt: skip
-                continue
+                if new or unsafe:
+                    continue
             old = next((p for p in tail if p.id == item.id), item)
             pick = _pick(cand, _slot(old, cand.kind), dna)
             pick.rationale = item.rationale  # keep the composer's text for stops that stay
@@ -277,6 +335,45 @@ def repair(
         new_items = kept + extra + [_item_out(t, 0, _mode(dna), limits.energy) for t in timed]
         notes = {i.place.id: i.user_note for i in items if i.place and i.user_note}
         for item in new_items:
+            original = next(
+                (
+                    i
+                    for i in tail
+                    if (item.place and i.place and item.place.id == i.place.id)
+                    or (
+                        not item.place
+                        and not i.place
+                        and item.kind == i.kind
+                        and item.start == i.start
+                        and item.end == i.end
+                    )
+                ),
+                None,
+            )
+            if original:
+                item.id = original.id
+                item.status = original.status
+                if item.start != original.start or item.end != original.end:
+                    changes.append(
+                        api.ChangeOut(
+                            type="retimed",
+                            day_index=day.day_index,
+                            old_item_id=original.id,
+                            new_item_id=item.id,
+                            reason=f"{item.title}: adjusted time to fit your updated pace.",
+                            cited_fact_ids=[],
+                        )
+                    )
+            elif item.kind == "rest" and item not in extra:
+                changes.append(
+                    api.ChangeOut(
+                        type="rest_added",
+                        day_index=day.day_index,
+                        new_item_id=item.id,
+                        reason="An extra break to fit your pace.",
+                        cited_fact_ids=[],
+                    )
+                )
             if item.place and item.place.id in notes:
                 item.user_note = notes[item.place.id]
             if item.place and item.place.id in replaced:
@@ -295,7 +392,12 @@ def day_date(day: api.DayOut) -> date:
 
 
 def _replacement(
-    old: Candidate, cands: dict[str, Candidate], in_trip: set[str], hoods: set[str]
+    old: Candidate,
+    cands: dict[str, Candidate],
+    in_trip: set[str],
+    hoods: set[str],
+    interests: list[str] | None = None,
+    improve_fit: float | None = None,
 ) -> Candidate | None:
     pool = [
         c
@@ -305,7 +407,10 @@ def _replacement(
         and not c.ev.excluded
         and c.ev.access_fit >= MIN_ACCESS_FIT
         and not c.ev.unknown_critical
+        and (improve_fit is None or c.ev.access_fit > improve_fit)
     ]
+    if interests and old.kind != "meal":
+        pool = [c for c in pool if set(interests).intersection(c.place.interest_tags)]
     local = [c for c in pool if nearby(c.place.neighborhood, list(hoods))]
     return max(local or pool, key=lambda c: c.ev.score, default=None)
 
@@ -313,7 +418,7 @@ def _replacement(
 def message(ack: str, reasons: list[str], changes: list[api.ChangeOut]) -> str:
     """Two to four sentences, for the screen and for speech."""
     if not changes:
-        return f"{ack} Your plan still fits, so nothing changes."
+        return f"{ack} I could not find a suitable change within your access needs and the available places. Your saved plan has not changed. Try another request."
     parts = [ack]
     if reasons:
         parts.append(f"Because {reasons[0]}, I suggest these changes.")
@@ -324,10 +429,10 @@ def message(ack: str, reasons: list[str], changes: list[api.ChangeOut]) -> str:
         elif change.type == "removed":
             parts.append(f"Skip {change.reason.split(':')[0]}.")
         elif change.type == "rest_added":
-            parts.append("Take a seated break now.")
+            parts.append("Add a rest break.")
     if len(changes) > 2:
         parts.append(f"There are {len(changes) - 2} more changes.")
-    parts.append("Choose Apply to use the new plan.")
+    parts.append("Choose Save changes to use the new plan.")
     return " ".join(parts)
 
 

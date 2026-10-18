@@ -29,6 +29,12 @@ class Places:
 
 
 class Trips:
+    def delete(self, user_id, trip_id):
+        if self.get(user_id, trip_id) is None:
+            return False
+        del self.trips[trip_id]
+        return True
+
     def __init__(self):
         self.trips = {}
 
@@ -327,7 +333,7 @@ def test_feedback_proposes_then_apply_and_undo(api):
     plan = body["replan"]
     assert plan["changed"] and plan["version"] == 2
     assert any(c["type"] == "rest_added" for c in plan["changes"])
-    assert "Apply" in plan["message"]
+    assert "Save changes" in plan["message"]
     new_first = first_stop(plan["trip"])
     assert new_first["id"] == stop["id"] and new_first["status"] == "done"  # the done stop stays
     url = f"/api/trips/{trip['id']}"
@@ -350,7 +356,7 @@ def test_no_change_needed(api):
     PARSER.place_name = first_stop(trip)["title"]
     plan = send(client, trip, sentiment=2).json()["replan"]
     assert not plan["changed"] and plan["version"] == 1
-    assert "nothing changes" in plan["message"]
+    assert "saved plan has not changed" in plan["message"]
 
 
 def test_no_captions_report_removes_that_museum(make_dna):
@@ -417,3 +423,92 @@ def test_feedback_about_two_places(api, monkeypatch):
     assert [(pid, r.booking_phone_only) for pid, r in seen["others"]] == [
         (second["place"]["id"], True)
     ]
+
+
+def test_delete_trip_is_owned_and_removes_versions(api, monkeypatch):
+    from app import deps
+
+    client, profile_id, trips, _ = api
+    trip = client.post("/api/trips", json={"profile_id": profile_id}, headers=AUTH).json()
+    url = f"/api/trips/{trip['id']}"
+    assert client.delete(url).status_code == 401
+    monkeypatch.setattr(deps, "verified_user_id", lambda _: uuid.uuid4())
+    assert (
+        client.delete(url, headers={"Authorization": "Bearer guest.jwt.token"}).status_code == 404
+    )
+    assert trips.get(DEMO_USER_ID, trip["id"]) is not None
+    assert client.delete(url, headers=AUTH).json() == {"deleted": True}
+    assert client.get(url, headers=AUTH).status_code == 404
+    assert client.get("/api/trips", headers=AUTH).json() == []
+    assert client.delete(url, headers=AUTH).status_code == 404
+    assert client.get(f"/api/profiles/{profile_id}", headers=AUTH).status_code == 200
+
+
+def test_regenerate_preserves_done_stops_and_requires_apply(api):
+    client, profile_id, trips, _ = api
+    # Demo traveler has no restroom must-have; available test places can qualify.
+    app.dependency_overrides[get_profile_store]().rows[profile_id]["dna"]["requirements"][
+        "must_have"
+    ] = []
+    trip = client.post(
+        "/api/trips", json={"profile_id": profile_id, "nights": 2}, headers=AUTH
+    ).json()
+    first = first_stop(trip)
+    client.patch(
+        f"/api/trips/{trip['id']}/items/{first['id']}",
+        json={"status": "done", "user_note": "Demo: keep this note"},
+        headers=AUTH,
+    )
+    PARSER.place_name = ""
+    plan = send(client, trip, regenerate=True).json()["replan"]
+    assert plan["changed"]
+    assert any(c["type"] == "replaced" for c in plan["changes"])
+    kept = first_stop(plan["trip"])
+    assert kept["id"] == first["id"] and kept["status"] == "done"
+    assert kept["user_note"] == "Demo: keep this note"
+    assert trips.get(DEMO_USER_ID, trip["id"])["current_version"] == 1
+    url = f"/api/trips/{trip['id']}"
+    assert (
+        client.post(
+            f"{url}/replan", json={"apply_version": plan["version"]}, headers=AUTH
+        ).status_code
+        == 200
+    )
+    assert client.get(url, headers=AUTH).json()["version"] == plan["version"]
+
+
+def test_requested_preferences_keep_access_requirements():
+    from app.models.dna import AccessibilityDNA
+    from app.services.replan import Overrides, apply_feedback
+
+    dna = AccessibilityDNA.model_validate(load())
+    changed, _, _ = apply_feedback(
+        dna,
+        parsed_feedback(
+            requested_interests=["museums_art"], requested_avoid=["long_distances", "noise"]
+        ),
+        None,
+        Overrides(),
+    )
+    assert changed.preferences.interests == ["museums_art"]
+    assert changed.preferences.pace == "relaxed"
+    assert changed.rest_every_min == 30
+    assert changed.requirements == dna.requirements
+    assert changed.needs == dna.needs
+    assert set(dna.preferences.avoid) <= set(changed.preferences.avoid)
+
+
+def test_stop_for_today_keeps_completed_and_later_days(api):
+    client, profile_id, _, _ = api
+    trip = client.post(
+        "/api/trips", json={"profile_id": profile_id, "nights": 2}, headers=AUTH
+    ).json()
+    stop = first_stop(trip)
+    client.patch(
+        f"/api/trips/{trip['id']}/items/{stop['id']}", json={"status": "done"}, headers=AUTH
+    )
+    PARSER.place_name = stop["title"]
+    plan = send(client, trip, wants_to_skip_rest_of_today=True).json()["replan"]
+    assert plan["changed"]
+    assert [i["id"] for i in plan["trip"]["days"][0]["items"]] == [stop["id"]]
+    assert plan["trip"]["days"][1] == trip["days"][1]

@@ -199,6 +199,7 @@ def get_place_store() -> PlaceStore:
 
 
 class TripStore(Protocol):
+    def delete(self, user_id: uuid.UUID, trip_id: str) -> bool: ...
     def list_for_user(self, user_id: uuid.UUID) -> list[dict[str, Any]]: ...
     def create(self, user_id: uuid.UUID, row: dict[str, Any], plan: dict[str, Any]) -> None: ...
     def get(
@@ -219,6 +220,16 @@ class TripStore(Protocol):
 
 
 class PgTripStore:
+    def delete(self, user_id: uuid.UUID, trip_id: str) -> bool:
+        if not _valid_uuid(trip_id):
+            return False
+        with pool().connection() as conn:
+            # Versions and itinerary items cascade; other users' trips cannot match.
+            return conn.execute(
+                "delete from trips where id = %s and user_id = %s returning id",
+                [trip_id, user_id],
+            ).fetchone() is not None
+
     def list_for_user(self, user_id: uuid.UUID) -> list[dict[str, Any]]:
         with pool().connection() as conn:
             rows = conn.execute(

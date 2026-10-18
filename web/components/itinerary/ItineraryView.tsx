@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import Link from "next/link";
 import type { components } from "@/types/api";
 import { StopFit, StopBooking } from "@/components/itinerary/StopDetails";
 
@@ -331,14 +332,14 @@ export function ItineraryView({
 }) {
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-10">
-      <p className="mb-4 rounded-lg border border-border bg-surface-muted px-3 py-2 text-xs font-medium text-muted">
-        Demo trip — accessibility facts are demo data, not verified.
-      </p>
+      <Link href={live ? "/my-trips" : "/"} aria-label={live ? "Back to My trips" : "Back to home"} className="mb-6 inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-muted">
+        <span aria-hidden="true">←</span> Back
+      </Link>
 
       <h1 className="text-3xl font-bold tracking-tight">Your San Diego trip</h1>
       <p className="mt-3 text-muted">{trip.profile_summary}</p>
       <p className="mt-2 text-sm text-muted">
-        {trip.nights} nights · {trip.travelers} travelers · from{" "}
+        {trip.nights} nights · {trip.travelers} {trip.travelers === 1 ? "traveler" : "travelers"} · from{" "}
         {trip.start_date}
       </p>
       <p className="mt-3 text-sm text-muted">
@@ -349,8 +350,7 @@ export function ItineraryView({
         <strong className="font-semibold text-foreground">
           Verification Score
         </strong>
-        : how much we trust the facts behind it. Demo data scores low until a
-        person checks it.
+        : how much we trust the facts behind it.
       </p>
       {actions && <div className="mt-6">{actions}</div>}
 
@@ -381,7 +381,6 @@ export function ItineraryView({
         </section>
       )}
 
-      <p className="mt-10 text-sm text-muted">{trip.disclaimer}</p>
     </div>
   );
 }

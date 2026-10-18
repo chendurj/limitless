@@ -66,6 +66,7 @@ async function emit(page: Page, text: string) {
 }
 async function api(page: Page, options: { delay?: number; followups?: unknown[] } = {}) {
   const currentTrip = structuredClone(trip);
+  let deleted = false;
   const counts: Record<string, number> = {};
   const bodies: Record<string, Record<string, unknown>[]> = {};
   await page.route('**/api/**', async route => {
@@ -76,7 +77,8 @@ async function api(page: Page, options: { delay?: number; followups?: unknown[] 
     if (request.postData()) (bodies[key] ??= []).push(request.postDataJSON());
     if (options.delay) await delay(options.delay);
     if (path === '/api/intake') return route.fulfill({ json: { ...intakeResult, followups: options.followups ?? [] } });
-    if (path === '/api/trips' && request.method() === 'GET') return route.fulfill({ json: [currentTrip] });
+    if (path === '/api/trips' && request.method() === 'GET') return route.fulfill({ json: deleted ? [] : [currentTrip] });
+    if (path === `/api/trips/${trip.id}` && request.method() === 'DELETE') { deleted = true; return route.fulfill({ json: { deleted: true } }); }
     if (path === '/api/profiles' && request.method() === 'GET') return route.fulfill({ json: [] });
     if (path.endsWith('/followups')) return route.fulfill({ json: intakeResult });
     if (path.startsWith('/api/profiles/')) return route.fulfill({ json: {} });
@@ -265,8 +267,8 @@ test('19 feedback applies once, and repeated Undo clicks create only one restora
   const server = await api(page, { delay: 200 }); await page.goto(tripUrl);
   await page.getByRole('button', { name: 'Edit with AI', exact: true }).click();
   await page.locator('#tell-text').fill('Demo: I need a break.');
-  await page.getByRole('button', { name: 'Send', exact: true }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
-  await page.getByRole('button', { name: 'Apply', exact: true }).click();
+  await page.getByRole('button', { name: 'Update my plan', exact: true }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
+  await page.getByRole('button', { name: 'Save changes', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Undo', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Undo', exact: true }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
   await expect(page.getByRole('button', { name: 'Undo', exact: true })).toHaveCount(0);
@@ -277,7 +279,7 @@ test('20 cancelling in-flight feedback does not overwrite the next conversation'
   await api(page, { delay: 500 }); await page.goto(tripUrl);
   await page.getByRole('button', { name: 'Edit with AI', exact: true }).click();
   await page.locator('#tell-text').fill('Demo old feedback.');
-  await page.getByRole('button', { name: 'Send', exact: true }).click();
+  await page.getByRole('button', { name: 'Update my plan', exact: true }).click();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.getByRole('button', { name: 'Edit with AI', exact: true }).click();
   await page.locator('#tell-text').fill('Demo new feedback.');
@@ -585,4 +587,63 @@ test('older avoidances and transport remain editable notes in the shorter demo',
   await expect(page.locator('#requirements-other')).toHaveValue('Demo: need extra space. Please avoid: Crowds, Hills. Getting around: Public transit.');
   await page.reload();
   await expect(page.locator('#requirements-other')).toHaveValue('Demo: need extra space. Please avoid: Crowds, Hills. Getting around: Public transit.');
+});
+
+test('trip deletion requires confirmation and stays deleted after reload', async ({ page }) => {
+  const server = await api(page, { delay: 100 });
+  await page.goto('/my-trips');
+  await page.getByRole('button', { name: 'Delete trip', exact: true }).click();
+  const confirm = page.getByRole('group', { name: 'Confirm trip deletion' });
+  await confirm.getByRole('button', { name: 'Cancel', exact: true }).click();
+  expect(server.counts[`DELETE /api/trips/${trip.id}`] ?? 0).toBe(0);
+  await page.getByRole('button', { name: 'Delete trip', exact: true }).click();
+  await confirm.getByRole('button', { name: 'Delete', exact: true }).dblclick();
+  await expect(page.getByRole('heading', { name: 'No trips yet' })).toBeVisible();
+  expect(server.counts[`DELETE /api/trips/${trip.id}`]).toBe(1);
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'No trips yet' })).toBeVisible();
+});
+
+test('AI dictation appends to typed requests and can be recorded twice', async ({ page }) => {
+  const server = await api(page);
+  await speech(page);
+  await page.goto(`${tripUrl}?edit=ai`);
+  const dialog = page.getByRole('dialog');
+  await dialog.locator('#tell-text').fill('Demo: more museums.');
+  for (const words of ['Less walking.', 'More breaks.']) {
+    await dialog.getByRole('button', { name: 'Speak', exact: true }).click();
+    await emit(page, words);
+    await dialog.getByRole('button', { name: 'Stop recording', exact: true }).click();
+    await expect(dialog.getByRole('button', { name: 'Update my plan', exact: true })).toBeEnabled();
+  }
+  await expect(dialog.locator('#tell-text')).toHaveValue('Demo: more museums. Less walking. More breaks.');
+  await dialog.getByRole('button', { name: 'Update my plan', exact: true }).click();
+  await expect(dialog.getByRole('button', { name: 'Save changes', exact: true })).toBeVisible();
+  expect(server.bodies[`POST /api/trips/${trip.id}/feedback`][0]).toMatchObject({ transcript: 'Demo: more museums. Less walking. More breaks.', input_mode: 'voice' });
+  await dialog.getByRole('button', { name: 'Change request', exact: true }).click();
+  await expect(dialog.locator('#tell-text')).toHaveValue('Demo: more museums. Less walking. More breaks.');
+});
+
+test('AI microphone denial keeps the typed request usable', async ({ page }) => {
+  await api(page); await speech(page);
+  await page.goto(`${tripUrl}?edit=ai`);
+  await page.evaluate(() => { (window as unknown as { denyMicrophone: boolean }).denyMicrophone = true; });
+  const dialog = page.getByRole('dialog');
+  await dialog.locator('#tell-text').fill('Demo: try different stops.');
+  await dialog.getByRole('button', { name: 'Speak', exact: true }).click();
+  await expect(dialog.getByRole('alert')).toContainText('Microphone access is off');
+  await expect(dialog.locator('#tell-text')).toHaveValue('Demo: try different stops.');
+  await dialog.getByRole('button', { name: 'Update my plan', exact: true }).click();
+  await expect(dialog.getByRole('button', { name: 'Save changes', exact: true })).toBeVisible();
+});
+
+test('itinerary has one top back control and a clean summary', async ({ page }) => {
+  await api(page); await page.goto(tripUrl);
+  await expect(page.getByRole('heading', { name: 'Your San Diego trip', exact: true })).toBeVisible();
+  const back = page.getByRole('link', { name: 'Back to My trips', exact: true });
+  await expect(back).toHaveCount(1);
+  await expect(page.getByText('Demo trip — accessibility facts are demo data, not verified.', { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/Demo data scores low/)).toHaveCount(0);
+  await back.click();
+  await expect(page).toHaveURL(/\/my-trips$/);
 });
