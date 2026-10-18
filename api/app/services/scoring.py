@@ -28,6 +28,8 @@ from app.services.rules import (
 )
 
 UNKNOWN_PENALTY = 0.2
+# Ranking: between places that fit about equally, prefer facts we can vouch for.
+TRUST_WEIGHT = 0.15
 MIN_ACCESS_FIT = 0.4
 NICE_TO_HAVE_BONUS = 0.05
 MAX_BONUS = 0.3
@@ -232,6 +234,7 @@ def evaluate(
         + 0.35 * bonus
         + 0.10 * (feedback_signal + 1) / 2
         + 0.10 * quality
+        + TRUST_WEIGHT * (verification or 0.0)
     )
 
     return Evaluation(
@@ -294,14 +297,14 @@ def _verification(
     checks = official + demo + other + missing
     if official == checks:
         note = "All checks from official pages"
-    elif official:
-        note = f"{official} of {checks} checks from official pages"
-    elif demo and not other:
-        note = "Demo data, not checked yet"
+    elif official or other:
+        parts = [f"{official} official"] if official else []
+        parts += [f"{other} community reports"] if other else []
+        parts += [f"{demo} demo data"] if demo else []
+        parts += [f"{missing} unknown"] if missing else []
+        note = f"{checks} checks: " + " · ".join(parts)
     else:
-        note = "Not confirmed by an official page"
-    if missing and official != checks:
-        note += f" · {missing} unknown"
+        note = "Demo data, not checked yet" + (f" · {missing} unknown" if missing else "")
     return round(weighted / total, 3), note
 
 

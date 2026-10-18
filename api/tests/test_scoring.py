@@ -487,3 +487,13 @@ def test_verification_note_names_official_checks(deaf_non_speaking):
     unknown = evaluate(MUSEUM, [], deaf_non_speaking, today=TODAY)
     assert unknown.verification_score == 0
     assert "unknown" in unknown.verification_note
+
+
+def test_verification_note_credits_community_sources(make_dna):
+    ankle = make_dna(needs=["temporary_injury"], mobility__equipment=["crutches"],
+                     requirements__must_have=["step_free_entrance", "seating"])  # fmt: skip
+    osm = fact("entrance_step_free", "yes", "COMMUNITY", "osm")
+    seating = fact("seating", "plenty", "COMMUNITY", "demo_data")
+    result = evaluate(CAFE, [osm, seating], ankle, today=TODAY)
+    assert result.verification_note == "2 checks: 1 community reports · 1 demo data"
+    assert 20 < result.verification_score < 60  # (0.6 x 4 + 0.2 x 4) / 8 = 0.4

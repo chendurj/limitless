@@ -29,6 +29,9 @@ CSV = Path(__file__).resolve().parents[2] / "data" / "demo-san-diego-locations-2
 # Facts a team member (or a research agent, reviewed by a team member) read on an official
 # page, each with the exact quote and the URL. Used for places with or without research.
 VERIFIED = Path(__file__).resolve().parents[2] / "data" / "verified-facts.json"
+# Community facts from OpenStreetMap (the data behind Wheelmap), matched by name and reviewed.
+# They are COMMUNITY, never VERIFIED, and they never remove an official fact.
+OSM = Path(__file__).resolve().parents[2] / "data" / "osm-facts.json"
 ATTRIBUTES = {
     "entrance_step_free", "restroom_accessible", "parking_accessible", "dropoff_zone", "elevator",
     "stairs", "terrain", "max_slope", "typical_walk_m", "seating", "shade", "wheelchair_rental",
@@ -255,7 +258,42 @@ def apply(conn: psycopg.Connection) -> tuple[int, int]:
             )
             facts += 1
     facts += _apply_verified(cur, slug_of)
+    facts += _apply_osm(cur, slug_of)
     return updated, facts
+
+
+def _apply_osm(cur, slug_of: dict[str, str]) -> int:
+    if not OSM.exists():
+        return 0
+    added = 0
+    for fact in json.loads(OSM.read_text())["facts"]:
+        if fact["attribute"] not in ATTRIBUTES:
+            continue
+        row = cur.execute(
+            "select id from places where slug = %s", [slug_of.get(fact["location_id"])]
+        ).fetchone()
+        if row is None:
+            continue
+        cur.execute(
+            """delete from place_accessibility
+               where place_id = %s and attribute = %s and source = 'osm'""",
+            [row[0], fact["attribute"]],
+        )
+        cur.execute(
+            """insert into place_accessibility (place_id, attribute, value, detail, confidence,
+                   source, source_url, verified_at)
+               values (%s, %s, %s, %s, 'COMMUNITY', 'osm', %s, %s)""",
+            [
+                row[0],
+                fact["attribute"],
+                fact["value"],
+                fact["detail"],
+                fact["url"],
+                date.fromisoformat(fact["edited"]) if fact.get("edited") else None,
+            ],
+        )
+        added += 1
+    return added
 
 
 def _apply_verified(cur, slug_of: dict[str, str]) -> int:

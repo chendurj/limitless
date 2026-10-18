@@ -1,0 +1,184 @@
+{
+ "source": "osm",
+ "license": "Data © OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+ "retrieved_on": "2026-10-18",
+ "note": "Matched by name and reviewed by hand. 'edited' is the element's last edit date.",
+ "facts": [
+  {
+   "location_id": "sd-041",
+   "place": "San Diego Zoo",
+   "osm_name": "San Diego Zoo",
+   "url": "https://www.openstreetmap.org/way/31274621",
+   "edited": "2026-09-07",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-043",
+   "place": "SeaWorld San Diego",
+   "osm_name": "SeaWorld San Diego",
+   "url": "https://www.openstreetmap.org/way/1293809671",
+   "edited": "2024-06-20",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-044",
+   "place": "Birch Aquarium at Scripps",
+   "osm_name": "Birch Aquarium",
+   "url": "https://www.openstreetmap.org/way/39315120",
+   "edited": "2026-04-02",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-051",
+   "place": "USS Midway Museum",
+   "osm_name": "USS Midway Museum",
+   "url": "https://www.openstreetmap.org/way/25965018",
+   "edited": "2025-07-19",
+   "attribute": "entrance_step_free",
+   "value": "partial",
+   "detail": "Partly wheelchair accessible.",
+   "tag": "wheelchair=limited"
+  },
+  {
+   "location_id": "sd-054",
+   "place": "San Diego Natural History Museum",
+   "osm_name": "San Diego Natural History Museum",
+   "url": "https://www.openstreetmap.org/way/79288741",
+   "edited": "2026-07-31",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-056",
+   "place": "Whaley House Museum",
+   "osm_name": "Whaley House Museum",
+   "url": "https://www.openstreetmap.org/way/565567630",
+   "edited": "2026-01-07",
+   "attribute": "entrance_step_free",
+   "value": "partial",
+   "detail": "Partly wheelchair accessible.",
+   "tag": "wheelchair=limited"
+  },
+  {
+   "location_id": "sd-057",
+   "place": "Junipero Serra Museum",
+   "osm_name": "Junipero Serra Museum",
+   "url": "https://www.openstreetmap.org/way/528172919",
+   "edited": "2026-02-18",
+   "attribute": "entrance_step_free",
+   "value": "no",
+   "detail": "Not wheelchair accessible.",
+   "tag": "wheelchair=no"
+  },
+  {
+   "location_id": "sd-058",
+   "place": "San Diego History Center",
+   "osm_name": "San Diego History Center",
+   "url": "https://www.openstreetmap.org/node/6579135920",
+   "edited": "2025-10-22",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-064",
+   "place": "Timken Museum of Art",
+   "osm_name": "Timken Museum of Art",
+   "url": "https://www.openstreetmap.org/way/31240330",
+   "edited": "2026-05-09",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-091",
+   "place": "Petco Park",
+   "osm_name": "Petco Park",
+   "url": "https://www.openstreetmap.org/way/24616919",
+   "edited": "2026-02-17",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-102",
+   "place": "Liberty Public Market",
+   "osm_name": "Liberty Public Market",
+   "url": "https://www.openstreetmap.org/node/6970032907",
+   "edited": "2026-07-19",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-132",
+   "place": "The Yasai",
+   "osm_name": "The Yasai",
+   "url": "https://www.openstreetmap.org/node/12092726145",
+   "edited": "2024-08-05",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-136",
+   "place": "Shan Xi Magic Kitchen",
+   "osm_name": "Shan Xi Magic Kitchen",
+   "url": "https://www.openstreetmap.org/node/12125587992",
+   "edited": "2026-09-24",
+   "attribute": "restroom_accessible",
+   "value": "yes",
+   "detail": "Wheelchair-accessible restroom.",
+   "tag": "toilets:wheelchair=yes"
+  },
+  {
+   "location_id": "sd-142",
+   "place": "Meze Greek Fusion",
+   "osm_name": "Meze Greek Fusion",
+   "url": "https://www.openstreetmap.org/node/596922891",
+   "edited": "2026-09-16",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-153",
+   "place": "Mitch's Seafood",
+   "osm_name": "Mitch's Seafood",
+   "url": "https://www.openstreetmap.org/node/6479932889",
+   "edited": "2026-08-12",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  },
+  {
+   "location_id": "sd-164",
+   "place": "Donna Jean",
+   "osm_name": "Donna Jean",
+   "url": "https://www.openstreetmap.org/node/12709030319",
+   "edited": "2026-07-17",
+   "attribute": "entrance_step_free",
+   "value": "yes",
+   "detail": "Wheelchair accessible.",
+   "tag": "wheelchair=yes"
+  }
+ ]
+}

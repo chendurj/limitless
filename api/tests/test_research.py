@@ -57,3 +57,17 @@ def test_verified_facts_file_is_well_formed():
         assert fact["attribute"] in import_research.ATTRIBUTES, fact
         assert fact["url"].startswith("https://"), fact
         assert fact["quote"].strip() and fact["detail"].strip(), fact
+
+
+def test_osm_facts_are_reviewed_and_linked():
+    import json
+
+    if not import_research.OSM.exists():
+        return
+    data = json.loads(import_research.OSM.read_text())
+    assert "OpenStreetMap" in data["license"]
+    slugs = import_research.slugs()
+    for fact in data["facts"]:
+        assert fact["location_id"] in slugs
+        assert fact["attribute"] in ("entrance_step_free", "restroom_accessible")
+        assert fact["url"].startswith("https://www.openstreetmap.org/")
