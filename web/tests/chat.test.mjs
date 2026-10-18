@@ -29,6 +29,15 @@ test("reports missing configuration without exposing a secret", async () => {
   delete process.env.OPENAI_API_KEY;
   assert.equal((await POST(request({ messages }))).status, 503);
 });
+test("accepts the browser host when Next.js normalizes the internal URL", async () => {
+  delete process.env.OPENAI_API_KEY;
+  const normalized = new Request("http://localhost:3000/api/chat", {
+    method: "POST",
+    headers: { host: "127.0.0.1:3000", origin: "http://127.0.0.1:3000" },
+    body: JSON.stringify({ messages }),
+  });
+  assert.equal((await POST(normalized)).status, 503);
+});
 test("forwards conversation with server instructions and storage disabled", async () => {
   process.env.OPENAI_API_KEY = "test-only-key";
   globalThis.fetch = async (url, options) => {

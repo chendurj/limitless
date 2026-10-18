@@ -22,7 +22,11 @@ function reply(error: string, status: number) {
 
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) {
+  const requestUrl = new URL(request.url);
+  // Next.js can normalize the internal URL to localhost in development.
+  // The Host header retains the address actually used by the browser.
+  const expectedOrigin = `${requestUrl.protocol}//${request.headers.get("host") || requestUrl.host}`;
+  if (origin && origin !== expectedOrigin) {
     return reply("Please send your question from the Limitless website.", 403);
   }
   const raw = await request.text();
