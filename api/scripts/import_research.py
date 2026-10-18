@@ -29,9 +29,10 @@ CSV = Path(__file__).resolve().parents[2] / "data" / "demo-san-diego-locations-2
 
 # location_id -> [(attribute, value, detail, index of the source in "sources", confidence)]
 # Copied by hand from the research summaries, which quote the official pages.
-# VERIFIED: a team member read it on the source page. COMMUNITY: copied from the summary only;
-# a team member should confirm it on the source page, then change it to VERIFIED.
+# VERIFIED: read on the source page on CHECKED_ON. COMMUNITY: copied from the summary only;
+# confirm it on the source page, then change it to VERIFIED.
 C, V = "COMMUNITY", "VERIFIED"
+CHECKED_ON = date(2026, 10, 18)
 OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
     "sd-021": [
         ("status", "closed", "The reserve and all its trails are closed until March 2027.", 0, C)
@@ -63,8 +64,8 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
         ("dropoff_zone", "yes", "Drop-off in the front entrance traffic circle.", 0, C),
     ],
     "sd-051": [
-        ("captions_asl", "yes", "Prerecorded ASL tour with captions on a handheld device.", 0, C),
-        ("elevator", "yes", "Elevators connect the pier, hangar deck and flight deck.", 0, C),
+        ("captions_asl", "yes", "Prerecorded ASL tour with captions on a handheld device.", 0, V),
+        ("elevator", "yes", "Elevators connect the pier, hangar deck and flight deck.", 0, V),
         (
             "restroom_accessible",
             "yes",
@@ -83,7 +84,7 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
         ("wheelchair_rental", "yes", "Free wheelchairs, first come, first served.", 0, C),
     ],
     "sd-054": [
-        ("entrance_step_free", "yes", "Accessible north entrance near the large fig tree.", 0, C),
+        ("entrance_step_free", "yes", "Accessible north entrance near the large fig tree.", 0, V),
         (
             "parking_accessible",
             "yes",
@@ -91,7 +92,7 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
             0,
             C,
         ),
-        ("assistive_listening", "yes", "Infrared headsets in the Kaplan Theater.", 0, C),
+        ("assistive_listening", "yes", "Infrared headsets in the Kaplan Theater.", 0, V),
     ],
     "sd-058": [
         ("entrance_step_free", "yes", "Accessible El Prado entrance.", 0, C),
@@ -106,9 +107,9 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
         ),
     ],
     "sd-061": [
-        ("captions_asl", "yes", "Captioning devices for Dome Theater films.", 0, C),
-        ("assistive_listening", "yes", "Headsets that make theater sound clearer.", 0, C),
-        ("restroom_accessible", "yes", "Several wheelchair-accessible restrooms.", 0, C),
+        ("captions_asl", "yes", "Captioning devices for Dome Theater films.", 0, V),
+        ("assistive_listening", "yes", "Headsets that make theater sound clearer.", 0, V),
+        ("restroom_accessible", "yes", "Several wheelchair-accessible restrooms.", 0, V),
     ],
     "sd-062": [
         ("entrance_step_free", "yes", "Ramp at the east end of the front of the building.", 0, C),
@@ -126,9 +127,9 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
         ("elevator", "yes", "Elevators to the exhibition and lower levels.", 0, C),
     ],
     "sd-064": [
-        ("entrance_step_free", "yes", "Ramp to the left of the entrance.", 0, C),
-        ("seating", "plenty", "Benches in every gallery.", 0, C),
-        ("captions_asl", "partial", "ASL tours on the first Saturday of each month only.", 1, C),
+        ("entrance_step_free", "yes", "Ramp to the left of the entrance.", 0, V),
+        ("seating", "plenty", "Benches in every gallery.", 0, V),
+        ("captions_asl", "partial", "ASL tours on the first Saturday of each month only.", 1, V),
     ],
     "sd-065": [
         ("entrance_step_free", "yes", "Ramps and power doors at both entrances.", 0, C),
@@ -147,7 +148,7 @@ OFFICIAL_FACTS: dict[str, list[tuple[str, str, str, int, str]]] = {
             "no",
             "The operator says the Serra Museum and presidio site are not ADA-accessible.",
             0,
-            V,
+            C,
         ),
     ],
     "sd-089": [("entrance_step_free", "yes", "Ground-level entrance with no steps.", 0, C)],
