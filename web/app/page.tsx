@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
+import { DEMO_TRIPS } from "@/lib/api";
 
 // Plain-language value points under the hero.
 const steps = [
@@ -80,6 +81,14 @@ export default function Home() {
                 How it works
               </a>
             </div>
+            <p className="mt-4 text-sm">
+              <Link
+                href={`/trips/${DEMO_TRIPS.deaf}`}
+                className="text-primary underline underline-offset-4"
+              >
+                See a sample itinerary
+              </Link>
+            </p>
           </div>
 
           {/* Example stop card: shows the cited-fact badges that define the app. */}
