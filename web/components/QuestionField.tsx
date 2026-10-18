@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import type { IntakeQuestion } from "@/lib/intakeQuestions";
+import { QuestionVoiceInput } from "@/components/QuestionVoiceInput";
 
 export type MustNice = { must: string[]; nice: string[] };
 export type FieldValue = string | string[] | MustNice;
@@ -94,7 +95,7 @@ export function QuestionField({
         <legend className="text-lg font-semibold">{question.prompt}</legend>
         {help}
         <ul className="mt-4 space-y-2">
-          {question.options?.map((opt) => {
+          {question.options?.map((opt, index) => {
             const level = mn.must.includes(opt.value)
               ? "must"
               : mn.nice.includes(opt.value)
@@ -105,7 +106,7 @@ export function QuestionField({
                 key={opt.value}
                 className="rounded-lg border border-border bg-surface p-3 sm:flex sm:items-center sm:justify-between"
               >
-                <span className="text-sm font-medium">{opt.label}</span>
+                <span className="text-sm font-medium"><span className="text-muted">{index + 1}. </span>{opt.label}</span>
                 <div
                   role="radiogroup"
                   aria-label={opt.label}
@@ -163,7 +164,7 @@ export function QuestionField({
         <legend className="text-lg font-semibold">{question.prompt}</legend>
         {help}
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          {question.options?.map((opt) => (
+          {question.options?.map((opt, index) => (
             <label key={opt.value} className={chip}>
               <input
                 type={isMulti ? "checkbox" : "radio"}
@@ -173,7 +174,7 @@ export function QuestionField({
                 style={{ accentColor: "var(--primary)" }}
                 className="h-5 w-5 shrink-0"
               />
-              <span>{opt.label}</span>
+              <span><span className="text-muted">{index + 1}. </span>{opt.label}</span>
             </label>
           ))}
         </div>
@@ -192,6 +193,11 @@ export function QuestionField({
               onChange={(e) => onOtherChange(e.target.value)}
               className="mt-1 w-full max-w-sm rounded-lg border border-border bg-surface px-4 py-2 text-base"
             />
+            <QuestionVoiceInput
+              question={{ ...question, id: `${question.id}-other`, prompt: `Something else for: ${question.prompt}`, inputType: "text", options: undefined }}
+              value={otherValue}
+              onChange={answer => onOtherChange(String(answer))}
+            />
           </div>
         )}
       </fieldset>
@@ -199,9 +205,10 @@ export function QuestionField({
   }
 
   return (
-    <div>
+    <div data-question-id={question.id}>
       {control}
       {error}
+      <QuestionVoiceInput question={question} value={value} onChange={onChange} />
     </div>
   );
 }

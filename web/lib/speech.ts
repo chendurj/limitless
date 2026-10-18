@@ -30,6 +30,8 @@ function recognitionCtor(): RecognitionCtor | null {
 }
 
 const noSubscribe = () => () => {};
+// Several questionnaire fields can offer dictation, but only one may listen.
+let cancelActiveInput: (() => void) | null = null;
 
 /** True only in the browser, when speech recognition exists. False during server render. */
 function useIsSupported(check: () => boolean): boolean {
@@ -52,15 +54,9 @@ export function useSpeechInput(onText: (text: string) => void, continuous = fals
     latest.current = onText;
   }, [onText]);
 
-  useEffect(() => () => {
-    const r = recognition.current;
-    if (!r) return;
-    r.onresult = r.onerror = r.onend = null;
-    r.abort();
-  }, []);
-
   // Cancel without accepting late results, e.g. when clearing or sending a draft.
-  const cancel = useCallback(() => {
+  const cancel = useCallback(function cancelInput() {
+    if (cancelActiveInput === cancelInput) cancelActiveInput = null;
     const r = recognition.current;
     recognition.current = null;
     if (r) {
@@ -71,9 +67,20 @@ export function useSpeechInput(onText: (text: string) => void, continuous = fals
     setError(null);
   }, []);
 
+  useEffect(() => () => {
+    if (cancelActiveInput === cancel) cancelActiveInput = null;
+    const r = recognition.current;
+    recognition.current = null;
+    if (!r) return;
+    r.onresult = r.onerror = r.onend = null;
+    r.abort();
+    setListening(false);
+  }, [cancel]);
+
   const start = useCallback(() => {
     const Ctor = recognitionCtor();
     if (!Ctor || recognition.current) return;
+    cancelActiveInput?.();
     const r = new Ctor();
     r.lang = "en-US";
     r.interimResults = true;
@@ -97,25 +104,29 @@ export function useSpeechInput(onText: (text: string) => void, continuous = fals
       setError(errors[event.error] ?? "We could not hear that. You can try again or type instead.");
       setListening(false);
       recognition.current = null;
+      if (cancelActiveInput === cancel) cancelActiveInput = null;
       r.onresult = r.onerror = r.onend = null;
       r.abort();
     };
     r.onend = () => {
       if (recognition.current !== r) return;
       recognition.current = null;
+      if (cancelActiveInput === cancel) cancelActiveInput = null;
       setListening(false);
     };
     recognition.current = r;
+    cancelActiveInput = cancel;
     setError(null);
     setListening(true);
     try { r.start(); }
     catch {
       r.onresult = r.onerror = r.onend = null;
       recognition.current = null;
+      if (cancelActiveInput === cancel) cancelActiveInput = null;
       setListening(false);
       setError("Voice input couldn't start. Please try again, or type instead.");
     }
-  }, [continuous]);
+  }, [continuous, cancel]);
 
   const stop = useCallback(() => recognition.current?.stop(), []);
 
