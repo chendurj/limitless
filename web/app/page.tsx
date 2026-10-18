@@ -53,16 +53,38 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Hero */}
-      <section className="bg-accent-soft">
-        <div className="mx-auto grid w-full max-w-5xl gap-12 px-6 py-20 sm:py-24 lg:grid-cols-2 lg:items-center">
+      <section
+        className="relative overflow-hidden bg-[#070b10] bg-cover bg-center"
+        style={{ backgroundImage: "url('/logo-bg-poster.jpg')" }}
+      >
+        {/* Looping infinity logo. Hidden when the viewer prefers reduced motion;
+            the poster image on the section stays as a still fallback. */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/logo-bg-poster.jpg"
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover motion-reduce:hidden"
+        >
+          <source src="/logo-bg.mp4" type="video/mp4" />
+        </video>
+        {/* Dark gradient keeps the text at AA+ contrast over the video. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-[#070b10]/90 via-[#070b10]/70 to-[#070b10]/40"
+        />
+
+        <div className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 py-24 sm:py-28 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-primary">
+            <p className="text-sm font-semibold uppercase tracking-wide text-teal-300">
               Limitless
             </p>
-            <h1 className="mt-3 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+            <h1 className="mt-3 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
               San Diego trips built around how you move.
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-muted">
+            <p className="mt-5 max-w-xl text-lg text-zinc-200">
               Tell us your access needs once. We plan a day you can actually do
               — every accessibility fact is sourced, and the plan changes when
               your body says it needs to.
@@ -76,7 +98,7 @@ export default function Home() {
               </Link>
               <a
                 href="#how-it-works"
-                className="inline-flex h-12 items-center justify-center rounded-lg border border-border px-6 font-semibold text-foreground transition-colors hover:bg-surface-muted"
+                className="inline-flex h-12 items-center justify-center rounded-lg border border-white/30 px-6 font-semibold text-white transition-colors hover:bg-white/10"
               >
                 How it works
               </a>
@@ -84,7 +106,7 @@ export default function Home() {
             <p className="mt-4 text-sm">
               <Link
                 href={`/trips/${DEMO_TRIPS.deaf}`}
-                className="text-primary underline underline-offset-4"
+                className="text-teal-300 underline underline-offset-4"
               >
                 See a sample itinerary
               </Link>
@@ -94,7 +116,7 @@ export default function Home() {
           {/* Example stop card: shows the cited-fact badges that define the app. */}
           <div
             aria-label="Example of an itinerary stop"
-            className="rounded-2xl border border-border bg-surface p-5 shadow-sm"
+            className="rounded-2xl border border-border bg-surface p-5 shadow-xl ring-1 ring-white/10"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-muted">
