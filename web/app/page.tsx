@@ -89,53 +89,76 @@ export default function Home() {
         >
           <source src="/logo-bg.mp4" type="video/mp4" />
         </video>
-        {/* Dark gradient keeps the text at AA+ contrast over the video. */}
+        {/* Dark overlay keeps the text at AA+ contrast over the video. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-[#070b10]/90 via-[#070b10]/70 to-[#070b10]/40"
+          className="absolute inset-0 bg-[#070b10]/70"
         />
 
-        <div className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p className="bg-gradient-to-r from-teal-300 to-sky-400 bg-clip-text text-5xl font-extrabold tracking-tight text-transparent drop-shadow-[0_0_25px_rgba(45,212,191,0.45)] sm:text-6xl">
-              Limitless
-            </p>
-            <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
-              Your world to discover. Your right to explore.
-            </h1>
-            <p className="mt-5 max-w-xl text-lg text-zinc-200">
-              A trip planned around your real access needs: slopes, distances,
-              restrooms, captions, and more. Every accessibility fact is sourced,
-              and the plan adapts as your day changes.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/intake"
-                className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-6 font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
-              >
-                Plan your trip
-              </Link>
-              <a
-                href="#what-it-does"
-                className="inline-flex h-12 items-center justify-center rounded-lg border border-white/30 px-6 font-semibold text-white transition-colors hover:bg-white/10"
-              >
-                How it works
-              </a>
-            </div>
-            <p className="mt-4 text-sm">
-              <Link
-                href={`/trips/${DEMO_TRIPS.deaf}`}
-                className="text-teal-300 underline underline-offset-4"
-              >
-                See a sample itinerary
-              </Link>
-            </p>
-          </div>
+        <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center px-6 py-24 text-center sm:py-28">
+          <h1 className="text-6xl font-extrabold tracking-tight sm:text-8xl">
+            <span className="bg-gradient-to-r from-teal-200 via-teal-300 to-sky-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(45,212,191,0.4)]">
+              limitless.
+            </span>
+          </h1>
+          <p className="mt-5 text-lg text-zinc-200 sm:text-xl">
+            Your world to discover. Your right to explore.
+          </p>
 
-          {/* Example stop card: shows the cited-fact badges that define the app. */}
+          <Link
+            href="/intake"
+            className="mt-10 inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 font-semibold text-primary-foreground shadow-lg transition-colors hover:bg-primary-hover"
+          >
+            Plan your trip
+          </Link>
+
+          {/* The ask box starts the planner. */}
+          <form
+            action="/intake"
+            method="get"
+            className="mt-4 flex w-full max-w-md items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2"
+          >
+            <input
+              name="ask"
+              type="text"
+              placeholder="Ask anything…"
+              aria-label="Ask anything, or start planning"
+              className="h-9 flex-1 bg-transparent text-white placeholder:text-zinc-400"
+            />
+            <button
+              type="submit"
+              aria-label="Start planning"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-zinc-200 transition-colors hover:bg-white/10"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3.4 20.4 21 12 3.4 3.6 3 10l12 2-12 2 .4 6.4Z" />
+              </svg>
+            </button>
+          </form>
+
+          <p className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+            <a href="#what-it-does" className="text-teal-300 underline underline-offset-4">
+              How it works
+            </a>
+            <Link
+              href={`/trips/${DEMO_TRIPS.deaf}`}
+              className="text-teal-300 underline underline-offset-4"
+            >
+              See a sample itinerary
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* What a stop looks like */}
+      <section aria-labelledby="example-heading" className="border-t border-border">
+        <div className="mx-auto w-full max-w-5xl px-6 py-12">
+          <h2 id="example-heading" className="sr-only">
+            What a stop looks like
+          </h2>
           <div
             aria-label="Example of an itinerary stop"
-            className="rounded-2xl border border-border bg-surface p-5 shadow-xl ring-1 ring-white/10"
+            className="mx-auto max-w-xl rounded-2xl border border-border bg-surface p-5 shadow-sm"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-muted">
@@ -194,7 +217,7 @@ export default function Home() {
       <section
         id="what-it-does"
         aria-labelledby="what-heading"
-        className="border-t border-border scroll-mt-6"
+        className="scroll-mt-6 border-t border-border"
       >
         <div className="mx-auto w-full max-w-5xl px-6 py-16">
           <h2 id="what-heading" className="text-2xl font-bold">
@@ -203,7 +226,7 @@ export default function Home() {
           <p className="mt-3 max-w-2xl text-muted">
             An accessible entrance says little about slopes, restrooms,
             transfers, or assistance. We combine curated data, personal fit, and
-            during-trip adaptation.
+            adaptation during the trip.
           </p>
           <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
