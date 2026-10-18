@@ -39,12 +39,31 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           >
             {children}
           </main>
-          <footer className="border-t border-border px-6 py-8 text-sm text-muted">
-            <div className="mx-auto w-full max-w-5xl">
-              <p className="font-semibold text-foreground">Limitless</p>
-              <p className="mt-1 max-w-2xl">
-                Accessibility details come from cited sources and can change.
-                Always confirm critical needs with the venue before you go.
+          <footer className="border-t border-border px-6 py-10 text-sm text-muted">
+            <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold text-foreground">Limitless</p>
+                <p className="mt-1">Your world to discover. Your right to explore.</p>
+              </div>
+              <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2">
+                <a href="/how-it-works" className="hover:text-foreground">
+                  How it works
+                </a>
+                <a href="/features" className="hover:text-foreground">
+                  Features
+                </a>
+                <a href="/reviews" className="hover:text-foreground">
+                  Reviews
+                </a>
+                <a href="/intake" className="hover:text-foreground">
+                  Plan your trip
+                </a>
+              </nav>
+            </div>
+            <div className="mx-auto mt-8 w-full max-w-5xl border-t border-border pt-6 text-xs">
+              <p>
+                &copy; 2026 Limitless. All rights reserved. A DubHacks &rsquo;26
+                project.
               </p>
             </div>
           </footer>
