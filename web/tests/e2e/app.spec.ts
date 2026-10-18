@@ -457,3 +457,84 @@ test('31 edit with AI opens the saved itinerary feedback dialog', async ({ page 
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page.locator('#tell-text')).toBeFocused();
 });
+
+test('32 rapid repeated manual save sends one update', async ({ page }) => {
+  const server = await api(page, { delay: 150 });
+  await page.goto('/my-trips');
+  await page.getByRole('link', { name: 'Edit manually', exact: true }).click();
+  const form = page.locator('#manual-editor form').first();
+  await form.getByRole('textbox', { name: 'Personal note' }).fill('Demo: meet at the entrance.');
+  await form.evaluate(element => { (element as HTMLFormElement).requestSubmit(); (element as HTMLFormElement).requestSubmit(); });
+  await expect(page.locator('#manual-editor').getByRole('status')).toContainText('is saved.');
+  expect(Object.entries(server.counts).filter(([key]) => key.startsWith('PATCH /api/trips/')).reduce((n, [, count]) => n + count, 0)).toBe(1);
+});
+
+const pathCases = [
+  { name: 'interests only', needs: ['other'] },
+  { name: 'wheelchair and beach interest', needs: ['mobility_device'] },
+  { name: 'limited walking and varied pace', needs: ['limited_mobility'] },
+  { name: 'temporary injury', needs: ['temporary_injury'] },
+  { name: 'Deaf traveler', needs: ['deaf_hoh'] },
+  { name: 'non-speaking traveler', needs: ['non_speaking'] },
+  { name: 'combined mobility hearing communication and service animal', needs: ['mobility_device', 'deaf_hoh', 'non_speaking', 'service_animal'] },
+  { name: 'service animal without a mobility assumption', needs: ['service_animal'] },
+];
+for (const [caseIndex, scenario] of pathCases.entries()) {
+  test(`complete questionnaire: ${scenario.name}`, async ({ page }) => {
+    const server = await api(page);
+    await page.goto('/intake');
+    const expected: Record<string, string[]> = {};
+    const screens = intakeScreens.filter(screen => screen.questions.some(q => isVisible(q, { needs: scenario.needs })));
+    for (const [index, screen] of screens.entries()) {
+      const q = screen.questions[0];
+      await expect(page.locator('[data-question-id]')).toHaveCount(1);
+      const options = q.options!;
+      const group = field(page, q.id);
+      if (q.inputType === 'must-nice') {
+        const option = options[caseIndex % options.length];
+        await group.getByRole('radiogroup', { name: option.label, exact: true }).getByRole('radio', { name: 'Must have', exact: true }).check();
+        expected[q.id] = [option.value];
+      } else {
+        const selected = q.id === 'needs' ? scenario.needs : [options[caseIndex % options.length].value];
+        for (const value of selected) await group.getByRole(q.inputType === 'multi' ? 'checkbox' : 'radio').nth(options.findIndex(option => option.value === value)).check();
+        expected[q.id] = selected;
+      }
+      if (q.id === 'interests') await page.locator('#interests-other').fill(`Demo personal preference ${caseIndex}: quiet lunch & café <nearby>.`);
+      await page.getByRole('button', { name: index === screens.length - 1 ? 'Finish' : 'Next', exact: true }).click();
+    }
+    await expect(page.getByRole('button', { name: 'Plan my trip', exact: true })).toBeVisible();
+    const answers = server.bodies['POST /api/intake'][0].answers as Record<string, { selected: string[]; other: string }>;
+    for (const [id, values] of Object.entries(expected)) expect(answers[id].selected).toEqual(values);
+    expect(answers.interests.other).toBe(`Demo personal preference ${caseIndex}: quiet lunch & café <nearby>.`);
+    expect(answers).not.toHaveProperty('equipment');
+    if (!scenario.needs.some(need => ['mobility_device', 'limited_mobility', 'temporary_injury'].includes(need))) expect(answers).not.toHaveProperty('walking');
+    if (!scenario.needs.some(need => ['deaf_hoh', 'non_speaking'].includes(need))) expect(answers).not.toHaveProperty('communication_supports');
+  });
+}
+
+test('voice review refuses a reversed preference and typed correction applies once', async ({ page }) => {
+  await speech(page);
+  await seed(page, { ...baseAnswers, interests: ['history'] }, 2);
+  const interests = field(page, 'interests');
+  await interests.getByRole('button', { name: /^Speak answer:/ }).click();
+  await emit(page, 'I hate beaches');
+  await interests.getByRole('button', { name: /^Stop microphone:/ }).click();
+  await expect(page.locator('#voice-interests')).toHaveValue('I hate beaches');
+  await expect(interests.getByRole('button', { name: 'Use this answer', exact: true })).toBeDisabled();
+  await expect(interests.getByRole('checkbox').nth(3)).toBeChecked();
+  await expect(interests.getByRole('checkbox').first()).not.toBeChecked();
+  await page.locator('#voice-interests').fill('I love beaches');
+  await interests.getByRole('button', { name: 'Use this answer', exact: true }).click();
+  await expect(interests.getByRole('checkbox').first()).toBeChecked();
+  await expect(interests.getByRole('checkbox').nth(3)).not.toBeChecked();
+  await expect(interests.getByRole('button', { name: 'Use this answer', exact: true })).toBeDisabled();
+});
+
+test('unsupported voice recording keeps normal questionnaire choices available', async ({ page }) => {
+  await speech(page, false);
+  await page.goto('/intake');
+  await expect(field(page, 'needs').getByRole('button', { name: /^Speak answer:/ })).toBeDisabled();
+  await field(page, 'needs').getByRole('checkbox').first().check();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(field(page, 'walking')).toBeVisible();
+});

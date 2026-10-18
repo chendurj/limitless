@@ -69,6 +69,13 @@ function stem(word: string) {
 function looseChoices(question: IntakeQuestion, text: string): string[] | null {
   const options = (question.options ?? []).filter(option => !/^something else$/i.test(option.label));
   let raw = ` ${words(text)} `;
+  // Preference words carry meaning: never discard dislike/avoid as harmless
+  // filler in an interests, needs, pace or transport answer. Avoidance questions
+  // invert that meaning, so positive preferences must not become barriers either.
+  const avoidance = ["avoid", "sensory_reduce", "surfaces"].includes(question.id);
+  if (!avoidance && /\b(hate|dislike|avoid)\b/.test(raw)) return null;
+  if (avoidance && /\b(like|love|enjoy)\b/.test(raw)) return null;
+  if (avoidance && /\bprefer\b/.test(raw) && !/\bprefer (?:to )?(?:avoid|dislike|hate)\b/.test(raw)) return null;
   const matched = new Set<string>();
   // Whole labels first, so a label's own "or" ("Deaf or hard of hearing") is not refused.
   for (const option of [...options].sort((a, b) => b.label.length - a.label.length)) {

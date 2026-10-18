@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { api, type ItemOut, type TripOut } from "@/lib/api";
 import { Spinner } from "@/components/Spinner";
 
@@ -31,10 +31,13 @@ function StopEditor({ item, busy, onSave }: {
 
 export function ManualItineraryEditor({ trip, onSaved }: { trip: TripOut; onSaved: (item: ItemOut) => void }) {
   const [busy, setBusy] = useState(false);
+  const saving = useRef(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
   async function save(item: ItemOut, changes: { status: ItemOut["status"]; locked: boolean; user_note: string }) {
+    if (saving.current) return;
+    saving.current = true;
     setBusy(true);
     setNotice("");
     setError("");
@@ -42,7 +45,7 @@ export function ManualItineraryEditor({ trip, onSaved }: { trip: TripOut; onSave
       onSaved(await api.updateItem(trip.id, item.id, changes));
       setNotice(`${item.title} is saved.`);
     } catch (error) { setError(error instanceof Error ? error.message : "We could not save that stop."); }
-    finally { setBusy(false); }
+    finally { saving.current = false; setBusy(false); }
   }
 
   return (
