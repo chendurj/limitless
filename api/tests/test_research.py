@@ -15,8 +15,10 @@ def test_every_researched_place_matches_a_demo_place():
 
 def test_official_facts_point_to_a_researched_source():
     researched = {loc["location_id"]: loc for loc in import_research.load()[1]}
-    for location_id, (_, _, _, source) in import_research.OFFICIAL_FACTS.items():
-        assert source < len(researched[location_id]["sources"])
+    for location_id, facts in import_research.OFFICIAL_FACTS.items():
+        for _, _, _, source, confidence in facts:
+            assert source < len(researched[location_id]["sources"])
+            assert confidence in ("VERIFIED", "COMMUNITY")
 
 
 def test_place_card_shows_the_research():

@@ -32,6 +32,29 @@ MIN_ACCESS_FIT = 0.4
 NICE_TO_HAVE_BONUS = 0.05
 MAX_BONUS = 0.3
 
+# Display score: how much each kind of check counts. A must-have counts most.
+WEIGHT_MUST_HAVE, WEIGHT_CRITICAL, WEIGHT_RULE, WEIGHT_NICE = 4.0, 3.0, 1.0, 1.0
+UNKNOWN_QUALITY, UNKNOWN_MUST_HAVE_QUALITY = 0.6, 0.45
+# Extras: a "yes" helps, but an unknown is not a problem. They count half and start higher.
+EXTRAS = {
+    "assistive_listening", "audio_description", "braille_tactile", "guide_dog_relief",
+    "sighted_guide_on_request", "online_booking", "text_contact", "kiosk_or_app_ordering",
+    "written_notes_ok",
+}  # fmt: skip
+WEIGHT_EXTRA, UNKNOWN_EXTRA_QUALITY = 0.5, 0.75
+# General comfort for travelers with mobility needs. No rule reads these, but they help.
+COMFORT = ("restroom_accessible", "parking_accessible", "crowd_level", "elevator", "dropoff_zone")
+WEIGHT_COMFORT = 0.5
+# How good each value is, when no rule found a problem. Better values score higher.
+VALUE_QUALITY = {
+    "max_slope": {"flat": 1.0, "gentle": 0.85, "moderate": 0.55, "steep": 0.2},
+    "terrain": {"smooth": 1.0, "mixed": 0.7, "uneven": 0.45, "sand": 0.3},
+    "seating": {"plenty": 1.0, "some": 0.7, "none": 0.2},
+    "crowd_level": {"low": 1.0, "medium": 0.7, "high": 0.4},
+    "noise_level": {"low": 1.0, "medium": 0.7, "high": 0.4},
+}
+DEFAULT_QUALITY = {"yes": 1.0, "some": 0.7, "partial": 0.6, "no": 0.25, "none": 0.25}
+
 
 @dataclass
 class Evaluation:
@@ -48,11 +71,12 @@ class Evaluation:
     fact_ids: list[int]  # the facts this decision depends on
     unknown_critical: list[str] = field(default_factory=list)  # attributes to confirm by phone
     verification: float | None = None  # 0-1 trust in the facts this decision depends on
+    display_fit: float | None = None  # 0-1 for the page; access_fit is for ranking
 
     @property
     def accessibility_score(self) -> int:
-        """0-100: how well the place fits this traveler."""
-        return round(self.access_fit * 100)
+        """0-100: how well the place fits this traveler, from all the facts that matter to them."""
+        return round((self.access_fit if self.display_fit is None else self.display_fit) * 100)
 
     @property
     def verification_score(self) -> int | None:
@@ -102,9 +126,22 @@ def evaluate(
         else:
             unknown[attribute] = f"Not verified: call ahead to confirm {ask}."
 
+    # Display score inputs: attribute -> weight, and must-have attribute -> (quality, strength).
+    relevant: dict[str, float] = {}
+    must_q: dict[str, tuple[float, float]] = {}
+
     for rule in RULES:
         if not rule.when(dna) or not _applies(rule.categories, place):
             continue
+        if rule.attribute != "status":  # an unknown status is normal; it says nothing
+            weight = (
+                WEIGHT_CRITICAL
+                if rule.critical
+                else WEIGHT_EXTRA
+                if rule.attribute in EXTRAS
+                else WEIGHT_RULE
+            )
+            relevant[rule.attribute] = max(relevant.get(rule.attribute, 0), weight)
         fact = effective.get(rule.attribute)
         if rule.critical:
             checked[rule.attribute] = fact
@@ -124,18 +161,29 @@ def evaluate(
         present = [effective[a] for a in attrs if a in effective]
         satisfied = [f for f in present if f.is_strong and f.value not in FEATURE_MISS]
         checked[attrs[0]] = max(present, key=trust) if present else None
+        relevant[attrs[0]] = WEIGHT_MUST_HAVE
         if satisfied:
             used.update(f.id for f in satisfied)
+            best = max(satisfied, key=lambda f: f.weight)
+            must_q[attrs[0]] = (1.0, best.weight)
             continue
         misses = [(e, f) for f in present if (e := must_have_check(f, ctx)) is not None]
         if misses:
-            add(*max(misses, key=lambda m: (_STRENGTH[m[0].kind], m[0].weight)))
+            effect, fact = max(misses, key=lambda m: (_STRENGTH[m[0].kind], m[0].weight))
+            add(effect, fact)
+            must_q[attrs[0]] = (_quality(effect), fact.weight)
         else:
+            must_q[attrs[0]] = (UNKNOWN_MUST_HAVE_QUALITY, 1.0)
             not_verified(attrs[0], FEATURE_ASK[feature], present[0] if present else None)
+
+    if {"mobility_device", "limited_mobility", "temporary_injury"} & set(dna.needs):
+        for attr in COMFORT:
+            relevant.setdefault(attr, WEIGHT_COMFORT)
 
     for feature in dna.requirements.nice_to_have:
         if not _applies(FEATURE_CATEGORIES.get(feature), place):
             continue
+        relevant.setdefault(FEATURE_ATTRS[feature][0], WEIGHT_NICE)
         for attr in FEATURE_ATTRS[feature]:
             fact = effective.get(attr)
             if fact is not None and fact.is_strong and fact.value not in FEATURE_MISS:
@@ -168,6 +216,8 @@ def evaluate(
         round(sum(trust(f) if f else 0.0 for f in basis) / len(basis), 3) if basis else None
     )
 
+    display_fit = _display_fit(relevant, must_q, effects, effective, dna)
+
     interest = _interest(place, dna)
     quality = (place.rating - 1) / 4 if place.rating else 0.5
     score = (
@@ -192,7 +242,53 @@ def evaluate(
         fact_ids=sorted(used),
         unknown_critical=list(unknown),
         verification=verification,
+        display_fit=None if hard else display_fit,
     )
+
+
+def _quality(effect: Effect | None) -> float:
+    """0-1: how good one checked value is for this traveler."""
+    if effect is None:
+        return 1.0  # known, and no rule found a problem
+    return {"HARD": 0.0, "BONUS": 1.0, "NOTE": 0.7}.get(effect.kind) or max(
+        0.0, 1 - 2.5 * effect.weight
+    )
+
+
+def _display_fit(
+    relevant: dict[str, float],
+    must_q: dict[str, tuple[float, float]],
+    effects: dict[str, tuple[Effect, Fact]],
+    effective: dict[str, Fact],
+    dna: AccessibilityDNA,
+) -> float:
+    """0-1 for the page: the weighted mean quality of every check that matters to this traveler.
+
+    Each value starts at 0.5 (unknown) and moves toward its quality by the fact's strength:
+    a VERIFIED fact moves it all the way, a COMMUNITY fact 80%. So a place with many confirmed
+    good facts scores higher than a place we know little about.
+    """
+    if not relevant:
+        return 0.75
+    total = weighted = 0.0
+    for attr, weight in relevant.items():
+        if attr in must_q:
+            q, strength = must_q[attr]
+        elif (fact := effective.get(attr)) is None:
+            q, strength = (UNKNOWN_EXTRA_QUALITY if attr in EXTRAS else UNKNOWN_QUALITY), 1.0
+        else:
+            effect = effects.get(attr, (None, fact))[0]
+            value = VALUE_QUALITY.get(attr, DEFAULT_QUALITY).get(fact.value, 1.0)
+            q = min(_quality(effect), value)
+            if attr == "typical_walk_m" and fact.value.isdigit() and dna.max_walk_m:
+                # Longer walks score lower, step by step, not in one jump.
+                over = int(fact.value) / dna.max_walk_m - 1
+                q = 0.95 if over <= 0 else max(0.0, 0.9 - 0.6 * over)
+            strength = fact.weight
+        total += weight
+        base = UNKNOWN_EXTRA_QUALITY if attr in EXTRAS else UNKNOWN_QUALITY
+        weighted += weight * (base + (q - base) * strength)
+    return round(weighted / total, 3)
 
 
 def _interest(place: Place, dna: AccessibilityDNA) -> float:
