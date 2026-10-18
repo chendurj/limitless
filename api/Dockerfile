@@ -3,7 +3,7 @@
 # Secrets come from the host's environment variables, never from this image.
 FROM python:3.12-slim
 
-COPY --from=ghcr.io/astral-sh/uv:0.8.22 /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.10.2 /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PROJECT_ENVIRONMENT=/app/.venv
 
 WORKDIR /app
