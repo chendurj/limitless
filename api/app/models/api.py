@@ -105,6 +105,11 @@ class PlacePhoto(Model):
     review_status: Literal["pending", "confirmed", "rejected"]
 
 
+class SourceLink(Model):
+    title: str
+    url: str
+
+
 class PlaceOut(Model):
     id: str
     name: str
@@ -122,6 +127,9 @@ class PlaceOut(Model):
     facts: list[Fact]
     photos: list[PlacePhoto] = []
     rating: float | None = None
+    # The team's research from official sources, as written. Not a verified badge.
+    research_summary: str | None = None
+    research_sources: list[SourceLink] = []
 
 
 # --- Trips --------------------------------------------------------------------------
