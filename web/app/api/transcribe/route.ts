@@ -8,6 +8,20 @@ function error(message: string, status: number) {
   return Response.json({ error: message }, { status, headers: { 'Cache-Control': 'no-store' } });
 }
 
+// A per-address limit, because each OpenAI call costs money. The counts live in one server
+// instance, so this slows abuse; it is not a hard quota. (Kept in this file so the route
+// tests can import it without the '@/' path alias.)
+const recent = new Map<string, number[]>();
+function allow(request: Request, limit: number, windowMs: number, now = Date.now()) {
+  const address = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'local';
+  const times = (recent.get(address) ?? []).filter((t) => now - t < windowMs);
+  if (times.length >= limit) { recent.set(address, times); return false; }
+  times.push(now);
+  recent.set(address, times);
+  if (recent.size > 5000) recent.clear(); // keep memory bounded
+  return true;
+}
+
 export async function POST(request: Request) {
   const url = new URL(request.url);
   if (request.headers.get('origin') !== `${url.protocol}//${request.headers.get('host') || url.host}`) {
@@ -16,6 +30,10 @@ export async function POST(request: Request) {
   const mime = request.headers.get('content-type')?.split(';')[0].trim().toLowerCase() || '';
   if (!formats[mime]) return error('This audio format is not supported. Please try another browser.', 415);
   if (Number(request.headers.get('content-length')) > MAX_BYTES) return error('That recording is too long. Please record a shorter answer.', 413);
+  // Each recording costs money: at most 40 in 10 minutes from one address.
+  if (!allow(request, 40, 10 * 60 * 1000)) {
+    return error('You recorded many answers just now. Please wait a few minutes, or type.', 429);
+  }
   const key = process.env.OPENAI_API_KEY;
   if (!key) return error('Voice input is not connected on this server yet. You can still type.', 503);
   try {

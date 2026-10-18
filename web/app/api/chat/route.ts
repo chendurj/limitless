@@ -63,9 +63,10 @@ If asked to book, explain that booking is not integrated yet; offer to help orga
 what to confirm with the provider. Do not pretend a booking link or price was checked.
 
 ACCESSIBILITY EVIDENCE
-The app filters places against Accessibility DNA and displays sourced facts with
-VERIFIED, COMMUNITY, or INFERRED confidence. Unknown remains unknown. Negative evidence
-outweighs positive; inferred/community claims do not satisfy strict must-have needs.
+The app filters places against Accessibility DNA using sourced facts with VERIFIED,
+COMMUNITY, or INFERRED confidence. Each stop shows an Accessibility Score (fit for this
+traveler) and a Verification Score (trust in the sources). Unknown remains unknown.
+Negative evidence outweighs positive; inferred claims do not satisfy strict must-have needs.
 Never invent or assert venue-specific accessibility, hours, closures, availability,
 prices, or suitability. Do not choose destinations as matching a must-have from your
 own knowledge. Guide personalized place selection to the planner. Explain uncertainty
@@ -78,13 +79,31 @@ function reply(error: string, status: number) {
   return Response.json({ error }, { status, headers: { "Cache-Control": "no-store" } });
 }
 
+// One address may send at most 20 questions in 10 minutes.
+const RATE_LIMIT = 20;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+// A per-address limit, because each OpenAI call costs money. The counts live in one server
+// instance, so this slows abuse; it is not a hard quota. (Kept in this file so the route
+// tests can import it without the "@/" path alias.)
+const recent = new Map<string, number[]>();
+function allow(request: Request, limit: number, windowMs: number, now = Date.now()) {
+  const address = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
+  const times = (recent.get(address) ?? []).filter((t) => now - t < windowMs);
+  if (times.length >= limit) { recent.set(address, times); return false; }
+  times.push(now);
+  recent.set(address, times);
+  if (recent.size > 5000) recent.clear(); // keep memory bounded
+  return true;
+}
+
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
   const requestUrl = new URL(request.url);
   // Next.js can normalize the internal URL to localhost in development.
   // The Host header retains the address actually used by the browser.
   const expectedOrigin = `${requestUrl.protocol}//${request.headers.get("host") || requestUrl.host}`;
-  if (origin && origin !== expectedOrigin) {
+  // Browsers always send Origin on a POST. A request without it is a script, not our page.
+  if (!origin || origin !== expectedOrigin) {
     return reply("Please send your question from the Limitless website.", 403);
   }
   const raw = await request.text();
@@ -101,6 +120,7 @@ export async function POST(request: Request) {
       message.content.length <= (message.role === "user" ? 2000 : 12000)) || messages.at(-1)?.role !== "user") {
     return reply("Send a question of up to 2,000 characters.", 400);
   }
+  if (!allow(request, RATE_LIMIT, RATE_WINDOW_MS)) return reply("You asked many questions just now. Please wait a few minutes.", 429);
   const key = process.env.OPENAI_API_KEY;
   if (!key) return reply("The assistant is not connected yet. You can still use Plan your trip.", 503);
 
