@@ -3,6 +3,33 @@
  "note": "Each fact was read on the official page at the url; the quote is the exact text. Reviewed by the team before import.",
  "facts": [
   {
+   "location_id": "sd-024",
+   "place": "Los Penasquitos Canyon Preserve",
+   "attribute": "shade",
+   "value": "some",
+   "detail": "The creek-side single-track trails are shady. The wide access road is sunny.",
+   "quote": "Trail users can take single track trails near the creek with near constant shade, or venture out to a wider, sunnier trail and access road.",
+   "url": "https://www.sdparks.org/content/sdparks/en/park-pages/LosPenasquitos.html"
+  },
+  {
+   "location_id": "sd-026",
+   "place": "Lake Miramar (Miramar Reservoir)",
+   "attribute": "seating",
+   "value": "some",
+   "detail": "There are picnic tables. The reservoir closes on the first Tuesday of each month.",
+   "quote": "Picnic Tables",
+   "url": "https://www.sandiego.gov/reservoirs-lakes/miramar-reservoir"
+  },
+  {
+   "location_id": "sd-027",
+   "place": "Marian Bear Memorial Park (San Clemente Canyon)",
+   "attribute": "max_slope",
+   "value": "gentle",
+   "detail": "The main canyon trail is mostly flat. The side-canyon trails up to the mesa are harder.",
+   "quote": "The public can enjoy over three miles of mostly flat trails along the canyon's length.",
+   "url": "https://www.sandiego.gov/park-and-recreation/parks/osp/marianbear"
+  },
+  {
    "location_id": "sd-056",
    "place": "Whaley House Museum",
    "attribute": "elevator",
@@ -109,6 +136,15 @@
    "detail": "A few loaner wheelchairs, first come, first served.",
    "quote": "The ICA has a limited number of wheelchairs for use by visitors on a first-come, first serve basis.",
    "url": "https://icasandiego.org/accessibility-central/"
+  },
+  {
+   "location_id": "sd-071",
+   "place": "Balboa Park El Prado",
+   "attribute": "parking_accessible",
+   "value": "yes",
+   "detail": "ADA parking spaces are in the Alcazar and Spreckels Organ Pavilion lots, near El Prado.",
+   "quote": "The nearest ADA parking spots are available in the Alcazar parking lot or the Spreckels Organ Pavilion parking lot.",
+   "url": "https://www.balboapark.org/accessibility/"
   },
   {
    "location_id": "sd-091",
