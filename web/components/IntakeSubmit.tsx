@@ -7,6 +7,7 @@ import type { components } from "@/types/api";
 import { intakeScreens, type IntakeQuestion } from "@/lib/intakeQuestions";
 import { useAnnounce } from "@/components/LiveRegion";
 import type { FieldValue } from "@/components/QuestionField";
+import { Spinner } from "@/components/Spinner";
 
 type IntakeResponse = components["schemas"]["IntakeResponse"];
 type Followup = components["schemas"]["Followup"];
@@ -144,6 +145,7 @@ export function IntakeSubmit({
   if (phase === "submitting" || phase === "creating") {
     return (
       <div className={wrap} aria-busy="true">
+        <Spinner size={40} className="mb-5 text-primary" />
         <h1 ref={headingRef} tabIndex={-1} className={heading}>
           {phase === "creating" ? "Building your trip…" : "One moment…"}
         </h1>

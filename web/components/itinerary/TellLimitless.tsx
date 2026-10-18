@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { api, ApiError, type ReplanResult, type TripOut } from "@/lib/api";
 import { speak, useCanSpeak, useSpeechInput } from "@/lib/speech";
 import { useAnnounce } from "@/components/LiveRegion";
+import { Spinner } from "@/components/Spinner";
 
 type Phase = "compose" | "sending" | "proposal" | "applying";
 
@@ -170,7 +171,14 @@ export function TellLimitless({
               )}
               <div className="mt-6 flex flex-wrap gap-3">
                 <button type="submit" disabled={phase === "sending"} className={primary}>
-                  {phase === "sending" ? "Checking your plan…" : "Send"}
+                  {phase === "sending" ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Spinner size={16} />
+                      Checking your plan…
+                    </span>
+                  ) : (
+                    "Send"
+                  )}
                 </button>
                 <button type="button" onClick={close} className={secondary}>
                   Cancel
@@ -216,7 +224,14 @@ export function TellLimitless({
                       disabled={phase === "applying"}
                       className={primary}
                     >
-                      {phase === "applying" ? "Updating…" : "Apply"}
+                      {phase === "applying" ? (
+                        <span className="inline-flex items-center gap-2">
+                          <Spinner size={16} />
+                          Updating…
+                        </span>
+                      ) : (
+                        "Apply"
+                      )}
                     </button>
                     <button type="button" onClick={close} className={secondary}>
                       Keep my plan

@@ -6,6 +6,7 @@ import { api, ApiError, type ItemOut, type TripOut } from "@/lib/api";
 import { useAnnounce } from "@/components/LiveRegion";
 import { ItineraryView, type StatusChange } from "@/components/itinerary/ItineraryView";
 import { TellLimitless } from "@/components/itinerary/TellLimitless";
+import { Spinner } from "@/components/Spinner";
 
 const errorText = (err: unknown, fallback: string) =>
   err instanceof ApiError ? err.message : fallback;
@@ -101,7 +102,10 @@ export function TripScreen() {
   if (!trip) {
     return (
       <div className="mx-auto w-full max-w-2xl px-6 py-16" aria-busy="true">
-        <p className="text-muted">Loading your trip…</p>
+        <p className="flex items-center gap-3 text-muted">
+          <Spinner className="text-primary" />
+          Loading your trip…
+        </p>
       </div>
     );
   }
