@@ -27,6 +27,28 @@ SOURCE_LABEL = {
     "demo_data": "demo data, not verified",
 }
 
+# How much a fact from each source can be trusted, for the Verification Score (0-1).
+# Demo data is low on purpose: it is generated, not checked.
+SOURCE_TRUST = {
+    "official": 1.0,
+    "phone_call": 1.0,
+    "team_verified": 1.0,
+    "wheelmap": 0.6,
+    "osm": 0.6,
+    "google_places": 0.6,
+    "community_feedback": 0.6,
+    "photo_ai": 0.4,
+    "inferred": 0.3,
+    "demo_data": 0.2,
+}
+CONF_CAP = {"VERIFIED": 1.0, "COMMUNITY": 0.8, "INFERRED": 0.5}
+
+
+def trust(fact: "Fact") -> float:
+    """0-1: the source's trust, capped by the confidence level."""
+    return min(SOURCE_TRUST.get(fact.source, 0.3), CONF_CAP[fact.confidence])
+
+
 # Values that count as negative evidence for each attribute. Default: {"no"}.
 NEGATIVE: dict[str, set[str]] = {
     "status": {"closed", "partial"},

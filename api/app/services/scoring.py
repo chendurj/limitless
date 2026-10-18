@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from datetime import date
 
 from app.models.dna import AccessibilityDNA
-from app.services.facts import Fact, is_negative, resolve
+from app.services.facts import Fact, is_negative, resolve, trust
 from app.services.rules import (
     FEATURE_ASK,
     FEATURE_ATTRS,
@@ -47,6 +47,17 @@ class Evaluation:
     highlights: list[str]  # positive, cited facts
     fact_ids: list[int]  # the facts this decision depends on
     unknown_critical: list[str] = field(default_factory=list)  # attributes to confirm by phone
+    verification: float | None = None  # 0-1 trust in the facts this decision depends on
+
+    @property
+    def accessibility_score(self) -> int:
+        """0-100: how well the place fits this traveler."""
+        return round(self.access_fit * 100)
+
+    @property
+    def verification_score(self) -> int | None:
+        """0-100: how much the facts behind the decision can be trusted. None: nothing checked."""
+        return None if self.verification is None else round(self.verification * 100)
 
 
 _STRENGTH = {"HARD": 3, "SOFT": 2, "NOTE": 1, "BONUS": 0}
@@ -72,6 +83,7 @@ def evaluate(
     effects: dict[str, tuple[Effect, Fact]] = {}  # strongest effect per attribute
     unknown: dict[str, str] = {}  # attribute -> warning
     used: set[int] = set()
+    checked: dict[str, Fact | None] = {}  # attributes this traveler depends on; None = unknown
 
     def add(effect: Effect | None, fact: Fact) -> None:
         if effect is None:
@@ -94,6 +106,8 @@ def evaluate(
         if not rule.when(dna) or not _applies(rule.categories, place):
             continue
         fact = effective.get(rule.attribute)
+        if rule.critical:
+            checked[rule.attribute] = fact
         if fact is None:
             if rule.critical:
                 not_verified(rule.attribute, rule.ask, None)
@@ -109,6 +123,7 @@ def evaluate(
         attrs = FEATURE_ATTRS[feature]
         present = [effective[a] for a in attrs if a in effective]
         satisfied = [f for f in present if f.is_strong and f.value not in FEATURE_MISS]
+        checked[attrs[0]] = max(present, key=trust) if present else None
         if satisfied:
             used.update(f.id for f in satisfied)
             continue
@@ -146,6 +161,13 @@ def evaluate(
     if not hard and access_fit < MIN_ACCESS_FIT:
         reasons.append("Multiple comfort issues: " + " ".join(e.reason for e, _ in soft))
 
+    # Verification: the mean trust of the facts that matter for this traveler. An unknown
+    # value counts as 0. With no critical checks, use all the place's facts.
+    basis = list(checked.values()) or list(effective.values())
+    verification = (
+        round(sum(trust(f) if f else 0.0 for f in basis) / len(basis), 3) if basis else None
+    )
+
     interest = _interest(place, dna)
     quality = (place.rating - 1) / 4 if place.rating else 0.5
     score = (
@@ -169,6 +191,7 @@ def evaluate(
         highlights=[e.reason for e, _ in bonuses],
         fact_ids=sorted(used),
         unknown_critical=list(unknown),
+        verification=verification,
     )
 
 

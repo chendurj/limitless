@@ -171,6 +171,8 @@ class ItemOut(Model):
     cited_fact_ids: list[int]
     warnings: list[str]  # e.g. "Not verified: call ahead to confirm ..."
     insights: list[Insight]
+    accessibility_score: int | None = None  # 0-100: how well the place fits this traveler
+    verification_score: int | None = None  # 0-100: trust in the facts behind that fit
 
 
 class Weather(Model):

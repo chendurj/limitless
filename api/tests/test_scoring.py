@@ -401,3 +401,16 @@ def test_seating_levels_satisfy_a_seating_must_have(make_dna):
     assert plenty.unknown_critical == [] and plenty.access_fit == 1
     assert run(CAFE, [fact("seating", "none")], dna).excluded
     assert not run(CAFE, [fact("seating", "some")], dna).excluded
+
+
+def test_scores_for_the_traveler(deaf_non_speaking):
+    official = fact("captions_asl", "yes", detail="Captioned films.")
+    demo = Fact(990, "captions_asl", "yes", "Captions.", "COMMUNITY", "demo_data")
+    strong = evaluate(MUSEUM, [official], deaf_non_speaking)
+    weak = evaluate(MUSEUM, [demo], deaf_non_speaking)
+    unknown = evaluate(MUSEUM, [], deaf_non_speaking)
+    assert strong.accessibility_score == 100
+    assert strong.verification_score > weak.verification_score > unknown.verification_score
+    assert weak.verification_score <= 20  # demo data is never high
+    assert unknown.verification_score == 0
+    assert unknown.accessibility_score < strong.accessibility_score  # unknown captions cost fit
