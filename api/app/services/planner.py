@@ -166,7 +166,11 @@ def _draft_days(
     nights: int,
     forecasts: list[api.Weather | None],
 ) -> list[DayDraft]:
-    visits = [c for c in kept if c.kind == "visit"]
+    # A visit that alone uses more than a whole day's energy is never planned, if others fit.
+    visits = [c for c in kept if c.kind == "visit" and c.energy <= limits.energy] or [
+        c for c in kept if c.kind == "visit"
+    ]
+    kept = [c for c in kept if c.kind != "visit" or c in visits]
     clusters = plan_clusters(visits, nights, limits.max_visits)
     used: set[str] = set()
     days = []

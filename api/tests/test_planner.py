@@ -307,19 +307,24 @@ def fake_composer(make_items):
 
 
 def test_llm_output_is_grounded(deaf_non_speaking):  # noqa: F811
+    found = {}
+
     def items(ids, request):
-        art = next(f for c in request["days"][0]["candidates"] if c["name"] == "Test Art Museum" for f in c["facts"]
-                   if "Captioned" in f["detail"])  # fmt: skip
+        art_day = next(d["day_index"] for d in request["days"]
+                       if any(c["name"] == "Test Art Museum" for c in d["candidates"]))  # fmt: skip
+        found["day"] = art_day
+        art = next(f for day in request["days"] for c in day["candidates"] if c["name"] == "Test Art Museum"
+                   for f in c["facts"] if "Captioned" in f["detail"])  # fmt: skip
         return {
             "days": [
-                {"day_index": 0, "theme": "Museums", "items": [
+                {"day_index": art_day, "theme": "Museums", "items": [
                     {"place_id": ids["Test Art Museum"], "slot": "morning",
                      "rationale": "Captioned videos and ASL tours fit you.", "fact_ids": [art["fact_id"], 999999],
                      "tips": ["Go early.", "The ramp is 30 m long."]},
                     {"place_id": ids["Test Old Town Park"], "slot": "afternoon",
                      "rationale": "It is fully accessible and only 5 minutes away.", "fact_ids": [], "tips": []},
                 ]},
-                {"day_index": 1, "theme": "Again", "items": [
+                {"day_index": (art_day + 1) % 3, "theme": "Again", "items": [
                     {"place_id": ids["Test Art Museum"], "slot": "morning", "rationale": "Twice.", "fact_ids": [],
                      "tips": []},
                 ]},
@@ -329,7 +334,7 @@ def test_llm_output_is_grounded(deaf_non_speaking):  # noqa: F811
 
     t = trip(deaf_non_speaking, composer=fake_composer(items))
     check_invariants(t, deaf_non_speaking)
-    first = t.days[0].items
+    first = t.days[found["day"]].items
     art = next(i for i in first if i.place and i.place.id == "art")
     assert art.rationale.startswith("Captioned videos and ASL tours fit you.")
     assert len(art.cited_fact_ids) == 1  # the unknown fact id was dropped
@@ -340,7 +345,7 @@ def test_llm_output_is_grounded(deaf_non_speaking):  # noqa: F811
     if park:
         assert "fully accessible" not in park.rationale and "5 minutes" not in park.rationale
     assert t.overall_notes == "A calm trip."
-    assert t.days[0].theme == "Museums"
+    assert t.days[found["day"]].theme == "Museums"
 
 
 def test_llm_failure_falls_back_to_greedy(ankle):  # noqa: F811
