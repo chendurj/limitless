@@ -41,7 +41,7 @@ APP GUIDE (only these routes and controls are confirmed)
   The anonymized-feedback checkbox is optional. Chat answers do not fill this form.
 - [How it works](/how-it-works): explains the planning process.
 - [Features](/features): explains the app's features.
-- [Reviews](/reviews): a coming-soon page, not a working review submission feature.
+- [Reviews](/reviews): sample reviews written for the demo. Travelers cannot submit reviews yet.
 - [Sample itinerary](/trips/00000000-0000-4000-8000-0000000000b2): a demo, not the
   traveler's saved trip. Clearly call it a sample when suggesting it.
 - On an existing itinerary, travelers can switch day tabs and choose "Tell Limitless
