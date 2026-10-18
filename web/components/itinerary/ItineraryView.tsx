@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { components } from "@/types/api";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 
@@ -20,6 +21,20 @@ const fmtDate = (date: string) =>
     day: "numeric",
     timeZone: "America/Los_Angeles",
   });
+
+export type StatusChange = "in_progress" | "done";
+
+/** Live-mode controls. Without them the itinerary is read-only. */
+type Live = {
+  onStatus: (item: ItemOut, status: StatusChange) => void;
+  busyItemId: string | null;
+};
+
+const statusLabel: Partial<Record<ItemOut["status"], string>> = {
+  in_progress: "You are here",
+  done: "Done",
+  skipped: "Skipped",
+};
 
 const kindLabel: Record<ItemOut["kind"], string> = {
   visit: "Visit",
@@ -52,15 +67,48 @@ function FactRow({ fact }: { fact: Fact }) {
   );
 }
 
-function ItemCard({ item }: { item: ItemOut }) {
+function StatusControls({ item, live }: { item: ItemOut; live: Live }) {
+  if (!item.place || item.status === "done" || item.status === "skipped") return null;
+  const busy = live.busyItemId === item.id;
+  const action =
+    item.status === "in_progress"
+      ? { status: "done" as const, label: "Mark as done" }
+      : { status: "in_progress" as const, label: "I’m here" };
   return (
-    <li className="rounded-xl border border-border bg-surface p-5">
+    <button
+      type="button"
+      disabled={busy || live.busyItemId !== null}
+      onClick={() => live.onStatus(item, action.status)}
+      aria-label={`${action.label}: ${item.title}`}
+      className="mt-4 inline-flex h-11 items-center rounded-lg border border-border px-4 text-sm font-semibold hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {busy ? "Saving…" : action.label}
+    </button>
+  );
+}
+
+function ItemCard({ item, live }: { item: ItemOut; live?: Live }) {
+  const status = statusLabel[item.status];
+  return (
+    <li
+      className={`rounded-xl border bg-surface p-5 ${
+        item.status === "in_progress" ? "border-primary border-2" : "border-border"
+      } ${item.status === "done" ? "opacity-75" : ""}`}
+    >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <p className="text-sm font-medium text-muted">
           {fmtTime(item.start)} – {fmtTime(item.end)}
         </p>
-        <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold text-muted">
-          {kindLabel[item.kind]}
+        <span className="flex gap-2">
+          {status && (
+            <span className="rounded-full bg-accent-soft px-2 py-0.5 text-xs font-semibold">
+              {item.status === "done" && <span aria-hidden="true">✓ </span>}
+              {status}
+            </span>
+          )}
+          <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold text-muted">
+            {kindLabel[item.kind]}
+          </span>
         </span>
       </div>
       <h3 className="mt-1 text-lg font-semibold">{item.title}</h3>
@@ -115,11 +163,13 @@ function ItemCard({ item }: { item: ItemOut }) {
           </a>
         </p>
       )}
+
+      {live && <StatusControls item={item} live={live} />}
     </li>
   );
 }
 
-function DaySection({ day }: { day: DayOut }) {
+function DaySection({ day, live }: { day: DayOut; live?: Live }) {
   const headingId = `day-${day.day_index}-heading`;
   return (
     <section id={`day-${day.day_index}`} aria-labelledby={headingId} className="scroll-mt-6">
@@ -141,14 +191,23 @@ function DaySection({ day }: { day: DayOut }) {
       </div>
       <ol className="mt-5 space-y-4">
         {day.items.map((item) => (
-          <ItemCard key={item.id} item={item} />
+          <ItemCard key={item.id} item={item} live={live} />
         ))}
       </ol>
     </section>
   );
 }
 
-export function ItineraryView({ trip }: { trip: TripOut }) {
+export function ItineraryView({
+  trip,
+  live,
+  actions,
+}: {
+  trip: TripOut;
+  live?: Live;
+  /** Shown under the trip summary, for example the Tell Limitless button. */
+  actions?: ReactNode;
+}) {
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-10">
       <p className="mb-4 rounded-lg border border-border bg-surface-muted px-3 py-2 text-xs font-medium text-muted">
@@ -160,6 +219,7 @@ export function ItineraryView({ trip }: { trip: TripOut }) {
       <p className="mt-2 text-sm text-muted">
         {trip.nights} nights · {trip.travelers} travelers · from {trip.start_date}
       </p>
+      {actions && <div className="mt-6">{actions}</div>}
 
       <nav aria-label="Jump to a day" className="mt-6 flex flex-wrap gap-2">
         {trip.days.map((day) => (
@@ -175,7 +235,7 @@ export function ItineraryView({ trip }: { trip: TripOut }) {
 
       <div className="mt-8 space-y-12">
         {trip.days.map((day) => (
-          <DaySection key={day.day_index} day={day} />
+          <DaySection key={day.day_index} day={day} live={live} />
         ))}
       </div>
 
