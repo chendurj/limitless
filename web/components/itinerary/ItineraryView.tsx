@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { components } from "@/types/api";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
 
@@ -241,8 +243,9 @@ function DaySection({ day, live }: { day: DayOut; live?: Live }) {
   return (
     <section
       id={`day-${day.day_index}`}
-      aria-labelledby={headingId}
-      className="scroll-mt-6"
+      role="tabpanel"
+      aria-labelledby={`day-${day.day_index}-tab`}
+      tabIndex={-1}
     >
       <h2 id={headingId} className="text-xl font-bold">
         Day {day.day_index + 1} · {fmtDate(day.date)}
@@ -266,6 +269,80 @@ function DaySection({ day, live }: { day: DayOut; live?: Live }) {
         ))}
       </ol>
     </section>
+  );
+}
+
+// Today in San Diego, as YYYY-MM-DD.
+const todayInSanDiego = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+
+// One day at a time. The tabs follow the WAI-ARIA tabs pattern: arrow keys, Home and End
+// move between days, and only the selected tab is in the Tab order.
+function DayTabs({ days, live }: { days: DayOut[]; live?: Live }) {
+  const [selected, setSelected] = useState(() =>
+    Math.max(
+      0,
+      days.findIndex((day) => day.date === todayInSanDiego()),
+    ),
+  );
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const index = Math.min(selected, days.length - 1);
+  const day = days[index];
+
+  const select = (next: number) => {
+    setSelected(next);
+    tabs.current[next]?.focus();
+  };
+  const onKeyDown = (event: KeyboardEvent) => {
+    const last = days.length - 1;
+    const next = {
+      ArrowRight: index === last ? 0 : index + 1,
+      ArrowLeft: index === 0 ? last : index - 1,
+      Home: 0,
+      End: last,
+    }[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    select(next);
+  };
+
+  if (!day) return null;
+  return (
+    <>
+      <div
+        role="tablist"
+        aria-label="Trip days"
+        onKeyDown={onKeyDown}
+        className="mt-6 flex flex-wrap gap-2"
+      >
+        {days.map((d, i) => (
+          <button
+            key={d.day_index}
+            ref={(el) => {
+              tabs.current[i] = el;
+            }}
+            id={`day-${d.day_index}-tab`}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-controls={`day-${d.day_index}`}
+            tabIndex={i === index ? 0 : -1}
+            onClick={() => setSelected(i)}
+            className={`rounded-lg border px-3 py-1.5 text-sm font-medium ${
+              i === index
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-surface hover:bg-surface-muted"
+            }`}
+          >
+            Day {d.day_index + 1}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-8">
+        <DaySection key={day.day_index} day={day} live={live} />
+      </div>
+    </>
   );
 }
 
@@ -304,23 +381,7 @@ export function ItineraryView({
       </p>
       {actions && <div className="mt-6">{actions}</div>}
 
-      <nav aria-label="Jump to a day" className="mt-6 flex flex-wrap gap-2">
-        {trip.days.map((day) => (
-          <a
-            key={day.day_index}
-            href={`#day-${day.day_index}`}
-            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium hover:bg-surface-muted"
-          >
-            Day {day.day_index + 1}
-          </a>
-        ))}
-      </nav>
-
-      <div className="mt-8 space-y-12">
-        {trip.days.map((day) => (
-          <DaySection key={day.day_index} day={day} live={live} />
-        ))}
-      </div>
+      <DayTabs days={trip.days} live={live} />
 
       {trip.excluded.length > 0 && (
         <section
