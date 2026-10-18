@@ -245,7 +245,7 @@ def test_access_fit_below_threshold_excludes(make_dna):
     ]
     result = run(ZOO, facts, dna)
     assert result.excluded
-    assert result.reasons[0].startswith("Multiple comfort issues")
+    assert result.reasons[0].startswith("Too many problems together")
 
 
 # --- blind solo traveler -------------------------------------------------------------------

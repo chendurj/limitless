@@ -7,6 +7,7 @@ type TripOut = components["schemas"]["TripOut"];
 type DayOut = components["schemas"]["DayOut"];
 type ItemOut = components["schemas"]["ItemOut"];
 type PlaceOut = components["schemas"]["PlaceOut"];
+type ExcludedPlace = components["schemas"]["ExcludedPlace"];
 
 // Times and dates are shown in San Diego time regardless of where this renders.
 const fmtTime = (iso: string) =>
@@ -311,6 +312,64 @@ function DayTabs({ days, live }: { days: DayOut[]; live?: Live }) {
   );
 }
 
+const SHOWN_SKIPPED = 5;
+// Reasons from an official page are the strongest, so they come first.
+const isOfficial = (place: ExcludedPlace) =>
+  place.reasons.some((reason) => reason.includes("(the official"));
+
+function SkippedRow({ place }: { place: ExcludedPlace }) {
+  return (
+    <li className="rounded-xl border border-border bg-surface p-4">
+      <p className="font-semibold">{place.name}</p>
+      <ul className="mt-1 list-disc pl-5 text-sm text-muted">
+        {place.reasons.map((reason, i) => (
+          <li key={i}>{reason}</li>
+        ))}
+      </ul>
+    </li>
+  );
+}
+
+function SkippedPlaces({ places }: { places: ExcludedPlace[] }) {
+  const sorted = [
+    ...places.filter(isOfficial),
+    ...places.filter((place) => !isOfficial(place)),
+  ];
+  const first = sorted.slice(0, SHOWN_SKIPPED);
+  const rest = sorted.slice(SHOWN_SKIPPED);
+  return (
+    <section
+      aria-labelledby="skipped-heading"
+      className="mt-12 border-t border-border pt-8"
+    >
+      <h2 id="skipped-heading" className="text-xl font-bold">
+        Places we skipped, and why
+      </h2>
+      <p className="mt-2 text-sm text-muted">
+        We skipped {places.length} {places.length === 1 ? "place" : "places"}{" "}
+        that do not fit your needs.
+      </p>
+      <ul className="mt-4 space-y-3">
+        {first.map((place) => (
+          <SkippedRow key={place.place_id} place={place} />
+        ))}
+      </ul>
+      {rest.length > 0 && (
+        <details className="mt-3">
+          <summary className="cursor-pointer text-sm font-medium text-primary underline underline-offset-4">
+            Show all {places.length} places
+          </summary>
+          <ul className="mt-3 space-y-3">
+            {rest.map((place) => (
+              <SkippedRow key={place.place_id} place={place} />
+            ))}
+          </ul>
+        </details>
+      )}
+    </section>
+  );
+}
+
 export function ItineraryView({
   trip,
   live,
@@ -348,31 +407,7 @@ export function ItineraryView({
 
       <DayTabs days={trip.days} live={live} />
 
-      {trip.excluded.length > 0 && (
-        <section
-          aria-labelledby="skipped-heading"
-          className="mt-12 border-t border-border pt-8"
-        >
-          <h2 id="skipped-heading" className="text-xl font-bold">
-            Places we skipped, and why
-          </h2>
-          <ul className="mt-4 space-y-3">
-            {trip.excluded.map((place) => (
-              <li
-                key={place.place_id}
-                className="rounded-xl border border-border bg-surface p-4"
-              >
-                <p className="font-semibold">{place.name}</p>
-                <ul className="mt-1 list-disc pl-5 text-sm text-muted">
-                  {place.reasons.map((reason, i) => (
-                    <li key={i}>{reason}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {trip.excluded.length > 0 && <SkippedPlaces places={trip.excluded} />}
 
       {trip.rental_links.length > 0 && (
         <section aria-labelledby="rentals-heading" className="mt-10">
